@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>recetas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+<ion-list>
+  <ion-item *ngFor="let usuario of usuarios">
+    <ion-avatar slot="start">
+      <img src="{{ usuario.picture.large}}">
+    </ion-avatar>
+    <ion-label>{{ usuario.email}}</ion-label>
+    
+  </ion-item>
+  </ion-list>
+ 
+
+</ion-content>
