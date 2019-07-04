@@ -17,7 +17,7 @@ export class AuthService {
   AUTH_SERVER_ADDRESS:  string  =  'http://localhost:3000';
   authSubject  =  new  BehaviorSubject(false);
 
-  registrar(user: Usuario) {
+  registrar(user: Usuario) : Observable<AuthRespuesta> {
     return this.clienteHttp.post<AuthRespuesta>(`${this.AUTH_SERVER_ADDRESS}/register`, user).pipe(
       tap(async (resp:  AuthRespuesta ) => {
         // si el servidor me acepta los datos
@@ -29,5 +29,29 @@ export class AuthService {
         }
       })
     );
+  }
+
+  logear(user: Usuario) : Observable<AuthRespuesta>{
+    return this.clienteHttp.post<AuthRespuesta>(`${this.AUTH_SERVER_ADDRESS}/login`, user).pipe(
+      tap(async (resp:  AuthRespuesta ) => {
+        // si el servidor me acepta los datos
+        if (resp.user) {
+          // como proceso la respuesta del servidor
+          await this.almacenamiento.set("ACCESS_TOKEN", resp.user.access_token);
+          await this.almacenamiento.set("EXPIRES_IN", resp.user.expires_in);
+          this.authSubject.next(true);
+        }
+      })
+    );
+  }
+
+  async logout() {
+    await this.almacenamiento.remove("ACCESS_TOKEN");
+    await this.almacenamiento.remove("EXPIRES_IN");
+    this.authSubject.next(false);
+  }
+
+  estaLogueado() {
+    return this.authSubject.asObservable();
   }
 }

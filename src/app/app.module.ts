@@ -11,6 +11,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { UsuariosService } from './servicios/usuarios.service';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
+import { AuthModule } from  './auth/auth.module';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+
 
 
 @NgModule({
@@ -22,6 +26,9 @@ import { IonicStorageModule } from '@ionic/storage';
     IonicModule.forRoot(),
     AppRoutingModule,
     IonicStorageModule.forRoot(),
+    AuthModule,
+    FormsModule,
+    CommonModule,
   ],
   providers: [
     UsuariosService,

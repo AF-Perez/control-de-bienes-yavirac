@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from '../servicios/usuarios.service';
+import {ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -10,9 +11,11 @@ import { UsuariosService } from '../servicios/usuarios.service';
 export class RecetasPage implements OnInit {
 
   usuarios: any[] = [];
+  argumentos=null;
 
   constructor(
-    public servicioUsuario: UsuariosService
+    public servicioUsuario: UsuariosService,
+    private rutaActiva: ActivatedRoute,
 
   ) {}
 
@@ -31,6 +34,8 @@ export class RecetasPage implements OnInit {
 
   ngOnInit() {
     this.ionViewDidLoad();
+    this.argumentos= this.rutaActiva.snapshot.paramMap.get('id');
+
   }
 
 }

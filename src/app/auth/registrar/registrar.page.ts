@@ -17,7 +17,7 @@ export class RegistrarPage implements OnInit {
 
   register(formulario) {
     this.authService.registrar(formulario.value).subscribe((res) => {
-      this.router.navigateByUrl('home');
+      this.router.navigateByUrl('usuarios');
     });
   }
 
