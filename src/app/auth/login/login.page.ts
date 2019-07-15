@@ -16,9 +16,18 @@ export class LoginPage implements OnInit {
   }
 
   login(formulario){
+    //validacion
+    let correo = formulario.value.email;
+    let clave = formulario.value.password;
+    
+    console.log("su correo es = " + correo);
+    console.log("su contraseña es = " + clave);
+    // loguear
     this.authService.logear(formulario.value).subscribe((res)=>{
       this.router.navigateByUrl('usuarios');
     });
   }
+
+
 
 }
