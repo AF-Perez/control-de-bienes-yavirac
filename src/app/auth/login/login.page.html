@@ -5,13 +5,10 @@
       </ion-title>
     </ion-toolbar>
   </ion-header>
-  
+
   <ion-content padding class="form-content">
       <form  [formGroup]="validations_form" (ngSubmit)="login(validations_form.value)" >
-      <ion-row color="primary" justify-content-center>
-       
-         
-        
+              
             <ion-item>
               <ion-label position="floating" color="primary">Correo Electronico</ion-label>
               <ion-input name="email" formControlName="email" class="form-control" type="email" required></ion-input>
@@ -45,13 +42,12 @@
 
           <ion-button color="primary" class="submit-btn" expand="full" type="submit" [disabled]="!validations_form.valid">Login</ion-button>
      
-      </ion-row>
-      <ion-row>
+
         <div text-center>
           Si no tiene una cuenta, por favor <a routerLink='/registrar'>
         registrese</a> primero!
         </div>
-    </ion-row>
+  
 
   </form>
 </ion-content>
