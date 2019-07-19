@@ -7,14 +7,15 @@
 <ion-content>
 
 <ion-list>
+
   <ion-item *ngFor="let usuario of usuarios">
     <ion-avatar slot="start">
       <img src="{{ usuario.picture.large}}">
     </ion-avatar>
     <ion-label>{{ usuario.email}}</ion-label>
-    
   </ion-item>
-  </ion-list>
+  
+</ion-list>
  
 
 </ion-content>
