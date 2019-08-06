@@ -2,12 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { Component, OnInit } from '@angular/core';
 import { Router } from  "@angular/router";
 import { AuthService } from '../auth.service';
-//import { IonicPage, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { PasswordValidator } from '../../validadores/password.validador';
-
 import { AlertController } from '@ionic/angular';
-
 
 
 @Component({
@@ -19,72 +16,69 @@ export class LoginPage implements OnInit {
 
   // variables de clase
   validations_form: FormGroup;
-  matching_passwords_group: FormGroup;
 
   constructor(
+    // servicio para autenticarse
     private  authService:  AuthService, 
+    // para navegar entre pantallas
     private  router:  Router,
+    // validaciones
     public formBuilder: FormBuilder,
+    // para mostrar alertas
+    private alertCtrl: AlertController
   ) {
- 
+
   }
 
 
   ngOnInit() {
-    this.validations_form = this.formBuilder.group({
-        email: new FormControl('', Validators.compose([
-          Validators.required,
-          Validators.pattern('^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$')
-      ])),
-      matching_passwords: this.matching_passwords_group,
-     
-    });
 
-    this.matching_passwords_group = new FormGroup({
+    this.validations_form = this.formBuilder.group({
+      // validacion para email
+      email: new FormControl('', Validators.compose([
+        // campo obligatorio
+        Validators.required,
+        // tiene que tener forma de email
+        Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$')
+      ])),
+      // validacion para la contrasenia
       password: new FormControl('', Validators.compose([
         Validators.minLength(5),
         Validators.required,
         Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$')
       ])),
-      confirm_password: new FormControl('', Validators.required)
-    }, (formGroup: FormGroup) => {
-      return PasswordValidator.areEqual(formGroup);
     });
-
   }
 
 
   // loguear al usuario
   login(formulario){
-    // loguear
-    console.log(formulario);
-    this.authService.logear(formulario.value).subscribe((res)=>{
-      this.router.navigateByUrl('usuarios');
+    // nos permite enviar datos a la API
+    this.authService.logear(formulario).subscribe((res)=>{
+      this.router.navigateByUrl('caratula');
     });
+    
+    // muestra un mensaje de que se logueo con exito
+    this.mostrarAlert();
   }
 
 
+  async mostrarAlert() {
+    const alert = await this.alertCtrl.create({
+      header: 'Datos enviados!',
+      subHeader: "Información",
+      message: "Los registros fueron enviados correctamente",
+      buttons: ['Ok']
+    });
+     await alert.present();
+  }
+
+
+
   validation_messages = {
-    'username': [
-      { type: 'required', message: 'Username is required.' },
-      { type: 'minlength', message: 'Username must be at least 5 characters long.' },
-      { type: 'maxlength', message: 'Username cannot be more than 25 characters long.' },
-      { type: 'pattern', message: 'Your username must contain only numbers and letters.' },
-      { type: 'validUsername', message: 'Your username has already been taken.' }
-    ],
-    'name': [
-      { type: 'required', message: 'Name is required.' }
-    ],
-    'lastname': [
-      { type: 'required', message: 'Last name is required.' }
-    ],
     'email': [
       { type: 'required', mensaje: 'Email es requerido.' },
       { type: 'pattern', mensaje: 'por favor ingrese un E-mail valido.' }
-    ],
-    'phone': [
-      { type: 'required', message: 'Phone is required.' },
-      { type: 'validCountryPhone', message: 'The phone is incorrect for the selected country.' }
     ],
     'password': [
       { type: 'required', message: 'Password is required.' },
@@ -96,9 +90,6 @@ export class LoginPage implements OnInit {
     ],
     'matching_passwords': [
       { type: 'areEqual', message: 'Password mismatch.' }
-    ],
-    'terms': [
-      { type: 'pattern', message: 'You must accept terms and conditions.' }
     ],
   };
   

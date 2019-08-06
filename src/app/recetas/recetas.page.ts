@@ -23,10 +23,12 @@ export class RecetasPage implements OnInit {
     
     this.servicioUsuario.obtenerUsuarios()
     .subscribe(
-      (data) => { // Success
-        this.usuarios = data['results'];
+      (datos) => { 
+        // exito
+        this.usuarios = datos['results'];
       },
-      (error) =>{
+      (error) =>{ 
+        // error
         console.error(error);
       }
     )

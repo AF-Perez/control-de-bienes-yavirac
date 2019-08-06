@@ -6,7 +6,20 @@ const routes: Routes = [
   { path: 'usuarios', loadChildren: './recetas/recetas.module#RecetasPageModule' },
   { path: 'registrar', loadChildren: './auth/registrar/registrar.module#RegistrarPageModule' },
   { path: 'login', loadChildren: './auth/login/login.module#LoginPageModule' },
-  { path: 'caratula', loadChildren: './caratula/caratula.module#CaratulaPageModule' },
+  // { path: 'caratula', loadChildren: './caratula/caratula.module#CaratulaPageModule' },
+  { path: 'caratula',
+    children: [
+      {
+        path: '',
+        loadChildren: './caratula/caratula.module#CaratulaPageModule',
+      }
+      ,
+      {
+        path: ':idUsuario',
+        loadChildren: './detalle/detalle.module#DetallePageModule'
+      }
+    ]
+  },
 ];
 
 @NgModule({

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
+import { AuthService } from '../auth/auth.service';
+import { Router } from "@angular/router";
+import { UsuariosService } from '../servicios/usuarios.service';
+
 
 @Component({
   selector: 'app-caratula',
@@ -8,9 +12,28 @@ import { MenuController } from '@ionic/angular';
 })
 export class CaratulaPage implements OnInit {
 
-  constructor(private menu: MenuController) { }
+  constructor(
+    private menu: MenuController,
+    private  authService: AuthService,
+    private  router: Router,
+    public servicioUsuario: UsuariosService,
+    ) { }
+
+    usuarios: any[] = [];
 
   ngOnInit() {
+    this.servicioUsuario.obtenerUsuarios()
+    .subscribe(
+      (respuesta) => { 
+        // exito
+        console.log(respuesta);
+        this.usuarios = respuesta["results"];
+      },
+      (error) =>{ 
+        // error
+        console.log(error)
+      }
+    )
   }
 
   openFirst() {
@@ -25,5 +48,10 @@ export class CaratulaPage implements OnInit {
   openCustom() {
     this.menu.enable(true, 'custom');
     this.menu.open('custom');
+  }
+  
+  salir() {
+    this.authService.logout();
+    this.router.navigateByUrl('login');
   }
 }
