@@ -1,11 +1,14 @@
-ion-item{
-    --background: #3880ff;
-    --color: #fff;
+.mensaje-erronio
+{
+  color: red;
+  font-size: 12px;
+  margin-left: 10px;
+  margin-top: 10px;
 }
 
 ion-button{
     --background: #062f77;
 }
 a{
-    color: #fff;
+    color: rgb(206, 45, 45);
 }

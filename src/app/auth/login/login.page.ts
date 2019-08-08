@@ -62,7 +62,7 @@ export class LoginPage implements OnInit {
     this.mostrarAlert();
   }
 
-
+    //nos muestra un alerta al momento de ingresar  
   async mostrarAlert() {
     const alert = await this.alertCtrl.create({
       header: 'Datos enviados!',
@@ -81,15 +81,15 @@ export class LoginPage implements OnInit {
       { type: 'pattern', mensaje: 'por favor ingrese un E-mail valido.' }
     ],
     'password': [
-      { type: 'required', message: 'Password is required.' },
-      { type: 'minlength', message: 'Password must be at least 5 characters long.' },
-      { type: 'pattern', message: 'Your password must contain at least one uppercase, one lowercase, and one number.' }
+      { type: 'required', message: 'La contraseña es requerida.' },
+      { type: 'minlength', message: 'La contraseña debe tener como minimo 5 caracteres' },
+      { type: 'pattern', message: 'Su contraseña debe contener al menos una mayúscula, una minúscula y un número.' }
     ],
     'confirm_password': [
-      { type: 'required', message: 'Confirm password is required.' }
+      { type: 'required', message: 'La confirmación de su contWSraseña es requerida' }
     ],
     'matching_passwords': [
-      { type: 'areEqual', message: 'Password mismatch.' }
+      { type: 'areEqual', message: 'Contraseñas no coincide' }
     ],
   };
   

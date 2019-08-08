@@ -1,36 +1,79 @@
-<ion-content  color="primary">
-  <form  #form="ngForm" (ngSubmit)="register(form)">
-    <ion-grid>
-      <ion-row color="primary" justify-content-center>
-        <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
-          <div text-center>
-            <h3>Crear tu cuenta</h3>
+
+
+<ion-content padding class="form-content" >
+
+  <form [formGroup]="validators_form" (ngSubmit)="registrar(validators_form.value)">
+
+        <!--cuadro de texto nombre-->
+        <ion-item>
+          <ion-label position="floating" color="primary">Nombre</ion-label>
+          <ion-input type="name" formControlName="name"></ion-input>
+        </ion-item>
+
+         <!-- error nombre-->
+         <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.name">
+              <div class="mensaje-erronio" *ngIf="validators_form.get('name').hasError(validation.type) && (validators_form.get('name').dirty || validators_form.get('name').touched)">
+                {{ validation.mensaje }}
+              </div>
+            </ng-container>
+        </div>
+        
+          <!--cuadro de texto email-->
+          <ion-item>
+              <ion-label position="floating" color="primary">Correo Electronico</ion-label>
+              <ion-input type="text" formControlName="email"></ion-input>
+          </ion-item>
+
+        <!-- error email-->
+        <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.email">
+              <div class="mensaje-erronio" *ngIf="validators_form.get('email').hasError(validation.type) && (validators_form.get('email').dirty || validators_form.get('email').touched)">
+                {{ validation.mensaje }}
+              </div>
+            </ng-container>
+        </div>
+
+        <!--cuadro de texto password-->
+        <ion-item>
+            <ion-label position="floating" color="primary">Password</ion-label>
+            <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+  
+        <!-- error password-->
+          <div class="validation-errors">
+              <ng-container *ngFor="let validation of validation_messages.password">
+                <div class="mensaje-erronio" *ngIf="validators_form.get('password').hasError(validation.type) && (validators_form.get('password').dirty || validations_form.get('password').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+                </div>
+              </ng-container>
           </div>
-          <div padding>
-            <ion-item>
-              <ion-input  name="name" type="text" placeholder="Nombre" ngModel required></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input name="email" type="email" placeholder="tu@email.com" ngModel required></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input name="password" type="password" placeholder="Contraseña" ngModel required></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-input name="confirm" type="password" placeholder="Confirmar contraseña" ngModel required></ion-input>
-            </ion-item>
+
+          <!-- confirmar password -->
+          <ion-item>
+              <ion-label position="floating" color="primary">Confirmar Contraseña</ion-label>
+              <ion-input type="password" formControlName="password"></ion-input>
+          </ion-item>
+    
+          <!-- error password-->
+          <div class="validation-errors">
+              <ng-container *ngFor="let validation of validation_messages.password">
+                <div class="mensaje-erronio" *ngIf="validators_form.get('password').hasError(validation.type) && (validators_form.get('password').dirty || validations_form.get('password').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+                </div>
+              </ng-container>
           </div>
-          <div padding>
-            <ion-button  size="large" type="submit" [disabled]="form.invalid" expand="block">Siguiente</ion-button>
-          </div>
-        </ion-col>
-      </ion-row>
-      <ion-row>
+            
+          <!-- boton -->
+          <ion-button  size="large" type="submit" [disabled]="validators_form.invalid" expand="block">Siguiente</ion-button>
+          
+      
+        <ion-row>
         <div text-center>
           Si tiene una cuenta, por favor presione <a routerLink='/login'>
         aqui</a> gracias.
         </div>
     </ion-row>
-    </ion-grid>
+   
   </form>
 </ion-content>
