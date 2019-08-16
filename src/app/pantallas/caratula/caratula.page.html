@@ -1,0 +1,77 @@
+<ion-menu side="start" menuId="first">
+    <ion-header>
+      <ion-toolbar color="primary">
+        <ion-title>Inventario</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list>
+        <ion-item>Menu Item</ion-item>
+        <ion-item>Menu Item</ion-item>
+        <ion-item>Menu Item</ion-item>
+        <ion-item>Menu Item</ion-item>
+        <ion-item>
+          <ion-button (click)="salir()">
+            <ion-icon slot="end" name="exit"></ion-icon>
+            Salir
+          </ion-button>
+        </ion-item>
+        
+        
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  
+  
+
+  <ion-router-outlet main></ion-router-outlet>
+  <ion-header>
+      <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Tareas</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    
+    <!-- cuerpo de la pantalla -->
+    <ion-content padding>
+        
+        <ion-grid>
+
+          <ion-row align-items-center>
+            <ion-col>
+                <ion-button>
+                    <ion-icon slot="start" name="star"></ion-icon>
+                    REGISTRO
+                  </ion-button>
+          
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+                <ion-button>
+                  <ion-icon slot="start" name="star"></ion-icon>
+                    CONTEO
+                  </ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row>
+            <ion-col>
+              <ion-button>
+                <ion-icon slot="start" name="star"></ion-icon>
+                MODIFICAR
+              </ion-button>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+
+
+       
+      
+
+   
+      </ion-content>
