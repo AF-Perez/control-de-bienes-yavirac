@@ -6,7 +6,8 @@ const routes: Routes = [
   { path: 'registro', loadChildren: './auth/registrar/registrar.module#RegistrarPageModule' },
   { path: 'login', loadChildren: './auth/login/login.module#LoginPageModule' },
   { path: 'caratula', loadChildren: './pantallas/caratula/caratula.module#CaratulaPageModule' },
-  { path: 'seleccionar-ubicacion', loadChildren: './pantallas/tareas/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
+  { path: 'seleccionar-ubicacion', loadChildren: './pantallas/tareas/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },  { path: 'gestionar-bien', loadChildren: './pantallas/tareas/seleccionar-ubicacion/gestionar-bien/gestionar-bien.module#GestionarBienPageModule' },
+
 ];
 
 @NgModule({

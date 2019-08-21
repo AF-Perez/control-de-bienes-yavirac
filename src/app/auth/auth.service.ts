@@ -37,8 +37,12 @@ export class AuthService {
         // si el servidor me acepta los datos
         if (resp.user) {
           // como proceso la respuesta del servidor
+          // almacenar el token en el cache 
           await this.almacenamiento.set("ACCESS_TOKEN", resp.user.access_token);
+          // alamacena la expiracion del token
           await this.almacenamiento.set("EXPIRES_IN", resp.user.expires_in);
+         
+          // retornar
           this.authSubject.next(true);
         }
       })
@@ -46,8 +50,12 @@ export class AuthService {
   }
 
   async logout() {
+    //elimina el token del cache
     await this.almacenamiento.remove("ACCESS_TOKEN");
+    //elimina el tiempo de expirar del token 
     await this.almacenamiento.remove("EXPIRES_IN");
+
+    // retornar
     this.authSubject.next(false);
   }
 
