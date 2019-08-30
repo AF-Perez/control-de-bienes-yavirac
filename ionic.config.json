@@ -1,5 +1,8 @@
 {
   "name": "control-de-bienes-yavirac",
-  "integrations": {},
+  "integrations": {
+    "cordova": {},
+    "capacitor": {}
+  },
   "type": "angular"
 }

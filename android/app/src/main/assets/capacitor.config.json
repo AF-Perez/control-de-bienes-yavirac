@@ -1,0 +1,7 @@
+{
+  "appId": "io.ionic.starter",
+  "appName": "control-de-bienes-yavirac",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}

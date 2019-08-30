@@ -1,0 +1,7 @@
+{
+  "appId": "com.udemy-course.ionic-angular",
+  "appName": "control-de-bienes-yavirac",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www"
+}
