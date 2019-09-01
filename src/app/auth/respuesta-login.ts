@@ -1,9 +1,9 @@
-export interface AuthRespuesta {
+export interface RespuestaLogin {
     user: {
-        id: number,
-        nombre: string,
-        email: string,
+        token_type: string,
         access_token: string,
-        expires_in: number
+        expires_in: number,
+        refresh_token: string,
+        
     }
 }
