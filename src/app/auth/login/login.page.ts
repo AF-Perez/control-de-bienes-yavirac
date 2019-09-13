@@ -54,10 +54,9 @@ export class LoginPage implements OnInit {
   // loguear al usuario
   login(formulario){
     // nos permite enviar datos a la API
-    this.authService.logear(formulario).subscribe((res)=>{
+    this.authService.logear(formulario.email, formulario.password).subscribe((res)=>{
       this.router.navigateByUrl('caratula');
     });
-    
     // muestra un mensaje de que se logueo con exito
     this.mostrarAlert();
   }

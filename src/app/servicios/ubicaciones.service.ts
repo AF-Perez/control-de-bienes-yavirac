@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from  '@angular/common/http';
 import { Observable, BehaviorSubject } from  'rxjs';
-import { tap } from  'rxjs/operators';
+import { tap, catchError } from  'rxjs/operators';
 import { map } from 'rxjs/operators';
-
-
-
+import { Storage } from  '@ionic/storage';
+import { AuthService } from  '../auth/auth.service';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { Institution } from '../models/institutions';
 
 
 @Injectable({
@@ -13,47 +14,53 @@ import { map } from 'rxjs/operators';
 })
 export class UbicacionesService {
 
-  constructor(private  clienteHttp:  HttpClient) { }
+  constructor(
+    private  clienteHttp:  HttpClient,
+    private almacenamiento: Storage,
+    private authService: AuthService,
+  ) { }
 
+  token:any;
 
   NOMBRE_SERVIDOR:  string  =  'http://localhost:8000';
   authSubject  =  new  BehaviorSubject(false);
+
+
   
+  ubicaciones : any = [];
 
-  /*
-  private ubicaciones: {id: number, nombre: string}[] = [
-    { "id": 0, "nombre": "biblioteca"},
-    { "id": 1, "nombre": "aula 1"},
-    { "id": 2, "nombre": "aula 2"},
-    { "id": 3, "nombre": "oficina 1"},
-    { "id": 4, "nombre": "rectorado"},
-  ];
-  */
-
-  private ubicaciones: any;
+  
 
   // PENDIENTE coger desde api
-  obtenerUbicaciones() {
+  obtenerUbicaciones1(){
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      "Access-Control-Allow-Headers" : "*"
+    
+    return this.almacenamiento.get("ACCESS_TOKEN")
+    .then(val => {
+      return val.access_token;
+    })
+    .then(token => {
+      const headers = new HttpHeaders({
+        Authorization: "Bearer " + token,
+        Accept: "application/json"
+      });
+      return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
     });
-  
-    this.ubicaciones = this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/ubicaciones`, {headers, responseType: 'json'}).pipe(
-      map(data => {
-      //console.log(data.status);
-      console.log(data); // data received by server
-      console.log("dsflkjdskdkl"); // data received by server
 
-      //console.log(data.headers);
-      return data;
-    },
-    (error: any) => {
-        console.log(error);
-    }));
-    return this.ubicaciones;
   }
 
+  obtenerUbicaciones(): Observable<Institution[]> {
+    return this.clienteHttp.get<Institution[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`)
+      .pipe(
+        tap(_ => console.log('fetched books')),
+        // catchError(this.handleError('getBooks', []))
+      );
+  }
 
+  sleep(miliseconds) {
+    var currentTime = new Date().getTime();
+ 
+    while (currentTime + miliseconds >= new Date().getTime()) {
+    }
+  }
 }

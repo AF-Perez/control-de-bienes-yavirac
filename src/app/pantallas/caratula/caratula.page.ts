@@ -22,18 +22,7 @@ export class CaratulaPage implements OnInit {
     usuarios: any[] = [];
 
   ngOnInit() {
-    this.servicioUsuario.obtenerUsuarios()
-    .subscribe(
-      (respuesta) => { 
-        // exito
-        console.log(respuesta);
-        this.usuarios = respuesta["results"];
-      },
-      (error) =>{ 
-        // error
-        console.log(error)
-      }
-    )
+   
   }
 
   openFirst() {
