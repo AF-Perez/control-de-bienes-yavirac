@@ -19,13 +19,12 @@ export class SeleccionarUbicacionPage implements OnInit {
   }
 
   // todas estas variables estan accesibles en el html
-  ubicaciones : any = [];
+  ubicaciones: any = [];
   // ubicaciones : any = [];
 
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
    this.obtenerUbicaciones();
- 
   }
 
   irAGestionarBienes(ubicacion){
@@ -40,8 +39,8 @@ export class SeleccionarUbicacionPage implements OnInit {
     this.router.navigate(['gestionar-bien'], navigationExtras);
   }
 
-  obtenerUbicaciones(): void {
-    this.servicioUbicaciones.obtenerUbicaciones()
+  obtenerUbicaciones() {
+    this.servicioUbicaciones.obtenerUbicaciones5()
       .subscribe(ubicaciones => {
         console.log(ubicaciones);
         this.ubicaciones = ubicaciones;

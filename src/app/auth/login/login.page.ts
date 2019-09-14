@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { Component, OnInit } from '@angular/core';
-import { Router } from  "@angular/router";
+import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { PasswordValidator } from '../../validadores/password.validador';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -14,26 +14,48 @@ import { AlertController } from '@ionic/angular';
 })
 export class LoginPage implements OnInit {
 
-  // variables de clase
-  validations_form: FormGroup;
-
   constructor(
     // servicio para autenticarse
-    private  authService:  AuthService, 
+    private  authService: AuthService,
     // para navegar entre pantallas
-    private  router:  Router,
+    private  router: Router,
     // validaciones
     public formBuilder: FormBuilder,
     // para mostrar alertas
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    // para spinner controller
+    private loadingCtrl: LoadingController,
   ) {
 
   }
 
+  // variables de clase
+  validationsForm: FormGroup;
+
+  cargando = false;
+
+  validationMessages = {
+    email: [
+      { type: 'required', mensaje: 'Email es requerido.' },
+      { type: 'pattern', mensaje: 'por favor ingrese un E-mail valido.' }
+    ],
+    password: [
+      { type: 'required', message: 'La contraseña es requerida.' },
+      { type: 'minlength', message: 'La contraseña debe tener como minimo 5 caracteres' },
+      { type: 'pattern', message: 'Su contraseña debe contener al menos una mayúscula, una minúscula y un número.' }
+    ],
+    confirm_password: [
+      { type: 'required', message: 'La confirmación de su contWSraseña es requerida' }
+    ],
+    matching_passwords: [
+      { type: 'areEqual', message: 'Contraseñas no coincide' }
+    ],
+  };
+
 
   ngOnInit() {
 
-    this.validations_form = this.formBuilder.group({
+    this.validationsForm = this.formBuilder.group({
       // validacion para email
       email: new FormControl('', Validators.compose([
         // campo obligatorio
@@ -50,47 +72,40 @@ export class LoginPage implements OnInit {
     });
   }
 
-
   // loguear al usuario
-  login(formulario){
-    // nos permite enviar datos a la API
-    this.authService.logear(formulario.email, formulario.password).subscribe((res)=>{
-      this.router.navigateByUrl('caratula');
-    });
-    // muestra un mensaje de que se logueo con exito
-    this.mostrarAlert();
+  onLogin(formulario) {
+    this.cargando = true;
+    // estableciendo el loading controller
+    this.loadingCtrl
+      .create({
+        keyboardClose: true,
+        message: 'Ingresando...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.authService.logear(formulario.email, formulario.password).subscribe(
+        (resp) => {
+          console.log(resp);
+          this.cargando = false;
+          loadingEl.dismiss();
+          this.router.navigateByUrl('caratula');
+        },
+        (error) => {
+          console.warn(error.message);
+          this.cargando = false;
+          loadingEl.dismiss();
+          this.mostrarAlert();
+        });
+      });
   }
 
-    //nos muestra un alerta al momento de ingresar  
-  async mostrarAlert() {
-    const alert = await this.alertCtrl.create({
-      header: 'Datos enviados!',
-      subHeader: "Información",
-      message: "Los registros fueron enviados correctamente",
+  // nos muestra un alerta al momento de ingresar
+  private mostrarAlert() {
+    this.alertCtrl.create({
+      header: 'Autenticación fallida',
+      message: 'El usuario no se encuentra registrado',
       buttons: ['Ok']
-    });
-     await alert.present();
+    }).then(alertEl => alertEl.present());
   }
 
-
-
-  validation_messages = {
-    'email': [
-      { type: 'required', mensaje: 'Email es requerido.' },
-      { type: 'pattern', mensaje: 'por favor ingrese un E-mail valido.' }
-    ],
-    'password': [
-      { type: 'required', message: 'La contraseña es requerida.' },
-      { type: 'minlength', message: 'La contraseña debe tener como minimo 5 caracteres' },
-      { type: 'pattern', message: 'Su contraseña debe contener al menos una mayúscula, una minúscula y un número.' }
-    ],
-    'confirm_password': [
-      { type: 'required', message: 'La confirmación de su contWSraseña es requerida' }
-    ],
-    'matching_passwords': [
-      { type: 'areEqual', message: 'Contraseñas no coincide' }
-    ],
-  };
-  
-  
 }

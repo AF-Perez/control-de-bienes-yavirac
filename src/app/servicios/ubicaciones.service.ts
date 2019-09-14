@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from  '@angular/common/http';
-import { Observable, BehaviorSubject } from  'rxjs';
-import { tap, catchError } from  'rxjs/operators';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, from } from 'rxjs';
+import { tap, catchError, take, switchMap } from 'rxjs/operators';
 import { map } from 'rxjs/operators';
-import { Storage } from  '@ionic/storage';
-import { AuthService } from  '../auth/auth.service';
+import { Storage } from '@ionic/storage';
+import { AuthService } from '../auth/auth.service';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
-import { Institution } from '../models/institutions';
-
+import { Plugins } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -15,52 +14,61 @@ import { Institution } from '../models/institutions';
 export class UbicacionesService {
 
   constructor(
-    private  clienteHttp:  HttpClient,
-    private almacenamiento: Storage,
+    private  clienteHttp: HttpClient,
+    private almacenamiento: NativeStorage,
     private authService: AuthService,
   ) { }
 
-  token:any;
+  token: any;
 
-  NOMBRE_SERVIDOR:  string  =  'http://localhost:8000';
-  authSubject  =  new  BehaviorSubject(false);
+  NOMBRE_SERVIDOR = 'http://localhost:8000';
+  authSubject = new  BehaviorSubject(false);
+  ubicaciones: any = [];
 
+  obtenerUbicaciones() {
+    return this.authService.token.pipe(
+      switchMap(token => {
+        if (token) {
+          console.log('el token :v');
+        } else {
+          throw new Error('No user id found!');
+        }
 
-  
-  ubicaciones : any = [];
-
-  
-
-  // PENDIENTE coger desde api
-  obtenerUbicaciones1(){
-
-    
-    return this.almacenamiento.get("ACCESS_TOKEN")
-    .then(val => {
-      return val.access_token;
-    })
-    .then(token => {
-      const headers = new HttpHeaders({
-        Authorization: "Bearer " + token,
-        Accept: "application/json"
-      });
-      return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
-    });
-
+        const headers = new HttpHeaders({
+          Authorization: 'Bearer ' + token,
+          Accept: 'application/json'
+        });
+        return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
+      }),
+      tap(token => {
+        console.warn(token);
+      })
+    );
   }
 
-  obtenerUbicaciones(): Observable<Institution[]> {
-    return this.clienteHttp.get<Institution[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`)
-      .pipe(
-        tap(_ => console.log('fetched books')),
-        // catchError(this.handleError('getBooks', []))
-      );
+  obtenerUbicaciones5() {
+    return from(Plugins.Storage.get({key: 'authData'})).pipe(
+      switchMap(storedData => {
+        if (!storedData || !storedData.value) {
+          return null;
+        }
+
+        const parsedData = JSON.parse(storedData.value) as {
+          token: string,
+          tokenExpirationDate: string,
+          userId: string
+        };
+
+        const headers = new HttpHeaders({
+          Authorization: 'Bearer ' + parsedData.token,
+          Accept: 'application/json'
+        });
+        return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
+      }),
+      tap(token => {
+        console.warn(token);
+      })
+    );
   }
 
-  sleep(miliseconds) {
-    var currentTime = new Date().getTime();
- 
-    while (currentTime + miliseconds >= new Date().getTime()) {
-    }
-  }
 }
