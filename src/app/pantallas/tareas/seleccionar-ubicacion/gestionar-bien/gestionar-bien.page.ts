@@ -30,19 +30,27 @@ export class GestionarBienPage implements OnInit {
     });
   }
 
-  bienes: any[];
+  bienes: any = [];
 
   // cuando se genere la pagina
   ngOnInit() {
-    this.obtenerFechaActual();
-
-    // y guardarle en una variable ubicaciones
-    this.bienes = this.servicioBienes.traerBienes(); 
-    console.log(this.bienes);
-    
+    this.obtenerFechaActual();    
+    this.obtenerBienes()
   }
 
-  obtenerFechaActual(){
+  obtenerBienes() {
+    this.servicioBienes.traerBienesDeUbicacion(this.ubicacion.id)
+      .subscribe(bienes => {
+        console.log(bienes);
+        this.bienes = bienes;
+      });
+  }
+
+  obtenerFechaActual() {
     this.fecha = new Date();
+  }
+
+  irACreacionDeBienes() {
+    
   }
 }
