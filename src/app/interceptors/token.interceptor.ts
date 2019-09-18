@@ -34,7 +34,7 @@ export class TokenInterceptor implements HttpInterceptor {
             }
           });
         }
-        console.warn(token);
+        // console.warn(token);
         if (!request.headers.has('Content-Type')) {
           request = request.clone({
             setHeaders: {
