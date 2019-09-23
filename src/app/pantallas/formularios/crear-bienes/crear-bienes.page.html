@@ -11,7 +11,16 @@
     <ion-content padding class="form-content">
         <form [formGroup]="validations_form"  (ngSubmit)="onSubmit(validations_form.value)">
       
-           <!--nombre-->
+             <!--ingresara los datos en un combo box-->
+
+             <ion-item>
+              <ion-label position="floating" color="primary">Tipo de bien</ion-label>
+              <ion-select formControlName="gender" cancelText="Cancel" okText="OK">
+                <ion-select-option *ngFor="let gender of genders" [value]="gender">{{gender}}</ion-select-option>
+              </ion-select>
+          </ion-item>
+          
+          <!--nombre-->
            <ion-item>
               <ion-label position="floating" color="primary">Nombre de bien</ion-label>
               <ion-input type="text" formControlName="nombre"></ion-input>
@@ -29,20 +38,61 @@
             </div>
          
 
-          <!--ingresara los datos en un combo box-->
-
+       
+    
+          <!--Codigo Administrativo-->
           <ion-item>
-              <ion-label position="floating" color="primary">Tipo de bien</ion-label>
-              <ion-select formControlName="gender" cancelText="Cancel" okText="OK">
-                <ion-select-option *ngFor="let gender of genders" [value]="gender">{{gender}}</ion-select-option>
+            <ion-label position="floating" color="primary">Codigo Administrativo</ion-label>
+            <ion-input type="text" formControlName="codigo"></ion-input>
+          </ion-item>
+
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.name">
+              <div 
+                class="error-message" 
+                *ngIf="validations_form.get('codigo').hasError(validation.type) && (validations_form.get('codigo').dirty || validations_form.get('codigo').touched)"
+                >
+                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+
+          <!--ingresara los datos  del estado en un combo box-->
+
+             <ion-item>
+                <ion-label position="floating" color="primary">Estado de Bien</ion-label>
+              <ion-select formControlName="estado" cancelText="Cancel" okText="OK">
+                <ion-select-option *ngFor="let estados of estado" [value]="estados">{{estados}}</ion-select-option>
               </ion-select>
           </ion-item>
-    
-        
+
+          <!--Precio Unitario-->
+          <ion-item>
+            <ion-label position="floating" color="primary">Precio Unitario</ion-label>
+            <ion-input type="text" formControlName="precio"></ion-input>
+          </ion-item>
+
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.name">
+              <div 
+                class="error-message" 
+                *ngIf="validations_form.get('precio').hasError(validation.type) && (validations_form.get('precio').dirty || validations_form.get('precio').touched)"
+                >
+                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+      
+          <!-- Observaciones -->
+          <ion-item>
+            <ion-label position="floating">Observaciones</ion-label>
+            <ion-textarea></ion-textarea>
+          </ion-item>
+
           <!-- These validations are for the form group -->
 
           <ion-item>
-            <ion-label color="primary">I accept terms and conditions</ion-label>
+            <ion-label color="primary">Yo acepto los cambios realizados</ion-label>
             <ion-checkbox color="primary" formControlName="terms"></ion-checkbox>
           </ion-item>
           <div class="validation-errors">
@@ -53,7 +103,7 @@
             </ng-container>
           </div>
       
-          <ion-button color="primary" class="submit-btn" expand="full" type="submit" [disabled]="!validations_form.valid">Submit data</ion-button>
+          <ion-button color="primary" class="submit-btn" expand="full" type="submit" [disabled]="!validations_form.valid">Ingresar Datos</ion-button>
         </form>
       </ion-content>
 

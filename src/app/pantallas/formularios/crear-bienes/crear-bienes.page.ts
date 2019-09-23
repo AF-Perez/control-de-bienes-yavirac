@@ -13,6 +13,7 @@ export class CrearBienesPage implements OnInit {
   validations_form: FormGroup;
  
   genders: Array<string>;
+  estado: Array<string>;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -27,6 +28,12 @@ export class CrearBienesPage implements OnInit {
       "libros",
     ];
 
+    this.estado = [
+      "Optimas Condiciones",
+      "Tienes fallas Externas",
+      "Sistema Operativo con fallas",
+    ];
+
     this.validations_form = this.formBuilder.group({
       username: new FormControl('', Validators.compose([
         UsernameValidator.validUsername,
@@ -36,7 +43,10 @@ export class CrearBienesPage implements OnInit {
         Validators.required
       ])),
       nombre: new FormControl('', Validators.required),
+      codigo: new FormControl('', Validators.required),
       gender: new FormControl('', Validators.required),
+      estado: new FormControl('', Validators.required),
+      precio: new FormControl('', Validators.required),
       terms: new FormControl(true, Validators.pattern('true'))
     });
   }
@@ -52,28 +62,15 @@ export class CrearBienesPage implements OnInit {
     'name': [
       { type: 'required', message: 'Name is required.' }
     ],
-    'lastname': [
-      { type: 'required', message: 'Last name is required.' }
+
+    'precio': [
+      { type: 'required', message: 'Name is required.' }
     ],
-    'email': [
-      { type: 'required', message: 'Email is required.' },
-      { type: 'pattern', message: 'Please wnter a valid email.' }
+
+    'codigo': [
+      { type: 'required', message: 'Name is required.' }
     ],
-    'phone': [
-      { type: 'required', message: 'Phone is required.' },
-      { type: 'validCountryPhone', message: 'The phone is incorrect for the selected country.' }
-    ],
-    'password': [
-      { type: 'required', message: 'Password is required.' },
-      { type: 'minlength', message: 'Password must be at least 5 characters long.' },
-      { type: 'pattern', message: 'Your password must contain at least one uppercase, one lowercase, and one number.' }
-    ],
-    'confirm_password': [
-      { type: 'required', message: 'Confirm password is required.' }
-    ],
-    'matching_passwords': [
-      { type: 'areEqual', message: 'Password mismatch.' }
-    ],
+
     'terms': [
       { type: 'pattern', message: 'You must accept terms and conditions.' }
     ],
