@@ -25,7 +25,6 @@ export class GestionarBienPage implements OnInit {
       if (this.router.getCurrentNavigation().extras.state) {
         // llenar la variable
         this.ubicacion = this.router.getCurrentNavigation().extras.state.ubicacion;
-        console.log(this.ubicacion);
       }
     });
   }

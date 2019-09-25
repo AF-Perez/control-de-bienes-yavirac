@@ -28,7 +28,6 @@ export class SeleccionarUbicacionPage implements OnInit {
   }
 
   irAGestionarBienes(ubicacion){
-    console.log("holadsadsa")
     let navigationExtras: NavigationExtras = {
       state: {
         // aqui todo lo que se va a pasar a las sig pantalla
