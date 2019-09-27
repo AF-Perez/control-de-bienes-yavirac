@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class BienesService {
 
   NOMBRE_SERVIDOR = 'http://localhost:8000';
-  authSubject = new  BehaviorSubject(false);
+  authSubject = new BehaviorSubject(false);
   bienes: any = [];
   idUbicacion = null;
 
@@ -23,8 +23,7 @@ export class BienesService {
     private activatedRoute: ActivatedRoute, 
     private router: Router,
    
-  ) {
-   }
+  ) { }
 
 
   traerBienesDeUbicacion(idUbicacion) {

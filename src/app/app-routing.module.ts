@@ -9,6 +9,8 @@ const routes: Routes = [
   { path: 'seleccionar-ubicacion', loadChildren: './pantallas/tareas/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
   { path: 'gestionar-bien', loadChildren: './pantallas/tareas/seleccionar-ubicacion/gestionar-bien/gestionar-bien.module#GestionarBienPageModule' },
   { path: 'crear-bienes/:idUbicacion', loadChildren: './pantallas/formularios/crear-bienes/crear-bienes.module#CrearBienesPageModule' },
+  { path: 'contar-bienes', loadChildren: './pantallas/tareas/conteo/seleccionar-ubicacion/contar-bienes/contar-bienes.module#ContarBienesPageModule' },
+  { path: 'conteo/seleccionar-ubicacion', loadChildren: './pantallas/tareas/conteo/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
 
 ];
 
