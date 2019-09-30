@@ -10,10 +10,11 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let ubicacion of ubicaciones" (click)="irAGestionarBienes(ubicacion)">
- 
-      {{ubicacion.nombre}}
 
+    <ion-item *ngFor="let ubicacion of ubicaciones" (click)="irAConteoDeBienes(ubicacion)"  detail >
+      <ion-label>
+        {{ubicacion.nombre}}
+      </ion-label>
     </ion-item>
     
   </ion-list>

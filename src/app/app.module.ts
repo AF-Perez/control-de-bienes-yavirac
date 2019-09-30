@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor'
+import { IonicSelectableModule } from 'ionic-selectable';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +30,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor'
     AuthModule,
     FormsModule,
     CommonModule,
+    IonicSelectableModule,
   ],
   providers: [
     UsuariosService,

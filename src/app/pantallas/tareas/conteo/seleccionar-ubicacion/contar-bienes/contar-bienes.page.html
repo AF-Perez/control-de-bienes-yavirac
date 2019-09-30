@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="conteo/seleccionar-ubicacion"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ubicacion.nombre}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+  
+
+<ion-content>
+
+  {{fecha.toTimeString()}}
+  
+    <ion-item >
+      <ion-label position="floating">Seleccione un bien</ion-label>
+      <ionic-selectable
+        [(ngModel)]="bien"
+        [items]="bienes"
+        itemValueField="id"
+        itemTextField="nombre"
+        [canSearch]="true"
+        (onChange)="bienChange($event)"
+        (onSelect)="onSelectBien($event)"
+        closeButtonText="Cerrar"
+        searchPlaceholder="Buscar..."
+      >
+        <ng-template ionicSelectableCloseButtonTemplate>
+            <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+        </ng-template>
+      </ionic-selectable>
+    </ion-item>
+
+  <ion-row justify-content-center>
+    <ion-col text-center>
+      <ion-button shape="round" size="small" (click)="agregarItem()">
+          <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+        </ion-button>
+    </ion-col>
+  </ion-row>
+
+  
+  <ion-list>
+    <ion-item *ngFor="let conteo of conteos">
+      <ion-label>{{ conteo.nombre }}</ion-label>
+      <ion-label>{{ conteo.numero }}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  </ion-content>

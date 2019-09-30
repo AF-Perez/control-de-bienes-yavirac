@@ -31,6 +31,9 @@
     "@ionic/storage": "^2.2.0",
     "cordova-plugin-nativestorage": "2.3.2",
     "core-js": "^2.5.4",
+    "ionic-angular": "^3.9.8",
+    "ionic-selectable": "^4.4.0",
+    "phonegap-plugin-barcodescanner": "8.1.0",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.29"
@@ -78,7 +81,8 @@
         "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
       },
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-nativestorage": {}
+      "cordova-plugin-nativestorage": {},
+      "phonegap-plugin-barcodescanner": {}
     },
     "platforms": []
   }

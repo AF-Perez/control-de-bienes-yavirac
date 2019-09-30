@@ -11,16 +11,27 @@
 <ion-content>
   {{fecha.toTimeString()}}
 
-  <ion-list>
-      <ion-list-header>
-        <ion-label>BIENES ACTUALES</ion-label>
-      </ion-list-header>
-      <ion-item *ngFor="let bien of bienes">
- 
-        {{bien.nombre}}
+   <!-- fab placed to the (vertical) center and end -->
+   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button [routerLink]="['/crear-bienes', ubicacion.id ]">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
 
-      </ion-item>
-    </ion-list>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>BIENES ACTUALES</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let bien of bienes">
+
+      {{bien.nombre}}
+
+    </ion-item> 
+  </ion-list>
+
+   
+
+
   
 
 </ion-content>
