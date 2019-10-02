@@ -5,16 +5,12 @@ import { Observable, BehaviorSubject, from } from 'rxjs';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GlobalsService } from '../services/globals.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BienesService {
-
-  NOMBRE_SERVIDOR = 'http://localhost:8000';
-  authSubject = new BehaviorSubject(false);
-  bienes: any = [];
-  idUbicacion = null;
 
   constructor(
 
@@ -22,8 +18,13 @@ export class BienesService {
     private clienteHttp: HttpClient,
     private activatedRoute: ActivatedRoute, 
     private router: Router,
-   
+    private variablesGlobales: GlobalsService,
   ) { }
+
+  NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
+  authSubject = new BehaviorSubject(false);
+  bienes: any = [];
+  idUbicacion = null;
 
 
   traerBienesDeUbicacion(idUbicacion) {

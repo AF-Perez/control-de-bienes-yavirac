@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from "@angular/router";
-import { UsuariosService } from '../../servicios/usuarios.service';
 
 
 @Component({
@@ -16,10 +15,35 @@ export class CaratulaPage implements OnInit {
     private menu: MenuController,
     private  authService: AuthService,
     private  router: Router,
-    public servicioUsuario: UsuariosService,
     ) { }
 
-    usuarios: any[] = [];
+  pages = [
+    {
+      title: 'Inicio',
+      url: 'caratula',
+      icon: 'home',
+    },
+    {
+      title: 'Tareas',
+      children: [
+        {
+          title: 'Registro de Bienes',
+          url: '/menu/main',
+          icon: 'home',
+        },
+        {
+          title: 'Conteo',
+          url: '/menu/main',
+          icon: 'logo-ionic',
+        },
+        {
+          title: 'Dar de baja',
+          url: '/menu/main',
+          icon: 'logo-google',
+        },
+      ],
+    },
+  ];
 
   ngOnInit() {
    

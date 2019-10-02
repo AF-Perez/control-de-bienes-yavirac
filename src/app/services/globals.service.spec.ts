@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UsuariosService } from './usuarios.service';
+import { GlobalsService } from './globals.service';
 
-describe('UsuariosService', () => {
+describe('GlobalsService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: UsuariosService = TestBed.get(UsuariosService);
+    const service: GlobalsService = TestBed.get(GlobalsService);
     expect(service).toBeTruthy();
   });
 });

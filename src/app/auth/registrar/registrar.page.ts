@@ -75,7 +75,7 @@ export class RegistrarPage implements OnInit {
     ],
 
     'matching_passwords': [
-      { type: 'areEqual', message: 'Contraseñas no coincide' }
+      { type: 'areEqual', message: 'Contraseñas no coincide.' }
     ],
   };
   

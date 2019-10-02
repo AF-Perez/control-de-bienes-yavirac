@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { AuthService } from '../auth/auth.service';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { Plugins } from '@capacitor/core';
+import { GlobalsService } from '../services/globals.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,12 @@ export class UbicacionesService {
     private  clienteHttp: HttpClient,
     private almacenamiento: NativeStorage,
     private authService: AuthService,
+    private variablesGlobales: GlobalsService,
   ) { }
 
   token: any;
 
-  NOMBRE_SERVIDOR = 'http://localhost:8000';
+  NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
   authSubject = new  BehaviorSubject(false);
   ubicaciones: any = [];
 

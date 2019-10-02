@@ -10,6 +10,7 @@ import { RespuestaLogin } from './respuesta-login';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { User } from '../models/user.model';
 import { Plugins } from '@capacitor/core';
+import { GlobalsService } from '../services/globals.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +20,11 @@ export class AuthService {
   constructor(
     private  clienteHttp: HttpClient,
     private almacenamiento: NativeStorage,
+    private variablesGlobales: GlobalsService,
   ) { }
 
   private _user = new BehaviorSubject<User>(null);
-  NOMBRE_SERVIDOR = 'http://localhost:8000';
+  NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
   authSubject  =  new  BehaviorSubject(false);
   isLoggedIn = false;
   _token = null;
@@ -79,6 +81,8 @@ export class AuthService {
       email,
       password,
     };
+
+    console.log(this.NOMBRE_SERVIDOR);
 
     return this.clienteHttp.post<RespuestaLogin>(`${this.NOMBRE_SERVIDOR}/api/login`, datos)
       .pipe(

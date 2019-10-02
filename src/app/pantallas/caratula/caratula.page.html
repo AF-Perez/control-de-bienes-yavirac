@@ -1,25 +1,48 @@
 <ion-menu side="start" menuId="first">
+
     <ion-header>
       <ion-toolbar color="primary">
         <ion-title>Inventario</ion-title>
       </ion-toolbar>
     </ion-header>
+
     <ion-content>
-      <ion-list>
-        <ion-item>Menu Item</ion-item>
-        <ion-item>Menu Item</ion-item>
-        <ion-item>Menu Item</ion-item>
-        <ion-item>Menu Item</ion-item>
-        <ion-item>
-          <ion-button (click)="salir()">
-            <ion-icon slot="end" name="exit"></ion-icon>
-            Salir
-          </ion-button>
+      <div *ngFor="let page of pages" >
+        <ion-menu-toggle *ngIf="page.url" >
+          <ion-item [routerLink]="page.url" routerDirection="root" routerLinkActive="active">
+            <ion-icon [name]="page.icon" slot="start"></ion-icon>
+            <ion-label>
+              {{ page.title }}
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        
+        <ion-item 
+          button 
+          *ngIf="page.children?.length > 0" 
+          (click)="page.open = !page.open"
+          [class.active-parent]="page.open"
+          details="false"
+          >
+          <ion-icon slot="start" name="arrow-forward" *ngIf="!page.open" ></ion-icon>
+          <ion-icon slot="start" name="arrow-down" *ngIf="page.open" ></ion-icon>
+          <ion-label>{{ page.title }}</ion-label>
         </ion-item>
-        
-        
-      </ion-list>
+
+        <ion-list *ngIf="page.open">
+          <ion-menu-toggle>
+              <ion-item *ngFor="let sub of page.children" [routerLink]="sub.url" routerDirection="root" routerLinkActive="active">
+                <ion-icon [name]="sub.icon" slot="start"></ion-icon>
+                <ion-label>
+                  {{ sub.title }}
+                </ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+        </ion-list>
+
+      </div>
     </ion-content>
+
   </ion-menu>
   
   
@@ -41,10 +64,10 @@
 
           <ion-row align-items-center>
             <ion-col>
-                <ion-button [routerLink]="['/seleccionar-ubicacion']">
-                    <ion-icon slot="start" name="star"></ion-icon>
-                    REGISTRO
-                  </ion-button>
+              <ion-button [routerLink]="['/seleccionar-ubicacion']">
+                  <ion-icon slot="start" name="star"></ion-icon>
+                  REGISTRO
+              </ion-button>
 
 
             </ion-col>
@@ -52,10 +75,10 @@
 
           <ion-row>
             <ion-col>
-                <ion-button [routerLink]="['/conteo/seleccionar-ubicacion']">
-                  <ion-icon slot="start" name="star"></ion-icon>
-                    CONTEO
-                  </ion-button>
+              <ion-button [routerLink]="['/conteo/seleccionar-ubicacion']">
+                <ion-icon slot="start" name="star"></ion-icon>
+                  CONTEO
+                </ion-button>
             </ion-col>
           </ion-row>
 
@@ -63,16 +86,11 @@
             <ion-col>
               <ion-button>
                 <ion-icon slot="start" name="star"></ion-icon>
-                MODIFICAR
+                  DAR DE BAJA
               </ion-button>
             </ion-col>
           </ion-row>
 
         </ion-grid>
-
-
-       
-      
-
    
       </ion-content>

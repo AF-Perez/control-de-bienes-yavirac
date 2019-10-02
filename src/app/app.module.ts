@@ -8,7 +8,6 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { UsuariosService } from './servicios/usuarios.service';
 import { IonicStorageModule } from '@ionic/storage';
 import { AuthModule } from  './auth/auth.module';
 import { FormsModule } from '@angular/forms';
@@ -33,7 +32,6 @@ import { IonicSelectableModule } from 'ionic-selectable';
     IonicSelectableModule,
   ],
   providers: [
-    UsuariosService,
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
