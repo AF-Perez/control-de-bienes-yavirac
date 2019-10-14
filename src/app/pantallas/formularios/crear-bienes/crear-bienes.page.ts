@@ -4,12 +4,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { UsernameValidator } from 'src/app/validadores/usuario.validador';
 import { BienesService } from '../../../servicios/bienes.service';
 
+import {BarcodeScannerOptions,BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
+
 
 @Component({
   selector: 'app-crear-bienes',
   templateUrl: './crear-bienes.page.html',
   styleUrls: ['./crear-bienes.page.scss'],
 })
+
+
 export class CrearBienesPage implements OnInit {
 
   validations_form: FormGroup;
@@ -18,14 +22,19 @@ export class CrearBienesPage implements OnInit {
   estados: Array<string>;
   ubicaciones: Array<string>;
   idUbicacion = null;
+  encodeData: any;
+  scannedData: {};
+  barcodeScannerOptions: BarcodeScannerOptions;
 
   constructor(
     public formBuilder: FormBuilder,
     private router: Router,
     private servicioBienes: BienesService,
-    private activatedRoute: ActivatedRoute, 
+    private activatedRoute: ActivatedRoute,
+    private barcodeScanner: BarcodeScanner 
 
   ) { }
+
 
   ngOnInit() {
 
@@ -87,6 +96,34 @@ export class CrearBienesPage implements OnInit {
     e.value = r;
   }
   
+  scanCode() {
+    this.barcodeScanner
+      .scan()
+      .then(barcodeData => {
+        alert("Barcode data " + JSON.stringify(barcodeData));
+        this.scannedData = barcodeData;
+      })
+      .catch(err => {
+        console.log("Error", err);
+      });
+  }
+  encodedText() {
+    this.barcodeScanner
+      .encode(this.barcodeScanner.Encode.TEXT_TYPE, this.encodeData)
+      .then(
+        encodedData => {
+          console.log(encodedData);
+          this.encodeData = encodedData;
+        },
+        err => {
+          console.log("Error occured : " + err);
+        }
+      );
+  }
+
+
+
+
   validation_messages = {
     'username': [
       { type: 'required', message: 'Username is required.' },

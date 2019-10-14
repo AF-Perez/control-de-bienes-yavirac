@@ -7,6 +7,11 @@ import { IonicModule } from '@ionic/angular';
 
 import { CrearBienesPage } from './crear-bienes.page';
 
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { RouteReuseStrategy } from '@angular/router';
+import { IonicRouteStrategy } from '@ionic/angular';
+ 
+
 const routes: Routes = [
   {
     path: '',
@@ -20,8 +25,16 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     ReactiveFormsModule,
+    FormsModule,
     RouterModule.forChild(routes)
   ],
+
+  providers: [
+    
+        BarcodeScanner,
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+  ],
+
   declarations: [CrearBienesPage]
 })
 export class CrearBienesPageModule {}

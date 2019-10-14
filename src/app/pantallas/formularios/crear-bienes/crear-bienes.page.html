@@ -128,4 +128,28 @@
           <ion-button color="primary" class="submit-btn" expand="full" type="submit" [disabled]="!validations_form.valid">Ingresar Datos</ion-button>
 
         </form>
+
+        <ion-content ion-padding>
+          <h1>Click Button To Scan</h1>
+         
+          <ion-button (click)="scanCode()">
+            Scan Code
+          </ion-button>
+         
+          <div *ngIf="scannedData">
+            <p>
+              Scanned Code Text : <b>{{ scannedData["text"] }}</b>
+            </p>
+            <p>
+              Scanned Code Format : <b>{{ scannedData["format"] }}</b>
+            </p>
+          </div>
+         
+          <h1>Enter Value to Create QR code</h1>
+          <ion-input type="text" [(ngModel)]="encodedData"></ion-input>
+         
+          <ion-button (click)="encodedText()">
+            Create QR
+          </ion-button>
+        </ion-content>
       </ion-content>
