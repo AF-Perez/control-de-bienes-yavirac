@@ -46,7 +46,7 @@ export class BienesService {
         return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
       }),
       tap(token => {
-        console.warn(token);
+        // console.warn(token);
       })
     );
   }
@@ -54,7 +54,6 @@ export class BienesService {
   // guardar un bien en el servidor
 
   guardarBien(datosBien) {
-    console.log(datosBien)
     return from(Plugins.Storage.get({key: 'authData'})).pipe(
       switchMap(storedData => {
         if (!storedData || !storedData.value) {
@@ -71,7 +70,6 @@ export class BienesService {
           Authorization: 'Bearer ' + parsedData.token,
           Accept: 'application/json'
         });
-        console.log(this.idUbicacion)
         let postDataBien = {
           'nombre': datosBien.nombre,
           'clase': "CONTROL ADMINISTRATIVO",

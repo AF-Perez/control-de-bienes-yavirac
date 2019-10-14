@@ -3,33 +3,41 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="conteo/seleccionar-ubicacion"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ubicacion.nombre}}</ion-title>
+    <ion-title>{{ ubicacion.nombre}}</ion-title>
   </ion-toolbar>
 </ion-header>
   
 
 <ion-content>
 
-  {{fecha.toTimeString()}}
+  {{ fecha.toTimeString()}}
   
-    <ion-item >
-      <ion-label position="floating">Seleccione un bien</ion-label>
-      <ionic-selectable
-        [(ngModel)]="bien"
-        [items]="bienes"
-        itemValueField="id"
-        itemTextField="nombre"
-        [canSearch]="true"
-        (onChange)="bienChange($event)"
-        (onSelect)="onSelectBien($event)"
-        closeButtonText="Cerrar"
-        searchPlaceholder="Buscar..."
-      >
-        <ng-template ionicSelectableCloseButtonTemplate>
-            <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
-        </ng-template>
-      </ionic-selectable>
-    </ion-item>
+  <ion-row>
+    <ion-col size="10">
+      <ion-item >
+        <ionic-selectable
+          #bienSelector
+          [(ngModel)]="bien"
+          [items]="bienes"
+          itemValueField="id"
+          itemTextField="nombre"
+          [canSearch]="true"
+          (onChange)="bienChange($event)"
+          (onClose)="onCloseSelect($event)"
+          closeButtonText="Cerrar"
+          searchPlaceholder="Buscar..."
+          placeholder="Seleccione un bien"
+        >
+          <ng-template ionicSelectableCloseButtonTemplate>
+              <ion-icon name="close-circle" style="font-size: 24px;"></ion-icon>
+          </ng-template>
+        </ionic-selectable>
+      </ion-item>
+    </ion-col>
+    <ion-col size="2">
+      <ion-input [(ngModel)]="contadorBien" type="number" placeholder="No."></ion-input>
+    </ion-col>
+  </ion-row>
 
   <ion-row justify-content-center>
     <ion-col text-center>
@@ -42,9 +50,25 @@
   
   <ion-list>
     <ion-item *ngFor="let conteo of conteos">
-      <ion-label>{{ conteo.nombre }}</ion-label>
-      <ion-label>{{ conteo.numero }}</ion-label>
+      <ion-label class="ion-text-wrap">
+        <b>{{ conteo.cantidad }}</b> {{ conteo.bien.nombre }}
+      </ion-label>
     </ion-item>
   </ion-list>
+  
+  <ion-row justify-content-center>
+    <ion-col size="6" text-center>
+      <ion-button color="danger" (click)="cancelarConteo()">
+        Cancelar
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="6" text-center>
+      <ion-button color="success" (click)="ingresarConteo()">
+        Aceptar
+        <ion-icon slot="start" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
 
-  </ion-content>
+</ion-content>

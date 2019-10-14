@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { BienesService } from '../../../../../servicios/bienes.service';
 import { AlertController } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-contar-bien',
@@ -18,12 +19,15 @@ export class ContarBienesPage implements OnInit {
   conteos: any = [];
   bien: any;
   contadorBien: number;
+    
+  @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
     private servicioBienes: BienesService,
     public alertController: AlertController,
+    private location: Location,
 
   ) { 
     this.route.queryParams.subscribe(params => {
@@ -38,7 +42,8 @@ export class ContarBienesPage implements OnInit {
   // cuando se genere la pagina
   ngOnInit() {
     this.obtenerFechaActual();    
-    this.obtenerBienes()
+    this.obtenerBienes();
+    this.contadorBien = 0;
   }
 
   obtenerBienes() {
@@ -57,49 +62,43 @@ export class ContarBienesPage implements OnInit {
     value: any,
   }) {
     // console.log('bien:', event.value);
-    event.value = {...event.value, numero: 3};
-    this.conteos = [...this.conteos, event.value];
+    // event.value = {...event.value, numero: 3};
+    // this.conteos = [...this.conteos, event.value];
     
   }
 
-  onSelectBien(event: {
-    component: IonicSelectableComponent,
-    item: any,
-    isSelected: boolean
-  }) {
-    this.presentAlertPrompt();
+  onCloseSelect(event: {component: IonicSelectableComponent}) {
+    // event.component.clear();
   }
 
-  async presentAlertPrompt() {
-    const alert = await this.alertController.create({
-      header: 'Prompt!',
-      inputs: [
-        {
-          name: 'contadorBien',
-          type: 'number',
-          min: -5,
-          max: 10
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: () => {
-            console.log('Confirm Cancel');
-          }
-        }, {
-          text: 'Ok',
-          handler: (values) => {
-            console.log('Confirm Ok');
-            console.log(values.contadorBien);
-            this.conteos = values.contadorBien;
-          }
-        }
-      ]
+  agregarItem() {
+
+    if (this.bien == null || this.contadorBien <= 0) return;
+
+    let nuevoItem = {bien: this.bien, cantidad: this.contadorBien}
+    
+    this.conteos = [...this.conteos, nuevoItem];
+    
+    // eliminar bien ya seleccionado
+    let idBien = this.bien.id;
+    this.bienes = this.bienes.filter(function(bien) {
+      return bien.id != idBien;
     });
 
-    await alert.present();
+    console.log(this.bienes);
+
+    // limpiar campos
+    this.bienSelector.clear();
+    this.contadorBien = 0;
   }
+
+  ingresarConteo() {
+    alert('Conteo ingresado');
+    this.location.back();
+  }
+
+  cancelarConteo() {
+     this.location.back();
+  }
+
 }
