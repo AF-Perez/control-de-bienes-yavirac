@@ -42,7 +42,7 @@ export class SeleccionarUbicacionPage implements OnInit {
   obtenerUbicaciones() {
     this.servicioUbicaciones.obtenerUbicaciones5()
       .subscribe(ubicaciones => {
-        console.log(ubicaciones);
+        // console.log(ubicaciones);
         this.ubicaciones = ubicaciones;
       });
   }

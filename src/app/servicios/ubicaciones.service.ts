@@ -68,7 +68,7 @@ export class UbicacionesService {
         return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
       }),
       tap(token => {
-        console.warn(token);
+        // console.warn(token);
       })
     );
   }
