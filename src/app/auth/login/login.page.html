@@ -1,17 +1,31 @@
-<ion-header>
-    <ion-toolbar>
-      <ion-title>
-        Login
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
 
+
+
+  
   <ion-content padding class="form-content">
+    
       <form  [formGroup]="validationsForm" (ngSubmit)="onLogin(validationsForm.value)" >
-            
+           
+          <ion-header>
+              <ion-toolbar>
+                <ion-title text-center>
+                  Login
+                </ion-title>
+              </ion-toolbar>
+            </ion-header>
+        
+          <img src="assets/icon/YAVIRAC.jpg"> 
+           <ion-grid >
+              <ion-row row-4>
+                  <ion-col col-6 text-center padding>         
             <!--cuadro de texto email-->
           <ion-item>
-            <ion-label position="floating" color="primary">Correo Electronico</ion-label>
+            
+            <ion-label position="floating" color="primary">
+                <ion-icon name="person"></ion-icon>
+                  Correo Electronico
+            </ion-label>
+            
             <ion-input type="email" formControlName="email"></ion-input>
           </ion-item>
 
@@ -26,7 +40,9 @@
 
             <!--cuadro de texto password-->
           <ion-item>
-            <ion-label position="floating" color="primary">Password</ion-label>
+            <ion-label position="floating" color="primary">
+                <ion-icon name="key"></ion-icon>
+              Contraseña</ion-label>
             <ion-input type="password" formControlName="password"></ion-input>
           </ion-item>
 
@@ -38,6 +54,9 @@
               </div>
             </ng-container>
           </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
           
           <!-- spinner -->
           <!-- <div text-center>
@@ -45,8 +64,9 @@
           </div> -->
 
           <!-- boton -->
+       
           <ion-button 
-            color="primary" 
+            color="medium" 
             class="submit-btn" 
             expand="full" 
             type="submit" 
@@ -54,7 +74,8 @@
           >
             Login
           </ion-button>
-
+        
+       
   </form>
 </ion-content>
 
