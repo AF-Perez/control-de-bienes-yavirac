@@ -1,21 +1,14 @@
 <ion-menu side="start" menuId="first">
 
     <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>Inventario</ion-title>
+      <ion-toolbar >
+        <ion-title>Extras</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content>
       <div *ngFor="let page of pages" >
-        <ion-menu-toggle *ngIf="page.url" >
-          <ion-item [routerLink]="page.url" routerDirection="root" routerLinkActive="active">
-            <ion-icon [name]="page.icon" slot="start"></ion-icon>
-            <ion-label>
-              {{ page.title }}
-            </ion-label>
-          </ion-item>
-        </ion-menu-toggle>
+       
         
         <ion-item 
           button 
@@ -40,57 +33,81 @@
             </ion-menu-toggle>
         </ion-list>
 
-      </div>
-    </ion-content>
+       
 
+        
+      </div>
+     
+     
+    </ion-content>
+    <ion-button style="font-size:1.0em" [routerLink]="['/login']" color="danger">      
+      <ion-icon name="exit"></ion-icon>
+        Salir
+      </ion-button>
   </ion-menu>
   
+ 
   
 
   <ion-router-outlet main></ion-router-outlet>
   <ion-header>
-      <ion-toolbar color="primary">
+      <ion-toolbar >
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Tareas</ion-title>
+        
       </ion-toolbar>
     </ion-header>
     
+   
+    
     <!-- cuerpo de la pantalla -->
-    <ion-content padding>
-        
-        <ion-grid>
 
-          <ion-row align-items-center>
-            <ion-col>
-              <ion-button [routerLink]="['/seleccionar-ubicacion']">
-                  <ion-icon slot="start" name="star"></ion-icon>
+    <ion-content>
+
+    <section text-center>
+      
+      <h1 style="font-size:1.2em">Bienvenido,<br> Por favor, elija una tarea que desee realizar</h1>
+    </section>
+
+      <ion-grid>
+         
+        <ion-row align-items-center text-center padding>
+            <ion-col col-6>
+              
+              <ion-button style="font-size:1.3em" [routerLink]="['/seleccionar-ubicacion']" color="medium" >
+                  
+                  <ion-icon name="done-all"></ion-icon>
                   REGISTRO
               </ion-button>
-
-
+            
             </ion-col>
           </ion-row>
 
-          <ion-row>
-            <ion-col>
-              <ion-button [routerLink]="['/conteo/seleccionar-ubicacion']">
-                <ion-icon slot="start" name="star"></ion-icon>
+
+          <ion-row align-items-center text-center padding>
+            <ion-col col-6>
+                
+              <ion-button style="font-size:1.5em" [routerLink]="['/conteo/seleccionar-ubicacion']" color="medium">
+               
+                <ion-icon name="list-box"></ion-icon>
                   CONTEO
                 </ion-button>
+            
             </ion-col>
           </ion-row>
+  
 
-          <ion-row>
-            <ion-col>
-              <ion-button>
-                <ion-icon slot="start" name="star"></ion-icon>
-                  DAR DE BAJA
-              </ion-button>
-            </ion-col>
-          </ion-row>
-
-        </ion-grid>
-   
+          <ion-row align-items-center text-center padding>
+              <ion-col col-6>
+                
+                  <ion-button style="font-size:1.2em" color="medium">
+            
+                    <ion-icon name="trash"></ion-icon>
+                        DAR DE BAJA
+                  </ion-button>
+                
+              </ion-col>
+        </ion-row>
+      </ion-grid>
       </ion-content>
