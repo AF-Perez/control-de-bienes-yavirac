@@ -3,4 +3,11 @@ page-caratula{
   ion-icon{
     font-size:5cm;
   }
+  .page-background-image {
+    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../../../assets/icon/YAVIRAC.jpg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    height: 50vh;
+  }
 }
