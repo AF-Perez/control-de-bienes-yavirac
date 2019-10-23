@@ -74,6 +74,7 @@ export class CrearBienesPage implements OnInit {
   }
   
   onSubmit(valoresFormulario){
+    console.log(valoresFormulario);
     let datosBien = {...valoresFormulario, idUbicacion: this.idUbicacion}
     this.servicioBienes.guardarBien(datosBien)
     .subscribe(bien => {
