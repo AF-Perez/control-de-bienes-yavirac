@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 // imports agregados por mi
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { tap, map } from 'rxjs/operators';
 import { Observable, BehaviorSubject, from } from 'rxjs';
-import { Storage } from '@ionic/storage';
 import { Usuario } from './user';
 import { AuthRespuesta } from './auth-respuesta';
 import { RespuestaLogin } from './respuesta-login';
@@ -25,7 +24,7 @@ export class AuthService {
 
   private _user = new BehaviorSubject<User>(null);
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
-  authSubject  =  new  BehaviorSubject(false);
+  authSubject  =  new BehaviorSubject(false);
   isLoggedIn = false;
   _token = null;
 
@@ -137,6 +136,28 @@ export class AuthService {
     });
 
     Plugins.Storage.set({ key: 'authData', value: data });
+  }
+
+  getHeaders() {
+    return from(Plugins.Storage.get({key: 'authData'})).pipe(
+      map(authData => {
+        if (!authData || !authData.value) {
+          return null;
+        }
+
+        const parsedData = JSON.parse(authData.value) as {
+          token: string,
+          tokenExpirationDate: string,
+          userId: string
+        };
+
+        return new HttpHeaders({
+          Authorization: 'Bearer ' + parsedData.token,
+          Accept: 'application/json'
+        });
+
+      }),
+    );
   }
 
   autologin() {
