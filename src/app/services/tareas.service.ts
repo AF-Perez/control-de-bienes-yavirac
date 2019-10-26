@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, from } from 'rxjs';
-import { tap, catchError, take, switchMap } from 'rxjs/operators';
-import { Plugins } from '@capacitor/core';
+import { tap, catchError, take, switchMap, flatMap, map } from 'rxjs/operators';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { AuthService } from '../auth/auth.service';
+import { UbicacionesService } from '../servicios/ubicaciones.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -14,34 +13,51 @@ export class TareasService {
 
   constructor(
     private  clienteHttp: HttpClient,
-    private almacenamiento: NativeStorage,
-    private authService: AuthService,
     private variablesGlobales: GlobalsService,
+    private authService: AuthService,
+    private servicioUbicaciones: UbicacionesService,
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
 
-  getTareas() {
-    return from(Plugins.Storage.get({key: 'authData'})).pipe(
-      switchMap(storedData => {
-        if (!storedData || !storedData.value) {
-          return null;
-        }
-
-        const parsedData = JSON.parse(storedData.value) as {
-          token: string,
-          tokenExpirationDate: string,
-          userId: string
-        };
-
-        const headers = new HttpHeaders({
-          Authorization: 'Bearer ' + parsedData.token,
-          Accept: 'application/json'
-        });
+  obtenerTareas() {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
         return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
+      })
+    );
+  }
+
+  obtenerUbicacionesPorTarea(tipoTarea) {
+    return this.obtenerTareas().pipe(
+      map(tareas => {
+        const tareasArr = [];
+        for (const key in tareas) {
+          tareasArr.push(tareas[key]);
+        }
+        return tareasArr;
       }),
-      tap(token => {
-        // console.warn(token);
+      flatMap(tareasArr => {
+        return this.servicioUbicaciones.obtenerUbicaciones5().pipe(
+          map(ubicaciones => {
+            const ubicacionesArr = [];
+            for (const key in ubicaciones) {
+              ubicacionesArr.push(ubicaciones[key]);
+            }
+            return {tareasArr, ubicacionesArr};
+          })
+        );
+      }),
+      map(({tareasArr, ubicacionesArr}) => {
+        let ubicacionesValidas = [];
+        tareasArr.forEach(tarea => {
+          ubicacionesArr.forEach(ubicacion => {
+            if (ubicacion.id === tarea.id_ubicacion && tarea.tipo === tipoTarea) {
+              ubicacionesValidas.push(ubicacion);
+            }
+          })
+        });
+        return ubicacionesValidas;
       })
     );
   }
