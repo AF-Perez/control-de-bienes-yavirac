@@ -2,7 +2,7 @@ import { UbicacionesService } from '../../../../servicios/ubicaciones.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
-
+import { TareasService } from './../../../../services/tareas.service';
 
 @Component({
   selector: 'app-seleccionar-ubicacion',
@@ -14,17 +14,17 @@ export class SeleccionarUbicacionPage implements OnInit {
   constructor(
     private servicioUbicaciones: UbicacionesService,
     private router: Router,
-
+    private servicioTareas: TareasService,
   ){
   }
 
   // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
-  // ubicaciones : any = [];
+  tipoTarea = 'CONTEO';
 
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
-   this.obtenerUbicaciones();
+    this.obtenerUbicaciones();
   }
 
   irAConteoDeBienes(ubicacion){
@@ -40,11 +40,9 @@ export class SeleccionarUbicacionPage implements OnInit {
   }
 
   obtenerUbicaciones() {
-    this.servicioUbicaciones.obtenerUbicaciones5()
-      .subscribe(ubicaciones => {
-        console.log(ubicaciones);
-        this.ubicaciones = ubicaciones;
-      });
+    this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).subscribe(ubicaciones => {
+      this.ubicaciones = ubicaciones;
+    });
   }
 
 }
