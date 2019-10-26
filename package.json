@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "^7.2.2",
     "@angular/router": "^7.2.2",
     "@capacitor/android": "^1.1.1",
-    "@capacitor/cli": "1.1.1",
+    "@capacitor/cli": "^1.2.1",
     "@capacitor/core": "1.1.1",
     "@ionic-native/barcode-scanner": "^5.15.0",
     "@ionic-native/core": "^5.9.0",
