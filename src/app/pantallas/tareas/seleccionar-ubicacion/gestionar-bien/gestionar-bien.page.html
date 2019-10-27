@@ -1,22 +1,21 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
-      </ion-buttons>
-      <ion-title>{{ubicacion.nombre}}</ion-title>
-    </ion-toolbar>
-  </ion-header>
-   
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ubicacion.nombre}}</ion-title>
+  </ion-toolbar>
+</ion-header>
 
 <ion-content>
   {{fecha.toTimeString()}}
 
-   <!-- fab placed to the (vertical) center and end -->
-   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-      <ion-fab-button [routerLink]="['/crear-bienes', ubicacion.id ]">
-        <ion-icon name="add"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+  <!-- fab placed to the (vertical) center and end -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button [routerLink]="['/crear-bienes', ubicacion.id ]">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
   <ion-list>
     <ion-list-header>
@@ -26,12 +25,7 @@
 
       {{bien.nombre}}
 
-    </ion-item> 
+    </ion-item>
   </ion-list>
-
-   
-
-
-  
 
 </ion-content>
