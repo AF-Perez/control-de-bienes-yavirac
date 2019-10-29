@@ -1,9 +1,40 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>gestionar-bajas</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ubicacion.nombre}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  {{fecha.toTimeString()}}
+
+   <!-- fab placed to the (vertical) center and end -->
+  
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>BIENES ACTUALES</ion-label>
+    </ion-list-header>
+    
+    <ion-item *ngFor="let bien of bienes">
+
+      {{bien.nombre}}
+      {{bien.descripcion}}
+      {{bien.clase}}
+
+      <ion-button color="danger" style="font-size:1.2em">
+          <ion-icon name="trash"></ion-icon>
+      </ion-button>
+        
+    </ion-item>
+  </ion-list>
+
+   
+
+
+  
 
 </ion-content>
+

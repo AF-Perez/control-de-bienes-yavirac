@@ -13,7 +13,6 @@ const routes: Routes = [
   { path: 'conteo/seleccionar-ubicacion', loadChildren: './pantallas/tareas/conteo/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
   { path: 'gestionar-bajas', loadChildren: './pantallas/tareas/bajas/seleccionar-ubicacion/gestionar-bajas/gestionar-bajas.module#GestionarBajasPageModule' },
   { path: 'bajas/seleccionar-ubicacion', loadChildren: './pantallas/tareas/bajas/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
-
 ];
 
 @NgModule({
