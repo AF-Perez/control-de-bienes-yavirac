@@ -1,155 +1,146 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="gestionar-bien"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Ingreso de registro</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmit(validations_form.value)" [disabled]="!validations_form.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
 
-    <ion-header>
-      <ion-toolbar>
-          <ion-buttons slot="start">
-              <ion-back-button defaultHref="gestionar-bien"></ion-back-button>
-            </ion-buttons>
-        <ion-title>crear-bienes</ion-title>
-      </ion-toolbar>
-    </ion-header>
-      
-    <ion-content padding class="form-content">
-        <form [formGroup]="validations_form"  (ngSubmit)="onSubmit(validations_form.value)">
+<ion-content padding class="form-content">
+  <form [formGroup]="validations_form">
+    <ion-grid>
 
-          <!--Codigo Administrativo-->
+      <!--Codigo Administrativo-->
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating" color="primary">Codigo del Bien</ion-label>
             <ion-input type="text" formControlName="codigo"></ion-input>
           </ion-item>
-
           <div class="validation-errors">
             <ng-container *ngFor="let validation of validation_messages.codigo">
-              <div 
-                class="error-message" 
-                *ngIf="validations_form.get('codigo').hasError(validation.type) && (validations_form.get('codigo').dirty || validations_form.get('codigo').touched)"
-                >
+              <div class="error-message"
+                *ngIf="validations_form.get('codigo').hasError(validation.type) && (validations_form.get('codigo').dirty || validations_form.get('codigo').touched)">
                 <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
               </div>
             </ng-container>
           </div>
-      
-          <!-- Tipo de bien -->
-          <ion-item>
-            <ion-label position="floating" color="primary">Tipo de bien</ion-label>
-            <ion-select formControlName="tiposDeBien" cancelText="Cancel" okText="OK">
-              <ion-select-option *ngFor="let tipo of tiposDeBien" [value]="tipo">{{tipo}}</ion-select-option>
-            </ion-select>
-          </ion-item>
-          
-          <!--nombre-->
-          <ion-item>
-            <ion-label position="floating" color="primary">Nombre del bien</ion-label>
-            <ion-input type="text" formControlName="nombre"></ion-input>
-          </ion-item>
-  
-          <div class="validation-errors">
-            <ng-container *ngFor="let validation of validation_messages.nombre">
-              <div 
-                class="error-message" 
-                *ngIf="validations_form.get('nombre').hasError(validation.type) && (validations_form.get('nombre').dirty || validations_form.get('nombre').touched)"
-                >
-                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
-              </div>
-            </ng-container>
-          </div>
+        </ion-col>
+      </ion-row>
 
-          <!-- Estado del bien -->
-          <ion-item>
-            <ion-label position="floating" color="primary">Estado</ion-label>
-            <ion-select formControlName="estado" cancelText="Cancel" okText="OK">
-              <ion-select-option *ngFor="let estado of estados" [value]="estado">{{estado}}</ion-select-option>
-            </ion-select>
-          </ion-item>
+      <!-- Tipo de bien -->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-row>
+              <ion-col size-sm="6" offset-sm="3">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Tipo de bien</ion-label>
+                  <ion-select formControlName="tiposDeBien" cancelText="Cancel" okText="OK">
+                    <ion-select-option *ngFor="let tipo of tiposDeBien" [value]="tipo">{{tipo}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+      </ion-row>
 
-          <!--Precio Unitario-->
-          <ion-item>
-            <ion-label position="floating" color="primary">Precio unitario</ion-label>
-            <ion-input inmputmode="decimal" type="number" value="0.00" formControlName="precio"></ion-input>
-          </ion-item>
+      <!--nombre-->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating" color="primary">Nombre del bien</ion-label>
+              <ion-input type="text" formControlName="nombre"></ion-input>
+            </ion-item>
 
-          <div class="validation-errors">
-            <ng-container *ngFor="let validation of validation_messages.precio">
-              <div 
-                class="error-message" 
-                *ngIf="validations_form.get('precio').hasError(validation.type) && (validations_form.get('precio').dirty || validations_form.get('precio').touched)"
-                >
-                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
-              </div>
-            </ng-container>
-          </div>
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validation_messages.nombre">
+                <div class="error-message"
+                  *ngIf="validations_form.get('nombre').hasError(validation.type) && (validations_form.get('nombre').dirty || validations_form.get('nombre').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+          </ion-col>
+      </ion-row>
 
-          <!-- Custodio -->
-          <ion-item>
-            <ion-label position="floating" color="primary">Custodio</ion-label>
-            <ion-input type="text" formControlName="custodio"></ion-input>
-          </ion-item>
-    
-          <div class="validation-errors">
-            <ng-container *ngFor="let validation of validation_messages.custodio">
-              <div 
-                class="error-message" 
-                *ngIf="validations_form.get('custodio').hasError(validation.type) && (validations_form.get('custodio').dirty || validations_form.get('custodio').touched)"
-              >
-                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
-              </div>
-            </ng-container>
-          </div>
+      <!-- Estado del bien -->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating" color="primary">Estado</ion-label>
+              <ion-select formControlName="estado" cancelText="Cancel" okText="OK">
+                <ion-select-option *ngFor="let estado of estados" [value]="estado">{{estado}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+      </ion-row>
 
-          <!-- Institucion -->
-          <ion-item>
-            <ion-label position="floating" color="primary">Ubicacion</ion-label>
-            <ion-select formControlName="ubicacion" cancelText="Cancel" okText="OK">
-              <ion-select-option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion">{{ubicacion}}</ion-select-option>
-            </ion-select>
-          </ion-item>
-    
-          <!-- Observaciones -->
-          <ion-item>
+      <!--Precio Unitario-->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating" color="primary">Precio unitario</ion-label>
+              <ion-input inmputmode="decimal" type="number" value="0.00" formControlName="precio"></ion-input>
+            </ion-item>
+
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validation_messages.precio">
+                <div class="error-message"
+                  *ngIf="validations_form.get('precio').hasError(validation.type) && (validations_form.get('precio').dirty || validations_form.get('precio').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+          </ion-col>
+      </ion-row>
+
+      <!-- Custodio -->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating" color="primary">Custodio</ion-label>
+              <ion-input type="text" formControlName="custodio"></ion-input>
+            </ion-item>
+
+            <div class="validation-errors">
+              <ng-container *ngFor="let validation of validation_messages.custodio">
+                <div class="error-message"
+                  *ngIf="validations_form.get('custodio').hasError(validation.type) && (validations_form.get('custodio').dirty || validations_form.get('custodio').touched)">
+                  <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+                </div>
+              </ng-container>
+            </div>
+          </ion-col>
+      </ion-row>
+
+      <!-- Institucion -->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
+              <ion-label position="floating" color="primary">Ubicacion</ion-label>
+              <ion-select formControlName="ubicacion" cancelText="Cancel" okText="OK">
+                <ion-select-option *ngFor="let ubicacion of ubicaciones" [value]="ubicacion">{{ubicacion}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-col>
+      </ion-row>
+
+      <!-- Observaciones -->
+      <ion-row>
+          <ion-col size-sm="6" offset-sm="3">
+            <ion-item>
               <ion-textarea formControlName="observaciones" placeholder="Observaciones"></ion-textarea>
             </ion-item>
-  
+          </ion-col>
+      </ion-row>
 
+    </ion-grid>
+  </form>
 
-          <!-- Validacion para aceptar las condiciones -->
-
-          <!-- <ion-item>
-            <ion-label color="primary">Yo acepto los cambios realizados</ion-label>
-            <ion-checkbox color="primary" formControlName="terms" ></ion-checkbox>
-          </ion-item>
-          <div class="validation-errors">
-            <ng-container *ngFor="let validation of validation_messages.terms">
-              <div class="error-message" *ngIf="validations_form.get('terms').hasError(validation.type) && (validations_form.get('terms').dirty || validations_form.get('terms').touched)">
-                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
-              </div>
-            </ng-container>
-          </div> -->
-
-          <!-- boton -->
-          <ion-button color="primary" class="submit-btn" expand="full" type="submit" [disabled]="!validations_form.valid">Ingresar Datos</ion-button>
-
-        </form>
-
-        <ion-content ion-padding>
-          <h1>Click Button To Scan</h1>
-         
-          <ion-button (click)="scanCode()">
-            Scan Code
-          </ion-button>
-         
-          <div *ngIf="scannedData">
-            <p>
-              Scanned Code Text : <b>{{ scannedData["text"] }}</b>
-            </p>
-            <p>
-              Scanned Code Format : <b>{{ scannedData["format"] }}</b>
-            </p>
-          </div>
-         
-          <h1>Enter Value to Create QR code</h1>
-          <ion-input type="text" [(ngModel)]="encodedData"></ion-input>
-         
-          <ion-button (click)="encodedText()">
-            Create QR
-          </ion-button>
-        </ion-content>
-      </ion-content>
+</ion-content>

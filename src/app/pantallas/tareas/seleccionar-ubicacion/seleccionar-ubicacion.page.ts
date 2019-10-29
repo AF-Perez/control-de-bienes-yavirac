@@ -1,7 +1,9 @@
-import { UbicacionesService } from './../../../servicios/ubicaciones.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
+import { UbicacionesService } from './../../../servicios/ubicaciones.service';
+import { TareasService } from './../../../services/tareas.service';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -14,17 +16,19 @@ export class SeleccionarUbicacionPage implements OnInit {
   constructor(
     private servicioUbicaciones: UbicacionesService,
     private router: Router,
+    private servicioTareas: TareasService,
+    private activatedRoute: ActivatedRoute,
 
   ){
   }
 
   // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
-  // ubicaciones : any = [];
+  tipoTarea = 'REGISTRO';
 
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
-   this.obtenerUbicaciones();
+    this.obtenerUbicaciones();
   }
 
   irAGestionarBienes(ubicacion){
@@ -33,18 +37,15 @@ export class SeleccionarUbicacionPage implements OnInit {
         // aqui todo lo que se va a pasar a las sig pantalla
         user: 1,
         ubicacion: ubicacion,
-        // ...
       }
     };
     this.router.navigate(['gestionar-bien'], navigationExtras);
   }
 
   obtenerUbicaciones() {
-    this.servicioUbicaciones.obtenerUbicaciones5()
-      .subscribe(ubicaciones => {
-        // console.log(ubicaciones);
-        this.ubicaciones = ubicaciones;
-      });
+    this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).subscribe(ubicaciones => {
+      this.ubicaciones = ubicaciones;
+    });
   }
 
 }

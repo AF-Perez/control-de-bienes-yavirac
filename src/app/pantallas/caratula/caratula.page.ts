@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { AuthService } from '../../auth/auth.service';
 import { Router } from "@angular/router";
-
+import { TareasService } from './../../services/tareas.service';
 
 @Component({
   selector: 'app-caratula',
@@ -13,9 +13,12 @@ export class CaratulaPage implements OnInit {
 
   constructor(
     private menu: MenuController,
-    private  authService: AuthService,
-    private  router: Router,
+    private authService: AuthService,
+    private router: Router,
+    private tareasService: TareasService,
     ) { }
+  
+  tareas:any = [];
 
   pages = [
     {
@@ -46,7 +49,7 @@ export class CaratulaPage implements OnInit {
   ];
 
   ngOnInit() {
-   
+    this.obtenerTareas();
   }
 
   openFirst() {
@@ -66,5 +69,13 @@ export class CaratulaPage implements OnInit {
   salir() {
     this.authService.logout();
     this.router.navigateByUrl('login');
+  }
+
+  obtenerTareas() {
+    this.tareasService.obtenerTareas()
+      .subscribe(tareas => {
+        console.log(tareas);
+        this.tareas = tareas;
+      });
   }
 }

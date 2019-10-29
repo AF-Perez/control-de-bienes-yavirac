@@ -77,7 +77,9 @@ export class BienesService {
           'observaciones': datosBien.observaciones,
           'valor_unitario': datosBien.precio,
           'id_ubicacion': datosBien.idUbicacion,
-  }
+          'codigo': datosBien.codigo,
+          'tipo_de_bien': datosBien.tiposDeBien,
+        }
 
 
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes`, postDataBien, {headers});

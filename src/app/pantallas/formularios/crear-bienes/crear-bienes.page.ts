@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UsernameValidator } from 'src/app/validadores/usuario.validador';
 import { BienesService } from '../../../servicios/bienes.service';
-
-import {BarcodeScannerOptions,BarcodeScanner} from "@ionic-native/barcode-scanner/ngx";
-
+import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
+import { LoadingController } from '@ionic/angular';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -13,11 +12,9 @@ import {BarcodeScannerOptions,BarcodeScanner} from "@ionic-native/barcode-scanne
   styleUrls: ['./crear-bienes.page.scss'],
 })
 
-
 export class CrearBienesPage implements OnInit {
 
   validations_form: FormGroup;
- 
   tiposDeBien: Array<string>;
   estados: Array<string>;
   ubicaciones: Array<string>;
@@ -31,14 +28,13 @@ export class CrearBienesPage implements OnInit {
     private router: Router,
     private servicioBienes: BienesService,
     private activatedRoute: ActivatedRoute,
-    private barcodeScanner: BarcodeScanner 
+    private barcodeScanner: BarcodeScanner,
+    private loadingCtrl: LoadingController,
+    private _location: Location,
 
   ) { }
 
-
   ngOnInit() {
-
- 
     this.idUbicacion = this.activatedRoute.snapshot.paramMap.get('idUbicacion');
 
     this.tiposDeBien = [
@@ -69,33 +65,43 @@ export class CrearBienesPage implements OnInit {
       ubicacion: new FormControl('', Validators.required),
       observaciones: new FormControl(''),
 
-      // terms: new FormControl(true, Validators.pattern('true'))
     });
   }
-  
-  onSubmit(valoresFormulario){
-    let datosBien = {...valoresFormulario, idUbicacion: this.idUbicacion}
-    this.servicioBienes.guardarBien(datosBien)
-    .subscribe(bien => {
-      console.log(bien);
-      // acciones luego de guardar
-    });
 
+  onSubmit(valoresFormulario) {
+    if (!this.validations_form.valid) {
+      return;
+    }
+
+    this.loadingCtrl
+      .create({
+        message: 'Procesando solicitud...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        let datosBien = { ...valoresFormulario, idUbicacion: this.idUbicacion }
+        this.servicioBienes.guardarBien(datosBien)
+          .subscribe(bien => {
+            // acciones luego de guardar
+            loadingEl.dismiss();
+            this.validations_form.reset();
+            this._location.back();
+          });
+      })
   }
-
 
   formataNumero(e: any, separador: string = '.', decimais: number = 2) {
-    let a:any = e.value.split('');
-    let ns:string = '';
-    a.forEach((c:any) => { if (!isNaN(c)) ns = ns + c; });
+    let a: any = e.value.split('');
+    let ns: string = '';
+    a.forEach((c: any) => { if (!isNaN(c)) ns = ns + c; });
     ns = parseInt(ns).toString();
-    if (ns.length < (decimais+1)) { ns = ('0'.repeat(decimais+1) + ns); ns = ns.slice((decimais+1)*-1); }
+    if (ns.length < (decimais + 1)) { ns = ('0'.repeat(decimais + 1) + ns); ns = ns.slice((decimais + 1) * -1); }
     let ans = ns.split('');
     let r = '';
-    for (let i=0; i < ans.length; i++) if (i == ans.length - decimais) r = r + separador + ans[i]; else r = r + ans[i];
+    for (let i = 0; i < ans.length; i++) if (i == ans.length - decimais) r = r + separador + ans[i]; else r = r + ans[i];
     e.value = r;
   }
-  
+
   scanCode() {
     this.barcodeScanner
       .scan()
@@ -107,6 +113,7 @@ export class CrearBienesPage implements OnInit {
         console.log("Error", err);
       });
   }
+
   encodedText() {
     this.barcodeScanner
       .encode(this.barcodeScanner.Encode.TEXT_TYPE, this.encodeData)
@@ -120,9 +127,6 @@ export class CrearBienesPage implements OnInit {
         }
       );
   }
-
-
-
 
   validation_messages = {
     'username': [
