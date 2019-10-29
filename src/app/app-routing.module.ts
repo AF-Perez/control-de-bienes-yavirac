@@ -11,6 +11,8 @@ const routes: Routes = [
   { path: 'crear-bienes/:idUbicacion', loadChildren: './pantallas/formularios/crear-bienes/crear-bienes.module#CrearBienesPageModule' },
   { path: 'contar-bienes', loadChildren: './pantallas/tareas/conteo/seleccionar-ubicacion/contar-bienes/contar-bienes.module#ContarBienesPageModule' },
   { path: 'conteo/seleccionar-ubicacion', loadChildren: './pantallas/tareas/conteo/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
+  { path: 'bajas/seleccionar-ubicacion', loadChildren: './pantallas/tareas/bajas/seleccionar-ubicacion/seleccionar-ubicacion.module#SeleccionarUbicacionPageModule' },
+  { path: 'gestionar-bajas', loadChildren: './pantallas/tareas/bajas/seleccionar-ubicacion/gestionar-bajas/gestionar-bajas.module#GestionarBajasPageModule' },
 
 ];
 
