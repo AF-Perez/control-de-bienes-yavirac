@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { tap, switchMap } from 'rxjs/operators';
-import { Observable, BehaviorSubject, from } from 'rxjs';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, from } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalsService } from '../services/globals.service';
@@ -53,7 +53,6 @@ export class BienesService {
   }
 
   // guardar un bien en el servidor
-
   guardarBien(datosBien) {
     return from(Plugins.Storage.get({key: 'authData'})).pipe(
       switchMap(storedData => {
@@ -90,6 +89,16 @@ export class BienesService {
     );
   }
 
+  traerBienes() {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
+        return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
+      }),
+      tap(token => {
+        // console.warn(token);
+      })
+    );
+  }
 
 
 
