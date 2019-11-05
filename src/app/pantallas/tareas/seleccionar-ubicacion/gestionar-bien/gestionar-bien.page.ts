@@ -42,6 +42,7 @@ export class GestionarBienPage implements OnInit {
   obtenerBienes() {
     this.servicioBienes.traerBienesDeUbicacion(this.ubicacion.id)
       .subscribe(bienes => {
+        console.log(bienes);
         this.bienes = bienes;
       });
   }
