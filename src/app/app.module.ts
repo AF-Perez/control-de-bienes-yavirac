@@ -16,6 +16,7 @@ import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor'
 import { IonicSelectableModule } from 'ionic-selectable';
+import { SQLite } from '@ionic-native/sqlite/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,6 +42,7 @@ import { IonicSelectableModule } from 'ionic-selectable';
       useClass: TokenInterceptor,
       multi: true
     },
+    SQLite,
   ],
   bootstrap: [AppComponent]
 })
