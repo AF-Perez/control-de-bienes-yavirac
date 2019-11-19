@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { tap, switchMap } from 'rxjs/operators';
-import { Observable, BehaviorSubject, from } from 'rxjs';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, from } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalsService } from '../services/globals.service';
+import { Bien } from '../models/bien.model';
 
 @Injectable({
   providedIn: 'root'
@@ -28,49 +29,17 @@ export class BienesService {
 
 
   traerBienesDeUbicacion(idUbicacion) {
-    return from(Plugins.Storage.get({key: 'authData'})).pipe(
-      switchMap(storedData => {
-        if (!storedData || !storedData.value) {
-          return null;
-        }
-
-        const parsedData = JSON.parse(storedData.value) as {
-          token: string,
-          tokenExpirationDate: string,
-          userId: string
-        };
-
-        const headers = new HttpHeaders({
-          Authorization: 'Bearer ' + parsedData.token,
-          Accept: 'application/json'
-        });
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
         return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
       }),
-      tap(token => {
-        // console.warn(token);
-      })
     );
   }
 
   // guardar un bien en el servidor
-
-  guardarBien(datosBien) {
-    return from(Plugins.Storage.get({key: 'authData'})).pipe(
-      switchMap(storedData => {
-        if (!storedData || !storedData.value) {
-          return null;
-        }
-
-        const parsedData = JSON.parse(storedData.value) as {
-          token: string,
-          tokenExpirationDate: string,
-          userId: string
-        };
-
-        const headers = new HttpHeaders({
-          Authorization: 'Bearer ' + parsedData.token,
-          Accept: 'application/json'
-        });
+  guardarBien(datosBien: Bien) {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
         let postDataBien = {
           'nombre': datosBien.nombre,
           'clase': "CONTROL ADMINISTRATIVO",
@@ -78,19 +47,22 @@ export class BienesService {
           'valor_unitario': datosBien.precio,
           'id_ubicacion': datosBien.idUbicacion,
           'codigo': datosBien.codigo,
-          'tipo_de_bien': datosBien.tiposDeBien,
+          'tipo_de_bien': datosBien.tipo,
         }
-
-
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes`, postDataBien, {headers});
       }),
-      tap(token => {
-        console.warn(token);
-      })
     );
   }
 
-
-
+  traerBienes() {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
+        return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
+      }),
+      tap(token => {
+        // console.warn(token);
+      })
+    );
+  }
 
 }

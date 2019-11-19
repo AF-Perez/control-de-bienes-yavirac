@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
-import { UbicacionesService } from './../../../servicios/ubicaciones.service';
 import { TareasService } from './../../../services/tareas.service';
-import { ActivatedRoute } from '@angular/router';
+import { OfflineService } from './../../../services/offline.service';
 
 
 @Component({
@@ -14,11 +13,9 @@ import { ActivatedRoute } from '@angular/router';
 export class SeleccionarUbicacionPage implements OnInit {
 
   constructor(
-    private servicioUbicaciones: UbicacionesService,
     private router: Router,
     private servicioTareas: TareasService,
-    private activatedRoute: ActivatedRoute,
-
+    private servicioOffline: OfflineService,
   ){
   }
 
@@ -29,6 +26,7 @@ export class SeleccionarUbicacionPage implements OnInit {
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
     this.obtenerUbicaciones();
+    this.initDB();
   }
 
   irAGestionarBienes(ubicacion){
@@ -46,6 +44,10 @@ export class SeleccionarUbicacionPage implements OnInit {
     this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).subscribe(ubicaciones => {
       this.ubicaciones = ubicaciones;
     });
+  }
+
+  initDB() {
+    this.servicioOffline.crearBaseDeDatos();
   }
 
 }

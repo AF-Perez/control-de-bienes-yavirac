@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { BienesService } from '../../../servicios/bienes.service';
 import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
+import { TareaRegistroService } from '../../../services/tarea-registro.service';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -25,8 +26,8 @@ export class CrearBienesPage implements OnInit {
 
   constructor(
     public formBuilder: FormBuilder,
-    private router: Router,
     private servicioBienes: BienesService,
+    private servicioRegistro: TareaRegistroService,
     private activatedRoute: ActivatedRoute,
     private barcodeScanner: BarcodeScanner,
     private loadingCtrl: LoadingController,
@@ -56,9 +57,9 @@ export class CrearBienesPage implements OnInit {
     ];
 
     this.validations_form = this.formBuilder.group({
-      nombre: new FormControl('', Validators.required),
       codigo: new FormControl('', Validators.required),
       tiposDeBien: new FormControl('', Validators.required),
+      nombre: new FormControl('', Validators.required),
       estado: new FormControl('', Validators.required),
       precio: new FormControl('', Validators.required),
       custodio: new FormControl('', Validators.required),
@@ -68,7 +69,7 @@ export class CrearBienesPage implements OnInit {
     });
   }
 
-  onSubmit(valoresFormulario) {
+  onSubmitBck(valoresFormulario) {
     if (!this.validations_form.valid) {
       return;
     }
@@ -87,6 +88,36 @@ export class CrearBienesPage implements OnInit {
             this.validations_form.reset();
             this._location.back();
           });
+      })
+  }
+
+  onSubmit(valoresFormulario) {
+    if (!this.validations_form.valid) {
+      return;
+    }
+
+    this.loadingCtrl
+      .create({
+        message: 'Procesando solicitud...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.servicioRegistro.agregarBien(
+          valoresFormulario.codigo,
+          valoresFormulario.tiposDeBien,
+          valoresFormulario.nombre,
+          valoresFormulario.estado,
+          valoresFormulario.precio,
+          valoresFormulario.custodio,
+          this.idUbicacion,
+          valoresFormulario.observaciones,
+        )
+        .subscribe(bien => {
+          // acciones luego de guardar
+          loadingEl.dismiss();
+          this.validations_form.reset();
+          this._location.back();
+        });
       })
   }
 

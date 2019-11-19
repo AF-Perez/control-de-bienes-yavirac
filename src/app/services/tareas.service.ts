@@ -52,12 +52,22 @@ export class TareasService {
         let ubicacionesValidas = [];
         tareasArr.forEach(tarea => {
           ubicacionesArr.forEach(ubicacion => {
-            if (ubicacion.id === tarea.id_ubicacion && tarea.tipo === tipoTarea) {
+            if (ubicacion.id === tarea.id_ubicacion && tarea.tipo === tipoTarea && tarea.completada === 0) {
               ubicacionesValidas.push(ubicacion);
             }
           })
         });
         return ubicacionesValidas;
+      }),
+    );
+  }
+
+  ingresarConteos(conteos) {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
+        let data = JSON.stringify(conteos);
+        console.log(data);
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, {headers});
       })
     );
   }

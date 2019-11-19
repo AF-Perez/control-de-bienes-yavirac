@@ -2,8 +2,11 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { BienesService } from '../../../../../servicios/bienes.service';
+import { TareasService } from '../../../../../services/tareas.service';
 import { AlertController } from '@ionic/angular';
 import { Location } from '@angular/common';
+import { LoadingController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-contar-bien',
@@ -26,9 +29,11 @@ export class ContarBienesPage implements OnInit {
     private route: ActivatedRoute, 
     private router: Router,
     private servicioBienes: BienesService,
+    private servicioTareas: TareasService,
     public alertController: AlertController,
     private location: Location,
-
+    private loadingCtrl: LoadingController,
+    public toastController: ToastController,
   ) { 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -47,7 +52,7 @@ export class ContarBienesPage implements OnInit {
   }
 
   obtenerBienes() {
-    this.servicioBienes.traerBienesDeUbicacion(this.ubicacion.id)
+    this.servicioBienes.traerBienes()
       .subscribe(bienes => {
         this.bienes = bienes;
       });
@@ -85,20 +90,81 @@ export class ContarBienesPage implements OnInit {
       return bien.id != idBien;
     });
 
-    console.log(this.bienes);
-
     // limpiar campos
     this.bienSelector.clear();
     this.contadorBien = 0;
   }
 
   ingresarConteo() {
-    alert('Conteo ingresado');
-    this.location.back();
+    this.loadingCtrl
+      .create({
+        message: 'Procesando solicitud...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.servicioTareas.ingresarConteos(this.conteos)
+          .subscribe(response => {
+            // acciones luego de guardar
+            var random_boolean = Math.random() >= 0.5;
+            if (random_boolean) {
+              loadingEl.dismiss();
+              // this.validations_form.reset();
+              this.toastController.create({
+                message: 'Proceso completado con éxito.',
+                duration: 2000
+              }).then(toastEl => {
+                toastEl.present();
+              });
+            } else {
+              loadingEl.dismiss();
+              this.toastController.create({
+                message: 'Los datos no concuerdan con nuestra base.',
+                duration: 2000
+              }).then(toastEl => {
+                toastEl.present();
+              });
+            }
+            this.location.back();
+          });
+      })
+      .catch(err => {
+        this.toastController.create({
+          message: 'Los datos no concuerdan con nuestra base.',
+          duration: 2000
+        }).then(toastEl => {
+          toastEl.present();
+        });
+        this.location.back();
+      })
   }
 
   cancelarConteo() {
      this.location.back();
+  }
+
+  async presentToastWithOptions() {
+    const toast = await this.toastController.create({
+      header: 'Toast header',
+      message: 'Click to Close',
+      position: 'top',
+      buttons: [
+        {
+          side: 'start',
+          icon: 'star',
+          text: 'Favorite',
+          handler: () => {
+            console.log('Favorite clicked');
+          }
+        }, {
+          text: 'Done',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    toast.present();
   }
 
 }

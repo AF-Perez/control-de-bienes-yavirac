@@ -4,6 +4,11 @@
       <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ubicacion.nombre}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmit()">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -22,9 +27,11 @@
       <ion-label>BIENES ACTUALES</ion-label>
     </ion-list-header>
     <ion-item *ngFor="let bien of bienes">
-
-      {{bien.nombre}}
-
+      <ion-label>
+        <h2>{{ bien.nombre }}</h2>
+        <h3>{{ bien.codigo_barras }}</h3>
+        <p>{{ bien.observaciones }}</p>
+      </ion-label>
     </ion-item>
   </ion-list>
 
