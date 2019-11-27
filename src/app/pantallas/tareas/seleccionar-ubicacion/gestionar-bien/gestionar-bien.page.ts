@@ -18,6 +18,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   fecha: any;
   bienes: any = [];
   private bienesSubscripcion: Subscription;
+  bienesEstaVacio: boolean = true;
   
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +52,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   }
 
   ionViewWillEnter() {
+    this.bienesEstaVacio = this.bienes.length === 0 ? true : false;
     // this.obtenerFechaActual();
     // this.obtenerBienes();
   }

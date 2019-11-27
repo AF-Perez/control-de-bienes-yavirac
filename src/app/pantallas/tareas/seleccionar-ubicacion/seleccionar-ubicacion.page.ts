@@ -26,7 +26,6 @@ export class SeleccionarUbicacionPage implements OnInit {
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
     this.obtenerUbicaciones();
-    this.initDB();
   }
 
   irAGestionarBienes(ubicacion){
