@@ -19,7 +19,9 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   bienes: any = [];
   private bienesSubscripcion: Subscription;
   bienesEstaVacio: boolean = true;
-  
+  horaFechaInicio: number;
+  horaFechaFin: number;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -38,7 +40,8 @@ export class GestionarBienPage implements OnInit, OnDestroy {
 
   // cuando se genere la pagina
   ngOnInit() {
-    this.obtenerFechaActual();
+    this.resetearHoraFecha();
+    this.iniciarTimer();
     this.bienesSubscripcion = this.servicioRegistro.bienes.subscribe(bienes => {
       console.log(bienes);
       this.bienes = bienes;
@@ -53,24 +56,18 @@ export class GestionarBienPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.bienesEstaVacio = this.bienes.length === 0 ? true : false;
-    // this.obtenerFechaActual();
-    // this.obtenerBienes();
+    this.iniciarTimer();
   }
 
-  obtenerBienes() {
-    this.servicioBienes.traerBienesDeUbicacion(this.ubicacion.id)
-      .subscribe(bienes => {
-        console.log(bienes);
-        this.bienes = bienes;
-      });
+  resetearHoraFecha() {
+    this.horaFechaInicio = Date.now();
+    this.horaFechaFin = 0;
   }
 
-  obtenerFechaActual() {
-    this.fecha = new Date();
-  }
-
-  irACreacionDeBienes() {
-    
+  iniciarTimer() {
+    setInterval(() => {
+      this.horaFechaFin = Date.now() - this.horaFechaInicio;
+    }, 1000);
   }
 
   onSubmit() {

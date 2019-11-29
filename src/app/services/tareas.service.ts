@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { tap, catchError, take, switchMap, flatMap, map } from 'rxjs/operators';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { switchMap, flatMap, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { AuthService } from '../auth/auth.service';
 import { UbicacionesService } from '../servicios/ubicaciones.service';
@@ -12,7 +12,7 @@ import { UbicacionesService } from '../servicios/ubicaciones.service';
 export class TareasService {
 
   constructor(
-    private  clienteHttp: HttpClient,
+    private clienteHttp: HttpClient,
     private variablesGlobales: GlobalsService,
     private authService: AuthService,
     private servicioUbicaciones: UbicacionesService,

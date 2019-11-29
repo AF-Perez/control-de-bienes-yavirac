@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ubicacion.nombre}}</ion-title>
+    <ion-title>{{ubicacion.nombre}} ({{horaFechaFin | date:'mm:ss'}} mins.)</ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="onSubmit()" [disabled]="bienesEstaVacio">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
@@ -13,8 +13,6 @@
 </ion-header>
 
 <ion-content>
-  {{fecha.toTimeString()}}
-
   <!-- fab placed to the (vertical) center and end -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button [routerLink]="['/crear-bienes', ubicacion.id ]">
