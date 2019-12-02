@@ -71,4 +71,14 @@ export class TareasService {
       })
     );
   }
+
+  solicitarBajaBien(idBien, observaciones) {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
+        let data = {observaciones: observaciones};
+        //JSON.stringify(data);
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes/${idBien}/solicitarBaja`, data, {headers});
+      }),
+    );
+  }
 }

@@ -1,7 +1,8 @@
+import { TareasService } from './../../../../../services/tareas.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BienesService } from '../../../../../servicios/bienes.service';
-import { UbicacionesService } from '../../../../../servicios/ubicaciones.service';
+import { AlertController } from '@ionic/angular';
 
 
 @Component({
@@ -14,14 +15,15 @@ export class GestionarBajasPage implements OnInit {
 
   ubicacion: any;
   fecha: any;
-
+  observaciones: any;
+  bienes: any = [];
 
   constructor(
     private route: ActivatedRoute, 
     private router: Router,
     private servicioBienes: BienesService,
-    private ubicacionesService: UbicacionesService,
-
+    private servicioTareas: TareasService,
+    public alertController: AlertController,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -30,7 +32,6 @@ export class GestionarBajasPage implements OnInit {
       }
     });
    }
-   bienes: any = [];
 
   ngOnInit() {
     this.obtenerFechaActual();    
@@ -49,6 +50,39 @@ export class GestionarBajasPage implements OnInit {
     this.fecha = new Date();
   }
 
+  async mostrarAlertObservacion(idBien) {
+    const alert = await this.alertController.create({
+      header: 'Motivo de Baja',
+      inputs: [
+        {
+          name: 'observaciones',
+          type: 'text',
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: () => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Ok',
+          handler: (datos) => {
+            // guardar los datos de baja
+            this.servicioTareas.solicitarBajaBien(idBien, datos.observaciones).subscribe(respuesta => {
+                let bien = this.bienes.filter(bien => bien.id === idBien);
+                bien[0].enviado = true;
+                // bloquear el elemento de la lista
+            });          
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
   
   }
 
