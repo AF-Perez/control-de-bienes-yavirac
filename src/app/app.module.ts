@@ -17,6 +17,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor'
 import { IonicSelectableModule } from 'ionic-selectable';
 import { SQLite } from '@ionic-native/sqlite/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -43,6 +44,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
       multi: true
     },
     SQLite,
+    BarcodeScanner,
   ],
   bootstrap: [AppComponent]
 })
