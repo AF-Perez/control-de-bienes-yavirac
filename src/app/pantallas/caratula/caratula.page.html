@@ -8,8 +8,6 @@
 
     <ion-content>
       <div *ngFor="let page of pages" >
-       
-        
         <ion-item 
           button 
           *ngIf="page.children?.length > 0" 
@@ -21,7 +19,6 @@
           <ion-icon slot="start" name="arrow-down" *ngIf="page.open" ></ion-icon>
           <ion-label>{{ page.title }}</ion-label>
         </ion-item>
-
         <ion-list *ngIf="page.open">
           <ion-menu-toggle>
               <ion-item *ngFor="let sub of page.children" [routerLink]="sub.url" routerDirection="root" routerLinkActive="active">
@@ -32,12 +29,13 @@
               </ion-item>
             </ion-menu-toggle>
         </ion-list>
-
-       
-
-        
       </div>
-     
+      <div>
+        <ion-item>
+          <ion-label>En línea</ion-label>
+          <ion-icon [color]="isOnline ? 'success' : 'danger'" name="radio-button-on"></ion-icon>
+        </ion-item>
+      </div>
      
     </ion-content>
     <ion-button style="font-size:1.0em" [routerLink]="['/login']" color="danger">      
@@ -46,9 +44,6 @@
       </ion-button>
   </ion-menu>
   
- 
-  
-
   <ion-router-outlet main></ion-router-outlet>
   <ion-header>
       <ion-toolbar >
@@ -59,54 +54,36 @@
       </ion-toolbar>
     </ion-header>
     
-   
-    
     <!-- cuerpo de la pantalla -->
-
     <ion-content>
 
-    <section text-center>
-      
-      <h1 style="font-size:1.2em">Bienvenido,<br> Por favor, elija una tarea que desee realizar</h1>
-    </section>
+      <section text-center>
+        <h1 style="font-size:1.2em">Bienvenido,<br> Por favor, elija una tarea que desee realizar</h1>
+      </section>
 
       <ion-grid>
-         
         <ion-row align-items-center text-center padding>
             <ion-col col-6>
-              
               <ion-button style="font-size:1.3em" [routerLink]="['/seleccionar-ubicacion']" color="medium" >
-                  
                   <ion-icon name="done-all"></ion-icon>
                   REGISTRO
               </ion-button>
-            
             </ion-col>
           </ion-row>
-
-
           <ion-row align-items-center text-center padding>
             <ion-col col-6>
-                
               <ion-button style="font-size:1.5em" [routerLink]="['/conteo/seleccionar-ubicacion']" color="medium">
-               
                 <ion-icon name="list-box"></ion-icon>
                   CONTEO
                 </ion-button>
-            
             </ion-col>
           </ion-row>
-  
-
           <ion-row align-items-center text-center padding>
               <ion-col col-6>
-                
                   <ion-button style="font-size:1.2em" [routerLink]="['/bajas/seleccionar-ubicacion']" color="medium">
-            
                     <ion-icon name="trash"></ion-icon>
-                        DAR DE BAJA
+                      DAR DE BAJA
                   </ion-button>
-                
               </ion-col>
         </ion-row>
       </ion-grid>

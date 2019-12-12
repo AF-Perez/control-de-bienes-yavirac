@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BienesService } from '../../../../servicios/bienes.service';
 import { TareaRegistroService } from 'src/app/services/tarea-registro.service';
 import { Subscription } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
@@ -25,7 +24,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private servicioBienes: BienesService,
     private servicioRegistro: TareaRegistroService,
     private loadingCtrl: LoadingController,
     private _location: Location,
@@ -43,7 +41,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
     this.resetearHoraFecha();
     this.iniciarTimer();
     this.bienesSubscripcion = this.servicioRegistro.bienes.subscribe(bienes => {
-      console.log(bienes);
       this.bienes = bienes;
     });
   }

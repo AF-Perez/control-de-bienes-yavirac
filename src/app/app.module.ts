@@ -18,6 +18,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor'
 import { IonicSelectableModule } from 'ionic-selectable';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { Network } from '@ionic-native/network/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -45,6 +46,7 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
     },
     SQLite,
     BarcodeScanner,
+    Network,
   ],
   bootstrap: [AppComponent]
 })
