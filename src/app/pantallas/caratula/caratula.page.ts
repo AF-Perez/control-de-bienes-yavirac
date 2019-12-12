@@ -6,6 +6,7 @@ import { TareasService } from './../../services/tareas.service';
 import { OfflineService } from './../../services/offline.service';
 import { Subscription } from 'rxjs';
 import { Network } from '@ionic-native/network/ngx';
+import { DatabaseService } from './../../services/database.service';
 
 @Component({
   selector: 'app-caratula',
@@ -21,7 +22,8 @@ export class CaratulaPage implements OnInit, OnDestroy {
     private tareasService: TareasService,
     private offlineService: OfflineService,
     private network: Network,
-    ) { }
+    private db: DatabaseService,
+  ) { }
   
   tareas: any = [];
   isOnline = null;
@@ -72,6 +74,15 @@ export class CaratulaPage implements OnInit, OnDestroy {
     // watch network for a connection
     this.connectSubscription = this.network.onConnect().subscribe(() => {
       this.offlineService.comprobarConexion();
+    });
+
+    // inicializar la base de datos
+    this.db.getDatabaseState().subscribe(rdy => {
+      if (rdy) {
+        this.db.addBien('123abc', 'MUEBLE', 1, 12.12, 'ninguna').then(() => {
+          console.log('hola');
+        });
+      }
     });
   }
 

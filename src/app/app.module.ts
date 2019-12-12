@@ -19,6 +19,8 @@ import { IonicSelectableModule } from 'ionic-selectable';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Network } from '@ionic-native/network/ngx';
+import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,6 +49,7 @@ import { Network } from '@ionic-native/network/ngx';
     SQLite,
     BarcodeScanner,
     Network,
+    SQLitePorter,
   ],
   bootstrap: [AppComponent]
 })
