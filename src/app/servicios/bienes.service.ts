@@ -3,8 +3,6 @@ import { AuthService } from '../auth/auth.service';
 import { tap, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, from } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Plugins } from '@capacitor/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { GlobalsService } from '../services/globals.service';
 import { Bien } from '../models/bien.model';
 
@@ -17,8 +15,6 @@ export class BienesService {
 
     private authService: AuthService,
     private clienteHttp: HttpClient,
-    private activatedRoute: ActivatedRoute, 
-    private router: Router,
     private variablesGlobales: GlobalsService,
   ) { }
 

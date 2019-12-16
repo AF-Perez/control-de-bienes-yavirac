@@ -7,6 +7,7 @@ import { AlertController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { LoadingController } from '@ionic/angular';
 import { ToastController } from '@ionic/angular';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 @Component({
   selector: 'app-contar-bien',
@@ -34,6 +35,7 @@ export class ContarBienesPage implements OnInit {
     private location: Location,
     private loadingCtrl: LoadingController,
     public toastController: ToastController,
+    private barcodeScanner: BarcodeScanner
   ) { 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -140,6 +142,19 @@ export class ContarBienesPage implements OnInit {
 
   cancelarConteo() {
      this.location.back();
+  }
+
+  abrirScaner() {
+    this.barcodeScanner.scan().then(barcodeData => {
+      console.log('Barcode data', barcodeData);
+      this.conteos = [...this.conteos,  {codigo: barcodeData.text}];
+      console.log(this.conteos);
+      // limpiar campos
+      this.bienSelector.clear();
+      this.contadorBien = 0;
+     }).catch(err => {
+         console.log('Error', err);
+     });
   }
 
   async presentToastWithOptions() {
