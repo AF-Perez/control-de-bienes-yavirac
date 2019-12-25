@@ -31,34 +31,6 @@ export class CaratulaPage implements OnInit, OnDestroy {
   disconnectSubscription: any;
   connectSubscription: any;
 
-  pages = [
-    {
-      title: 'Inicio',
-      url: 'caratula',
-      icon: 'home',
-    },
-    {
-      title: 'Tareas',
-      children: [
-        {
-          title: 'Registro de Bienes',
-          url: '/menu/main',
-          icon: 'home',
-        },
-        {
-          title: 'Conteo',
-          url: '/menu/main',
-          icon: 'logo-ionic',
-        },
-        {
-          title: 'Dar de baja',
-          url: '/menu/main',
-          icon: 'logo-google',
-        },
-      ],
-    },
-  ];
-
   ngOnInit() {
     this.obtenerTareas();
 
@@ -80,7 +52,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
     this.db.getDatabaseState().subscribe(rdy => {
       if (rdy) {
         this.db.addBien('123abc', 'MUEBLE', 1, 12.12, 'ninguna').then(() => {
-          console.log('hola');
+          console.log('esqlito');
         });
       }
     });
@@ -118,20 +90,6 @@ export class CaratulaPage implements OnInit, OnDestroy {
     this.offlineService.comprobarConexion();
   }
 
-  openFirst() {
-    this.menu.enable(true, 'first');
-    this.menu.open('first');
-  }
-
-  openEnd() {
-    this.menu.open('end');
-  }
-
-  openCustom() {
-    this.menu.enable(true, 'custom');
-    this.menu.open('custom');
-  }
-  
   salir() {
     this.authService.logout();
     this.router.navigateByUrl('login');

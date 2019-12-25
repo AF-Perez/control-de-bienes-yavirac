@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 // imports agregados por mi
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { tap, map } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { GlobalsService } from '../services/globals.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnDestroy {
 
   constructor(
     private  clienteHttp: HttpClient,
@@ -22,17 +22,19 @@ export class AuthService {
     private variablesGlobales: GlobalsService,
   ) { }
 
+  private NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
   private _user = new BehaviorSubject<User>(null);
-  NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
   authSubject  =  new BehaviorSubject(false);
-  isLoggedIn = false;
-  _token = null;
+  private _token = new BehaviorSubject<string>(null);
+  private isLoggedIn = false;
+  private _userId = null;
+  private activeLogoutTimer: any;
 
   get userIsAuthenticated() {
-    return this._user.asObservable().pipe(
-      map(user => {
-        if (user) {
-          return !!user.token;
+    return this._token.asObservable().pipe(
+      map(token => {
+        if (token) {
+          return !!token;
         } else {
           return false;
         }
@@ -76,31 +78,26 @@ export class AuthService {
   }
 
   logear(email: string, password: string ) {
-    const datos = {
-      email,
-      password,
-    };
-
-    console.log(this.NOMBRE_SERVIDOR);
-
+    const datos = { email, password };
     return this.clienteHttp.post<RespuestaLogin>(`${this.NOMBRE_SERVIDOR}/api/login`, datos)
       .pipe(
         tap( resp => {
+          // _user no esta siendo utilizado, linea dejada por si se necesite en un futuro
           this._user.next(new User('1', 'hola', resp.access_token, new Date(resp.expires_at)));
-          this.storeAuthData('1', resp.access_token, 'resp.expires_at');
+          // almacenando el token en la memoria y en el storage del dispositivo
+          this._token.next(resp.access_token);
+          this.storeAuthData('1', resp.access_token, resp.expires_at.toString());
         })
       );
   }
 
-
-  async logout() {
-    // elimina el token del cache
-    await this.almacenamiento.remove('ACCESS_TOKEN');
-    // elimina el tiempo de expirar del token
-    await this.almacenamiento.remove('EXPIRES_IN');
-
-    // retornar
-    this.authSubject.next(false);
+  logout() {
+    if (!this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this._token.next(null);
+    this._user.next(null);
+    Plugins.Storage.remove({ key: 'authData'});
   }
 
   getToken() {
@@ -134,7 +131,6 @@ export class AuthService {
       token,
       tokenExpirationDate,
     });
-
     Plugins.Storage.set({ key: 'authData', value: data });
   }
 
@@ -144,18 +140,15 @@ export class AuthService {
         if (!authData || !authData.value) {
           return null;
         }
-
         const parsedData = JSON.parse(authData.value) as {
           token: string,
           tokenExpirationDate: string,
           userId: string
         };
-
         return new HttpHeaders({
           Authorization: 'Bearer ' + parsedData.token,
           Accept: 'application/json'
         });
-
       }),
     );
   }
@@ -172,11 +165,13 @@ export class AuthService {
           tokenExpirationDate: string,
           userId: string
         };
-        const expirationTime = new Date();
 
-        // if (expirationTime <= new Date()) {
-        //   return null;
-        // }
+        const expirationTime = new Date(parsedData.tokenExpirationDate);
+
+        if (expirationTime <= new Date()) {
+          return null;
+        }
+
         const user = new User(
           parsedData.userId,
           'email',
@@ -186,14 +181,31 @@ export class AuthService {
         return user;
       }),
       tap(user => {
+        console.log('autologueado');
         if (user) {
           this._user.next(user);
+          this.autoLogout(1800000);
         }
       }),
       map(user => {
         return !!user;
       })
     );
+  }
+
+  private autoLogout(duration: number) {
+    if (!this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this.activeLogoutTimer = setTimeout(() => {
+      this.logout();
+    }, duration);
+  }
+
+  ngOnDestroy() {
+    if (!this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
   }
 
 }

@@ -20,9 +20,9 @@ export class LoginPage implements OnInit {
 
   constructor(
     // servicio para autenticarse
-    private  authService: AuthService,
+    private authService: AuthService,
     // para navegar entre pantallas
-    private  router: Router,
+    private router: Router,
     // validaciones
     public formBuilder: FormBuilder,
     // para mostrar alertas
@@ -95,19 +95,25 @@ export class LoginPage implements OnInit {
           this.router.navigateByUrl('caratula');
         },
         (error) => {
-          console.warn(error.message);
+          console.warn(error.status);
+          let mensajeError = 'Error desconocido';
+          if (error.status == '401') {
+            mensajeError = 'El usuario no se encuentra registrado';
+          } else {
+            mensajeError = error.message;
+          }
           this.cargando = false;
           loadingEl.dismiss();
-          this.mostrarAlert();
+          this.mostrarAlert(mensajeError);
         });
       });
   }
 
   // nos muestra un alerta al momento de ingresar
-  private mostrarAlert() {
+  private mostrarAlert(message) {
     this.alertCtrl.create({
       header: 'Autenticación fallida',
-      message: 'El usuario no se encuentra registrado',
+      message: message,
       buttons: ['Ok']
     }).then(alertEl => alertEl.present());
   }
