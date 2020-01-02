@@ -7,6 +7,7 @@ import { AuthService } from '../auth/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
+import { OfflineService } from '../services/offline.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,8 @@ export class TareaRegistroService {
     private authService: AuthService,
     private clienteHttp: HttpClient,
     private variablesGlobales: GlobalsService,
-  ) { }
+    private offlineService: OfflineService,
+  ) {}
 
   private _bienes = new BehaviorSubject<Bien[]>([]);
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
@@ -59,10 +61,21 @@ export class TareaRegistroService {
   // recibe un array con elementos de tipo Bien
   // guarda en el servidor los elementos del array
   guardarBienes(bienes: Bien[]) {
-    bienes.forEach(element => {
-      this.servicioBienes.guardarBien(element).subscribe(resp => {
-        console.log(resp);
-      });
+    this.offlineService.tieneConexion.subscribe(res => {
+      // bienes.forEach(element => {
+        if (res) {
+          // guarda en el servidor
+          this.servicioBienes.guardarBien(bienes[0]).subscribe(resp => {
+            console.log(resp);
+          });
+          return this.bienes
+        }
+        else  {
+          // guarda en el dispositivo
+          this.servicioBienes.guardarBienEnDispositivo(bienes[0]);
+          return this.bienes
+        }
+      // });
     });
     return this.bienes;
   }

@@ -44,9 +44,4 @@ export class SeleccionarUbicacionPage implements OnInit {
       this.ubicaciones = ubicaciones;
     });
   }
-
-  initDB() {
-    this.servicioOffline.crearBaseDeDatos();
-  }
-
 }

@@ -26,10 +26,11 @@ export class CaratulaPage implements OnInit, OnDestroy {
   ) { }
   
   tareas: any = [];
-  isOnline = null;
+  tieneConexion = null;
   private conexionSubscripcion: Subscription;
   disconnectSubscription: any;
   connectSubscription: any;
+  private preguntadorTimer = null;
 
   pages = [
     {
@@ -63,59 +64,34 @@ export class CaratulaPage implements OnInit, OnDestroy {
     this.obtenerTareas();
 
     this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
-      this.isOnline = resultado;
+      this.tieneConexion = resultado;
     });
 
-    // watch network for a disconnection
-    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+    this.preguntadorTimer = setInterval(() => {
       this.offlineService.comprobarConexion();
-    });
-    
-    // watch network for a connection
-    this.connectSubscription = this.network.onConnect().subscribe(() => {
-      this.offlineService.comprobarConexion();
-    });
-
-    // inicializar la base de datos
-    this.db.getDatabaseState().subscribe(rdy => {
-      if (rdy) {
-        this.db.addBien('123abc', 'MUEBLE', 1, 12.12, 'ninguna').then(() => {
-          console.log('hola');
-        });
-      }
-    });
+    }, 10000);
+   
   }
 
   ngOnDestroy() {
-    if (this.disconnectSubscription) {
-      console.log('conectado');
-      this.disconnectSubscription.unsubscribe();
-    }
-
-    if (this.connectSubscription) {
-      console.log('desconectado');
-      this.connectSubscription.unsubscribe();
-    }
-
+   
     if (this.conexionSubscripcion) {
       this.conexionSubscripcion.unsubscribe();
     }
+    
+    clearInterval(this.preguntadorTimer);
   }
 
   ionViewDidEnter() {
-    // watch network for a disconnection
-    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-      this.isOnline = false;
-    });
+    // // watch network for a disconnection
+    // this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+    //   this.tieneConexion = false;
+    // });
 
-    // watch network for a connection
-    this.connectSubscription = this.network.onConnect().subscribe(() => {
-      this.isOnline = true;
-    });
-  }
-
-  comprobarConexion() {
-    this.offlineService.comprobarConexion();
+    // // watch network for a connection
+    // this.connectSubscription = this.network.onConnect().subscribe(() => {
+    //   this.tieneConexion = true;
+    // });
   }
 
   openFirst() {

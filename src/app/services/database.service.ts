@@ -20,7 +20,7 @@ export class DatabaseService {
   ) {
     this.plt.ready().then(() => {
       this.sqlite.create({
-        name: 'control_bienes_yavirac.db',
+        name: 'yavirac.db',
         location: 'default'
       })
       .then((db: SQLiteObject) => {
@@ -28,23 +28,6 @@ export class DatabaseService {
           this.seedDatabase();
       });
     });
-  }
-
-  initDatabase() {
-    this.sqlite.create({
-      name: 'data.db',
-      location: 'default'
-    })
-      .then((db: SQLiteObject) => {
-    
-    
-        db.executeSql('create table danceMoves(name VARCHAR(32))', [])
-          .then(() => console.log('Executed SQL'))
-          .catch(e => console.log(e));
-    
-    
-      })
-      .catch(e => console.log(e));
   }
 
   seedDatabase() {
@@ -66,6 +49,28 @@ export class DatabaseService {
     let data = [codigo, tipo, idUbicacion, precioEstimado, observaciones];
     return this.database.executeSql('INSERT INTO bienes (codigo, tipo, idUbicacion, precioEstimado, observaciones) VALUES (?, ?, ?, ?, ?)', data).then(data => {
       console.log('insertado');
+    }).catch(e => {
+      console.log(e);
+    });
+  }
+
+  cargarBienes() {
+    return this.database.executeSql('SELECT * FROM bienes').then(data => {
+      console.log(data);
+      let bienes = [];
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          bienes.push({ 
+            codigo: data.rows.item(i).codigo,
+            tipo: data.rows.item(i).tipo, 
+            idUbicacion: data.rows.item(i).idUbicacion,
+            precio: data.rows.item(i).precioEstimado,
+            observaciones: data.rows.item(i).observaciones,
+           });
+        }
+      }
+    }).catch(e => {
+      console.log(e);
     });
   }
 }

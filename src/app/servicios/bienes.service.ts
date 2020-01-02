@@ -1,3 +1,4 @@
+import { DatabaseService } from './../services/database.service';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { tap, switchMap } from 'rxjs/operators';
@@ -12,7 +13,7 @@ import { Bien } from '../models/bien.model';
 export class BienesService {
 
   constructor(
-
+    private db: DatabaseService,
     private authService: AuthService,
     private clienteHttp: HttpClient,
     private variablesGlobales: GlobalsService,
@@ -22,7 +23,6 @@ export class BienesService {
   authSubject = new BehaviorSubject(false);
   bienes: any = [];
   idUbicacion = null;
-
 
   traerBienesDeUbicacion(idUbicacion) {
     return this.authService.getHeaders().pipe(
@@ -50,6 +50,25 @@ export class BienesService {
     );
   }
 
+  // guardar un bien en el dispositivo
+  guardarBienEnDispositivo(datosBien: Bien) {
+    return this.db.getDatabaseState().subscribe(rdy => {
+      if (rdy) {
+        this.db.addBien(
+          datosBien.codigo,
+          datosBien.tipo,
+          datosBien.idUbicacion,
+          datosBien.precio,
+          datosBien.observaciones
+        ).then((res) => {
+          console.log('Registro insertado');
+          console.log(res);
+          this.db.cargarBienes();
+        });
+      }
+    });
+  }
+
   traerBienes() {
     return this.authService.getHeaders().pipe(
       switchMap(headers => {
@@ -60,5 +79,4 @@ export class BienesService {
       })
     );
   }
-
 }
