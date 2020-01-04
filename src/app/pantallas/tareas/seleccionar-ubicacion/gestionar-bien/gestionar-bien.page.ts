@@ -81,6 +81,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
           .subscribe(bien => {
             // acciones luego de guardar
             loadingEl.dismiss();
+            this.bienes = [];
             this._location.back();
           });
       })

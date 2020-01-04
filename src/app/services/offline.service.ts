@@ -16,28 +16,15 @@ export class OfflineService {
 
   private _tieneConexion = new BehaviorSubject(null);
 
-  crearBaseDeDatos() {
-    this.sqlite.create({
-      name: 'offline.db',
-      location: 'default',
-    })
-    // .then(db => {
-    //     db.transaction(tx => {
-    //       tx.executeSql('CREATE TABLE IF NOT EXISTS bienes (codigo, tipo, nombre, estado, precio, custodio, idUbicacion, observaciones)');
-    //     })
-    //     .catch(err => {
-    //       console.error(err);
-    //     });
-    // })
-    // .then(err => {
-    //   console.error(err);
-    // });
-  }
-
   comprobarConexion() {
-    if (this.network.type !== null) 
+    if (this.network.type === 'wifi') {
+      console.log('online');
       this._tieneConexion.next(true);
-    this._tieneConexion.next(false);
+    }
+    if (this.network.type === 'none') {
+      console.log('offline');
+      this._tieneConexion.next(false);
+    }
   }
   
   get tieneConexion() {
