@@ -56,10 +56,11 @@ export class BienesService {
       if (rdy) {
         this.db.addBien(
           datosBien.codigo,
+          datosBien.nombre,
           datosBien.tipo,
           datosBien.idUbicacion,
           datosBien.precio,
-          datosBien.observaciones
+          datosBien.observaciones,
         ).then((res) => {
           console.log('Registro insertado');
           console.log(res);
