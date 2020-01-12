@@ -20,7 +20,7 @@ export class DatabaseService {
   ) {
     this.plt.ready().then(() => {
       this.sqlite.create({
-        name: 'yavirac.db',
+        name: 'yavirac0.db',
         location: 'default'
       })
       .then((db: SQLiteObject) => {
@@ -45,32 +45,76 @@ export class DatabaseService {
     return this.dbReady.asObservable();
   }
 
-  addBien(codigo, tipo, idUbicacion, precioEstimado, observaciones) {
-    let data = [codigo, tipo, idUbicacion, precioEstimado, observaciones];
-    return this.database.executeSql('INSERT INTO bienes (codigo, tipo, idUbicacion, precioEstimado, observaciones) VALUES (?, ?, ?, ?, ?)', data).then(data => {
+  addBien(codigo, nombre, tipo, idUbicacion, precioEstimado, observaciones) {
+    let data = [codigo, nombre, tipo, idUbicacion, precioEstimado, observaciones];
+    return this.database.executeSql('INSERT INTO bienes (codigo, nombre, tipo, idUbicacion, precioEstimado, observaciones) VALUES (?, ?, ?, ?, ?, ?)', data).then(data => {
       console.log('insertado');
-    }).catch(e => {
-      console.log(e);
+      this.cargarBienes();
     });
   }
 
+  agregarTarea(idUbicacion, idUsuario, fechaHoraInicio, fechaHoraFin, completada, tipo) {
+    let data = [idUbicacion, idUsuario, fechaHoraInicio, fechaHoraFin, completada, tipo];
+    return this.database.executeSql(`
+      INSERT INTO tareas (
+        idUbicacion,
+        idUsuario,
+        fechaHoraInicio,
+        fechaHoraFin,
+        completada,
+        tipo)
+        VALUES (?, ?, ?, ?, ?, ?)`
+      , data)
+      .then(res => {
+        console.log('cargando tareas');
+        this.cargarTareas();
+      });
+  }
+
   cargarBienes() {
-    return this.database.executeSql('SELECT * FROM bienes').then(data => {
-      console.log(data);
+    return this.database.executeSql('SELECT * FROM bienes', []).then(data => {
       let bienes = [];
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           bienes.push({ 
             codigo: data.rows.item(i).codigo,
+            nombre: data.rows.item(i).nombre,
             tipo: data.rows.item(i).tipo, 
             idUbicacion: data.rows.item(i).idUbicacion,
             precio: data.rows.item(i).precioEstimado,
             observaciones: data.rows.item(i).observaciones,
            });
         }
+        return bienes;
       }
     }).catch(e => {
       console.log(e);
+    });
+  }
+
+  cargarTareas() {
+    return this.database.executeSql('SELECT * FROM tareas', []).then(data => {
+      let tareas = [];
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          tareas.push({ 
+            idUbicacion: data.rows.item(i).idUbicacion,
+            idUsuario: data.rows.item(i).idUsuario,
+            fechaHoraInicio: data.rows.item(i).fechaHoraInicio, 
+            fechaHoraFin: data.rows.item(i).fechaHoraFin,
+            completada: data.rows.item(i).completada,
+            tipo: data.rows.item(i).tipo,
+           });
+        }
+        console.log(tareas);
+        return tareas;
+      }
+    });
+  }
+
+  vaciarTareas() {
+    return this.database.executeSql('DELETE FROM tareas', []).then(data => {
+      
     });
   }
 }

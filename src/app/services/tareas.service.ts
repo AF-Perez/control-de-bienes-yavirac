@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { AuthService } from '../auth/auth.service';
 import { UbicacionesService } from '../servicios/ubicaciones.service';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
@@ -19,6 +20,11 @@ export class TareasService {
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
+  private _tareas  =  new BehaviorSubject([]);
+
+  get tareas() {
+    return this._tareas.asObservable();
+  }
 
   obtenerTareas() {
     return this.authService.getHeaders().pipe(
@@ -66,7 +72,6 @@ export class TareasService {
     return this.authService.getHeaders().pipe(
       switchMap(headers => {
         let data = JSON.stringify(conteos);
-        console.log(data);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, {headers});
       })
     );

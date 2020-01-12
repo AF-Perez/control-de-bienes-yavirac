@@ -7,6 +7,7 @@ import { OfflineService } from './../../services/offline.service';
 import { Subscription } from 'rxjs';
 import { Network } from '@ionic-native/network/ngx';
 import { DatabaseService } from './../../services/database.service';
+import { SincronizacionService } from 'src/app/services/sincronizacion.service';
 
 @Component({
   selector: 'app-caratula',
@@ -23,8 +24,10 @@ export class CaratulaPage implements OnInit, OnDestroy {
     private offlineService: OfflineService,
     private network: Network,
     private db: DatabaseService,
-  ) { }
-  
+    private servicioSync: SincronizacionService,
+    ) { }
+    
+  private subscripcionBase: Subscription;
   tareas: any = [];
   tieneConexion = null;
   private conexionSubscripcion: Subscription;
@@ -33,8 +36,6 @@ export class CaratulaPage implements OnInit, OnDestroy {
   private preguntadorTimer = null;
 
   ngOnInit() {
-    this.obtenerTareas();
-
     this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
       this.tieneConexion = resultado;
     });
@@ -42,15 +43,33 @@ export class CaratulaPage implements OnInit, OnDestroy {
     this.preguntadorTimer = setInterval(() => {
       this.offlineService.comprobarConexion();
     }, 10000);
-   
+    
+    this.subscripcionBase = this.db.getDatabaseState().subscribe(levantadoDB => {
+      if (levantadoDB) {
+        this.servicioSync.sincronizarTareas().subscribe(resultado => {
+          this.tareas = resultado;
+        });
+      }
+    });
+
+    this.offlineService.tieneConexion.subscribe(tieneConx => {
+      if (tieneConx) {
+        this.obtenerTareas();
+      } else {
+        this.db.cargarTareas().then(res => {
+          console.log(res);
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
-   
     if (this.conexionSubscripcion) {
       this.conexionSubscripcion.unsubscribe();
     }
-    
+    if (this.subscripcionBase) {
+      this.subscripcionBase.unsubscribe();
+    }
     clearInterval(this.preguntadorTimer);
   }
 
