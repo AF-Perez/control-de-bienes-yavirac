@@ -35,7 +35,6 @@ export class TareaRegistroService {
     nombre: string,
     estado: string,
     precio: number,
-    custodio: string,
     idUbicacion: string,
     observaciones: string,
   ) {
@@ -45,7 +44,6 @@ export class TareaRegistroService {
       nombre,
       estado,
       precio,
-      custodio,
       idUbicacion,
       observaciones,
     );
@@ -60,7 +58,7 @@ export class TareaRegistroService {
 
   // recibe un array con elementos de tipo Bien
   // guarda en el servidor los elementos del array
-  guardarBienes(bienes: Bien[]) {
+  guardarBienes(bienes: Bien[]) { 
     this.offlineService.tieneConexion.subscribe(res => {
       // bienes.forEach(element => {
         if (res) {
@@ -78,6 +76,10 @@ export class TareaRegistroService {
       // });
     });
     return this.bienes;
+  }
+
+  vaciarBienes() {
+    this._bienes.next([]);
   }
 
   guardarDetallesTarea(detallesTarea) {

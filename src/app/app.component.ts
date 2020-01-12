@@ -33,6 +33,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authSub = this.authService.userIsAuthenticated.subscribe(isAuthenticated => {
+      console.log(isAuthenticated);
+      console.log('isAuthenticated');
       if (!isAuthenticated && this.prevAuthState !== isAuthenticated) {
         this.router.navigateByUrl('/login');
       }
