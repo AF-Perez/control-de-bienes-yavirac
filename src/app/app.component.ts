@@ -5,6 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { OfflineService } from './services/offline.service';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { Subscription } from 'rxjs';
 export class AppComponent implements OnInit, OnDestroy {
   private authSub: Subscription;
   private prevAuthState = false;
+  private isOnline = false;
 
   constructor(
     private platform: Platform,
@@ -20,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private statusBar: StatusBar,
     private authService: AuthService,
     private router: Router,
+    private servicioOffline: OfflineService,
   ) {
     this.initializeApp();
   }
@@ -38,6 +41,17 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.prevAuthState = isAuthenticated;
     });
+    this.servicioOffline.tieneConexion.subscribe(tieneCon => {
+      console.log(tieneCon);
+      if (tieneCon) {
+        this.isOnline = true;
+      } else {
+        this.isOnline = false;
+      }
+    });
+    setInterval(() => {
+      console.log(this.isOnline);
+    }, 2000);
   }
 
   ngOnDestroy() {

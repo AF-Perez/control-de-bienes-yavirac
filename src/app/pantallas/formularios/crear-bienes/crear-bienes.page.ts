@@ -62,10 +62,7 @@ export class CrearBienesPage implements OnInit {
       nombre: new FormControl('', Validators.required),
       estado: new FormControl('', Validators.required),
       precio: new FormControl('', Validators.required),
-      custodio: new FormControl('', Validators.required),
-      ubicacion: new FormControl('', Validators.required),
       observaciones: new FormControl(''),
-
     });
   }
 
@@ -108,7 +105,6 @@ export class CrearBienesPage implements OnInit {
           valoresFormulario.nombre,
           valoresFormulario.estado,
           valoresFormulario.precio,
-          valoresFormulario.custodio,
           this.idUbicacion,
           valoresFormulario.observaciones,
         )
@@ -170,19 +166,12 @@ export class CrearBienesPage implements OnInit {
     'nombre': [
       { type: 'required', message: 'Nombre del bien requerido.' }
     ],
-
     'precio': [
       { type: 'required', message: 'Precio es requerido.' }
     ],
-
     'codigo': [
       { type: 'required', message: 'El código es requerido.' }
     ],
-
-    'custodio': [
-      { type: 'required', message: 'Por favor ingresa un custodio.' }
-    ],
-
     'terms': [
       { type: 'pattern', message: 'Usted acepta los cambiuos realizados.' }
     ],
