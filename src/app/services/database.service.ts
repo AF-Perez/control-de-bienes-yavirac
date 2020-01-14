@@ -48,7 +48,6 @@ export class DatabaseService {
   addBien(codigo, nombre, tipo, idUbicacion, precioEstimado, observaciones) {
     let data = [codigo, nombre, tipo, idUbicacion, precioEstimado, observaciones];
     return this.database.executeSql('INSERT INTO bienes (codigo, nombre, tipo, idUbicacion, precioEstimado, observaciones) VALUES (?, ?, ?, ?, ?, ?)', data).then(data => {
-      console.log('insertado');
       this.cargarBienes();
     });
   }
@@ -66,7 +65,6 @@ export class DatabaseService {
         VALUES (?, ?, ?, ?, ?, ?)`
       , data)
       .then(res => {
-        console.log('cargando tareas');
         this.cargarTareas();
       });
   }
@@ -106,8 +104,22 @@ export class DatabaseService {
             tipo: data.rows.item(i).tipo,
            });
         }
-        console.log(tareas);
         return tareas;
+      }
+    });
+  }
+
+  cargarUbicaciones() {
+    return this.database.executeSql('SELECT * FROM ubicaciones', []).then(data => {
+      let ubicaciones = [];
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          ubicaciones.push({ 
+            idUbicacion: data.rows.item(i).id,
+            nombre: data.rows.item(i).nombre,
+           });
+        }
+        return ubicaciones;
       }
     });
   }
@@ -115,6 +127,26 @@ export class DatabaseService {
   vaciarTareas() {
     return this.database.executeSql('DELETE FROM tareas', []).then(data => {
       
+    });
+  }
+
+  insertarUbicaciones(ubicaciones) {
+    // console.warn(typeof ubicaciones);
+    // // const ubicacionesArr = [];
+    // // for (const u in ubicaciones) {
+    // //   ubicacionesArr.push(ubicaciones[u]);
+    // // }
+
+    return this.database.transaction(trsc => {
+      trsc.executeSql('DELETE FROM ubicaciones', []);
+      trsc.executeSql('CREATE TABLE IF NOT EXISTS ubicaciones (id, nombre)', []);
+      ubicaciones.forEach(ubicacion => {
+        let data = [ubicacion.id, ubicacion.nombre];
+        trsc.executeSql(
+          'INSERT INTO ubicaciones VALUES (?, ?)',
+          data,
+        );
+      });
     });
   }
 }

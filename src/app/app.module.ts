@@ -35,7 +35,6 @@ import { Camera } from '@ionic-native/camera/ngx';
     FormsModule,
     CommonModule,
     IonicSelectableModule,
-    Camera,
   ],
   providers: [
     StatusBar,
@@ -51,6 +50,7 @@ import { Camera } from '@ionic-native/camera/ngx';
     BarcodeScanner,
     Network,
     SQLitePorter,
+    Camera,
   ],
   bootstrap: [AppComponent]
 })

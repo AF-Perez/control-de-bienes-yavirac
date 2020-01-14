@@ -18,11 +18,18 @@ export class UbicacionesService {
     private variablesGlobales: GlobalsService,
   ) { }
 
-  token: any;
-
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
-  authSubject = new  BehaviorSubject(false);
-  ubicaciones: any = [];
+  token: any;
+  authSubject = new BehaviorSubject(false);
+  private _ubicaciones = new BehaviorSubject([]);
+  
+  get ubicaciones() {
+    return this._ubicaciones.asObservable();
+  }
+
+  setUbicaciones(ubicaciones) {
+    this._ubicaciones.next(ubicaciones);
+  }
 
   obtenerUbicaciones5() {
     return this.authService.getHeaders().pipe(
