@@ -7,12 +7,18 @@ import { IonicModule } from '@ionic/angular';
 
 import { GestionarBajasPage } from './gestionar-bajas.page';
 
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+
+
 const routes: Routes = [
   {
     path: '',
     component: GestionarBajasPage
+    
   }
+  
 ];
+
 
 @NgModule({
   imports: [
@@ -23,4 +29,5 @@ const routes: Routes = [
   ],
   declarations: [GestionarBajasPage]
 })
+
 export class GestionarBajasPageModule {}

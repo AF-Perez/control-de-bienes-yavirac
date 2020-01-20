@@ -42,16 +42,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.prevAuthState = isAuthenticated;
     });
     this.servicioOffline.tieneConexion.subscribe(tieneCon => {
-      console.log(tieneCon);
       if (tieneCon) {
         this.isOnline = true;
       } else {
         this.isOnline = false;
       }
     });
-    setInterval(() => {
-      console.log(this.isOnline);
-    }, 2000);
   }
 
   ngOnDestroy() {

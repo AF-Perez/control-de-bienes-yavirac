@@ -20,7 +20,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
-
+import { Camera } from '@ionic-native/camera/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -50,6 +50,7 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
     BarcodeScanner,
     Network,
     SQLitePorter,
+    Camera,
   ],
   bootstrap: [AppComponent]
 })
