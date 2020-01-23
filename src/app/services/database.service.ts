@@ -1,7 +1,7 @@
 import { Platform } from '@ionic/angular';
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
 import { HttpClient } from '@angular/common/http';
 
@@ -20,7 +20,7 @@ export class DatabaseService {
   ) {
     this.plt.ready().then(() => {
       this.sqlite.create({
-        name: 'yavirac0.db',
+        name: 'yavirac1.db',
         location: 'default'
       })
       .then((db: SQLiteObject) => {
@@ -52,8 +52,8 @@ export class DatabaseService {
     });
   }
 
-  agregarTarea(idUbicacion, idUsuario, fechaHoraInicio, fechaHoraFin, completada, tipo) {
-    let data = [idUbicacion, idUsuario, fechaHoraInicio, fechaHoraFin, completada, tipo];
+  agregarTarea(idUbicacion, idUsuario, fechaHoraInicio, fechaHoraFin, completada, tipo, observaciones) {
+    let data = [idUbicacion, idUsuario, fechaHoraInicio, fechaHoraFin, completada, tipo, observaciones];
     return this.database.executeSql(`
       INSERT INTO tareas (
         idUbicacion,
@@ -61,11 +61,12 @@ export class DatabaseService {
         fechaHoraInicio,
         fechaHoraFin,
         completada,
-        tipo)
-        VALUES (?, ?, ?, ?, ?, ?)`
+        tipo,
+        observaciones)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`
       , data)
       .then(res => {
-        this.cargarTareas();
+        console.log('null');
       });
   }
 
@@ -91,19 +92,20 @@ export class DatabaseService {
   }
 
   cargarTareas() {
-    return this.database.executeSql('SELECT * FROM tareas', []).then(data => {
+    return this.database.executeSql('SELECT * FROM tareas LIMIT 4', []).then(data => {
       let tareas = [];
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           tareas.push({ 
-            idUbicacion: data.rows.item(i).idUbicacion,
-            idUsuario: data.rows.item(i).idUsuario,
-            fechaHoraInicio: data.rows.item(i).fechaHoraInicio, 
-            fechaHoraFin: data.rows.item(i).fechaHoraFin,
+            id_ubicacion: data.rows.item(i).idUbicacion,
+            id_usuario: data.rows.item(i).idUsuario,
+            fecha_asignacion: data.rows.item(i).fechaHoraInicio, 
+            // fechaHoraFin: data.rows.item(i).fechaHoraFin,
             completada: data.rows.item(i).completada,
             tipo: data.rows.item(i).tipo,
            });
         }
+        console.warn(tareas);
         return tareas;
       }
     });
@@ -119,6 +121,7 @@ export class DatabaseService {
             nombre: data.rows.item(i).nombre,
            });
         }
+        console.warn(ubicaciones + 'bua');
         return ubicaciones;
       }
     });
@@ -131,12 +134,6 @@ export class DatabaseService {
   }
 
   insertarUbicaciones(ubicaciones) {
-    // console.warn(typeof ubicaciones);
-    // // const ubicacionesArr = [];
-    // // for (const u in ubicaciones) {
-    // //   ubicacionesArr.push(ubicaciones[u]);
-    // // }
-
     return this.database.transaction(trsc => {
       trsc.executeSql('DELETE FROM ubicaciones', []);
       trsc.executeSql('CREATE TABLE IF NOT EXISTS ubicaciones (id, nombre)', []);
@@ -148,5 +145,17 @@ export class DatabaseService {
         );
       });
     });
+  }
+
+  vaciarBase() {
+    return from(this.database.transaction(trsc => {
+      trsc.executeSql('DELETE FROM bienes', []);
+      trsc.executeSql('DELETE FROM ubicaciones', []);
+      trsc.executeSql('DELETE FROM tareas', []);
+      trsc.executeSql('DELETE FROM bajas', []);
+      trsc.executeSql('DELETE FROM conteos', []);
+      trsc.executeSql('DELETE FROM bienesContados', []);
+      trsc.executeSql('DELETE FROM registros', []);
+    }));
   }
 }

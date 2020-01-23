@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS tareas(
     fechaHoraInicio TEXT,
     fechaHoraFin TEXT,
     completada INTEGER,
-    tipo TEXT
+    tipo TEXT,
+    observaciones TEXT
 );
 
 CREATE TABLE IF NOT EXISTS bajas(
