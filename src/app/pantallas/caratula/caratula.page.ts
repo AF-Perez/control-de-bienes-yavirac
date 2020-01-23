@@ -43,11 +43,10 @@ export class CaratulaPage implements OnInit, OnDestroy {
     
     this.subscripcionBase = this.db.getDatabaseState().subscribe(levantadoDB => {
       if (levantadoDB) {
-        this.servicioSync.sincronizarTareas().subscribe(tareas => {
-          this.tareas = tareas;
-        });
-        this.servicioSync.sincronizarUbicaciones().subscribe(ubicaciones => {
-          this.ubicaciones = ubicaciones;
+        // si la base se levanto correctamente se procede a sincronizar la base local con el servidor
+        this.servicioSync.sincronizarApp().subscribe(res => {
+          console.log('resultado sincr');
+          console.log(res);
         });
       }
     });

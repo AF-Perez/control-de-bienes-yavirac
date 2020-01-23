@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { GestionarBajasPage } from './gestionar-bajas.page';
 
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+// import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 
 const routes: Routes = [
