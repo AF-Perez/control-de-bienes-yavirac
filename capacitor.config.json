@@ -3,5 +3,9 @@
   "appName": "control-de-bienes-yavirac",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "url": "http://192.168.0.5:8100",
+    "originalUrl": "http://192.168.0.5:8100"
+  }
 }

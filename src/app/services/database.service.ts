@@ -66,7 +66,7 @@ export class DatabaseService {
         VALUES (?, ?, ?, ?, ?, ?, ?)`
       , data)
       .then(res => {
-        console.log('null');
+        console.log(res);
       });
   }
 
@@ -117,11 +117,10 @@ export class DatabaseService {
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           ubicaciones.push({ 
-            idUbicacion: data.rows.item(i).id,
+            id: data.rows.item(i).id,
             nombre: data.rows.item(i).nombre,
            });
         }
-        console.warn(ubicaciones + 'bua');
         return ubicaciones;
       }
     });
@@ -141,6 +140,35 @@ export class DatabaseService {
         let data = [ubicacion.id, ubicacion.nombre];
         trsc.executeSql(
           'INSERT INTO ubicaciones VALUES (?, ?)',
+          data,
+        );
+      });
+    });
+  }
+
+  insertarTareas(tareas) {
+    return this.database.transaction(trsc => {
+      trsc.executeSql('DELETE FROM tareas', []);
+      tareas.forEach(tarea => {
+        let data = [
+          tarea.id_ubicacion,
+          tarea.id_usuario,
+          tarea.fecha_asignacion,
+          tarea.fecha_asignacion,
+          tarea.completada,
+          tarea.tipo,
+          tarea.observaciones,
+        ];
+        trsc.executeSql(`
+          INSERT INTO tareas (
+            idUbicacion,
+            idUsuario,
+            fechaHoraInicio,
+            fechaHoraFin,
+            completada,
+            tipo,
+            observaciones)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
           data,
         );
       });

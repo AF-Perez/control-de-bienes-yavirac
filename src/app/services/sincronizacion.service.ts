@@ -20,6 +20,7 @@ export class SincronizacionService {
     return this.db.vaciarBase().pipe(
       // coger los datos desde el servidor e insertar en la bdd
       tap(res => {
+        console.log('base reseteada');
         this.sincronizarUbicaciones().subscribe();
         this.sincronizarTareas().subscribe();
       }),
@@ -29,20 +30,9 @@ export class SincronizacionService {
   sincronizarTareas() {
     // traer las tareas desde el servidor
     return this.servicioTareas.obtenerTareas().pipe(
-      map(tareas => {
+      flatMap(tareas => {
         // insertar en la base de datos local
-        tareas.forEach(tarea => {
-          this.db.agregarTarea(
-            tarea.id_ubicacion,
-            tarea.id_usuario,
-            tarea.fecha_asignacion,
-            tarea.fecha_asignacion,
-            tarea.completada,
-            tarea.tipo,
-            tarea.observaciones,
-          );
-        });
-        return tareas;
+        return this.db.insertarTareas(tareas);
       })
     );
   }
