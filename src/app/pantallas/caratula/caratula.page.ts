@@ -46,23 +46,13 @@ export class CaratulaPage implements OnInit, OnDestroy {
         // si la base se levanto correctamente se procede a sincronizar la base local con el servidor
         this.servicioSync.sincronizarApp().subscribe(res => {
           console.log('resultado sincr');
-          console.log(res);
         });
       }
     });
-
-    // this.offlineService.tieneConexion.subscribe(tieneConx => {
-    //   if (tieneConx) {
-    //     this.obtenerTareas();
-    //   } else {
-    //     this.db.cargarTareas().then(res => {
-    //       console.log(res);
-    //     });
-    //   }
-    // });
   }
 
   ngOnDestroy() {
+    console.log('caratula destruida');
     if (this.conexionSubscripcion) {
       this.conexionSubscripcion.unsubscribe();
     }

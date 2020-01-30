@@ -6,6 +6,7 @@ import { BehaviorSubject, from } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { Bien } from '../models/bien.model';
+import { OfflineService } from '../services/offline.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,8 @@ export class BienesService {
     private authService: AuthService,
     private clienteHttp: HttpClient,
     private variablesGlobales: GlobalsService,
+    private servicioOffline: OfflineService,
+    private servicioBDD: DatabaseService,
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
@@ -25,11 +28,19 @@ export class BienesService {
   idUbicacion = null;
 
   traerBienesDeUbicacion(idUbicacion) {
-    return this.authService.getHeaders().pipe(
-      switchMap(headers => {
-        return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
-      }),
+    return this.servicioOffline.tieneConexion.pipe(
+      switchMap(tieneConx => {
+        if (tieneConx) {
+          return this.authService.getHeaders().pipe(
+            switchMap(headers => {
+              return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
+            }),
+          );
+        }
+        return from(this.servicioBDD.cargarBienesPorUbicacion(idUbicacion));
+      })
     );
+    
   }
 
   // guardar un bien en el servidor
@@ -62,8 +73,6 @@ export class BienesService {
           datosBien.precio,
           datosBien.observaciones,
         ).then((res) => {
-          console.log('Registro insertado');
-          console.log(res);
           this.db.cargarBienes();
         });
       }
@@ -71,13 +80,33 @@ export class BienesService {
   }
 
   traerBienes() {
-    return this.authService.getHeaders().pipe(
-      switchMap(headers => {
-        return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
-      }),
-      tap(token => {
-        // console.warn(token);
+    return this.servicioOffline.tieneConexion.pipe(
+      switchMap(tieneConx => {
+        if (tieneConx) {
+          return this.authService.getHeaders().pipe(
+            switchMap(headers => {
+              return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
+            })
+          );
+        }
+        return from(this.servicioBDD.cargarTareas());
       })
     );
+  }
+
+  obtenerBienesAPI() {
+    return this.authService.getHeaders().pipe(
+      switchMap(headers => {
+        return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
+      })
+    );
+  }
+
+  obtenerBienesPendientes() {
+    return from(this.db.cargarBienes().then(bienes => {
+      return bienes.filter(bien => {
+        bien.sincronizado === false;
+      });
+    }));
   }
 }

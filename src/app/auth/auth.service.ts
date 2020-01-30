@@ -6,7 +6,6 @@ import { Observable, BehaviorSubject, from } from 'rxjs';
 import { Usuario } from './user';
 import { AuthRespuesta } from './auth-respuesta';
 import { RespuestaLogin } from './respuesta-login';
-import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { User } from '../models/user.model';
 import { Plugins } from '@capacitor/core';
 import { GlobalsService } from '../services/globals.service';
@@ -18,7 +17,6 @@ export class AuthService implements OnDestroy {
 
   constructor(
     private  clienteHttp: HttpClient,
-    private almacenamiento: NativeStorage,
     private variablesGlobales: GlobalsService,
   ) { }
 
@@ -52,31 +50,6 @@ export class AuthService implements OnDestroy {
       }));
   }
 
-  get tokenFromStorage() {
-    return this._user.asObservable().pipe(
-      map(user => {
-        if (user) {
-          return user.token;
-        } else {
-          return null;
-        }
-      }));
-  }
-
-  registrar(user: Usuario): Observable<AuthRespuesta> {
-    return this.clienteHttp.post<AuthRespuesta>(`${this.NOMBRE_SERVIDOR}/register`, user).pipe(
-      tap(async (resp: AuthRespuesta ) => {
-        // si el servidor me acepta los datos
-        if (resp.user) {
-          // como proceso la respuesta del servidor
-          await this.almacenamiento.setItem('ACCESS_TOKEN', resp.user.access_token);
-          await this.almacenamiento.setItem('EXPIRES_IN', resp.user.expires_in);
-          this.authSubject.next(true);
-        }
-      })
-    );
-  }
-
   logear(email: string, password: string ) {
     const datos = { email, password };
     return this.clienteHttp.post<RespuestaLogin>(`${this.NOMBRE_SERVIDOR}/api/login`, datos)
@@ -98,23 +71,6 @@ export class AuthService implements OnDestroy {
     this._token.next(null);
     this._user.next(null);
     Plugins.Storage.remove({ key: 'authData'});
-  }
-
-  getToken() {
-    return this.almacenamiento.getItem('ACCESS_TOKEN').then(
-      data => {
-        this._token = data;
-        if (this.token != null) {
-          this.isLoggedIn = true;
-        } else {
-          this.isLoggedIn = false;
-        }
-      },
-      error => {
-        this._token = null;
-        this.isLoggedIn = false;
-      }
-    );
   }
 
   estaLogueado() {
@@ -203,7 +159,7 @@ export class AuthService implements OnDestroy {
   }
 
   ngOnDestroy() {
-    if (!this.activeLogoutTimer) {
+    if (this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
     }
   }

@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS bienes(
     tipo TEXT,
     idUbicacion INTEGER,
     precioEstimado REAL,
-    observaciones TEXT
+    observaciones TEXT,
+    sincronizado INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS ubicaciones(

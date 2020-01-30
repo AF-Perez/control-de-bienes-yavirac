@@ -53,9 +53,9 @@ export class RegistrarPage implements OnInit {
   }
 
   registrar(formulario) {
-    this.authService.registrar(formulario.value).subscribe((res) => {
-      this.router.navigateByUrl('usuarios');
-    });
+    // this.authService.registrar(formulario.value).subscribe((res) => {
+    //   this.router.navigateByUrl('usuarios');
+    // });
   }
 
   validation_messages = {
