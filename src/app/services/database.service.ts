@@ -20,7 +20,7 @@ export class DatabaseService {
   ) {
     this.plt.ready().then(() => {
       this.sqlite.create({
-        name: 'yavirac1.db',
+        name: 'yavirac2.db',
         location: 'default'
       })
       .then((db: SQLiteObject) => {
@@ -76,23 +76,44 @@ export class DatabaseService {
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           bienes.push({ 
-            codigo: data.rows.item(i).codigo,
+            id: data.rows.item(i).id,
             nombre: data.rows.item(i).nombre,
-            tipo: data.rows.item(i).tipo, 
-            idUbicacion: data.rows.item(i).idUbicacion,
-            precio: data.rows.item(i).precioEstimado,
+            codigo: data.rows.item(i).codigo,
+            clase: data.rows.item(i).tipo, 
+            id_ubicacion: data.rows.item(i).idUbicacion,
+            valor: data.rows.item(i).precioEstimado,
             observaciones: data.rows.item(i).observaciones,
+            sincronizado: data.rows.item(i).sincronizado,
            });
         }
-        return bienes;
       }
-    }).catch(e => {
-      console.log(e);
-    });
+      return bienes;
+    })
+  }
+
+  cargarBienesPorUbicacion(idUbicacion) {
+    return this.database.executeSql('SELECT * FROM bienes WHERE bienes.idUbicacion=' + idUbicacion, []).then(data => {
+      let bienes = [];
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          bienes.push({ 
+            id: data.rows.item(i).id,
+            nombre: data.rows.item(i).nombre,
+            codigo: data.rows.item(i).codigo,
+            clase: data.rows.item(i).tipo, 
+            id_ubicacion: data.rows.item(i).idUbicacion,
+            valor: data.rows.item(i).precioEstimado,
+            observaciones: data.rows.item(i).observaciones,
+            sincronizado: data.rows.item(i).sincronizado,
+           });
+        }
+      }
+      return bienes;
+    })
   }
 
   cargarTareas() {
-    return this.database.executeSql('SELECT * FROM tareas LIMIT 4', []).then(data => {
+    return this.database.executeSql('SELECT * FROM tareas', []).then(data => {
       let tareas = [];
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
@@ -117,26 +138,18 @@ export class DatabaseService {
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
           ubicaciones.push({ 
-            idUbicacion: data.rows.item(i).id,
+            id: data.rows.item(i).id,
             nombre: data.rows.item(i).nombre,
            });
         }
-        console.warn(ubicaciones + 'bua');
         return ubicaciones;
       }
-    });
-  }
-
-  vaciarTareas() {
-    return this.database.executeSql('DELETE FROM tareas', []).then(data => {
-      
     });
   }
 
   insertarUbicaciones(ubicaciones) {
     return this.database.transaction(trsc => {
       trsc.executeSql('DELETE FROM ubicaciones', []);
-      trsc.executeSql('CREATE TABLE IF NOT EXISTS ubicaciones (id, nombre)', []);
       ubicaciones.forEach(ubicacion => {
         let data = [ubicacion.id, ubicacion.nombre];
         trsc.executeSql(
@@ -144,7 +157,51 @@ export class DatabaseService {
           data,
         );
       });
-    });
+    }).then(res => console.log('insertadas ubicaciones'));
+  }
+
+  insertarTareas(tareas) {
+    return this.database.transaction(trsc => {
+      trsc.executeSql('DELETE FROM tareas', []);
+      tareas.forEach(tarea => {
+        let data = [
+          tarea.id,
+          tarea.id_ubicacion,
+          tarea.id_usuario,
+          tarea.fecha_asignacion,
+          tarea.fecha_asignacion,
+          tarea.completada,
+          tarea.tipo,
+          tarea.observaciones,
+        ];
+        trsc.executeSql(
+          'INSERT INTO tareas VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          data,
+        );
+      });
+    }).then(res => console.log('insertadas tareas'));
+  }
+
+  insertarBienes(bienes) {
+    return this.database.transaction(trsc => {
+      trsc.executeSql('DELETE FROM bienes', []);
+      bienes.forEach(bien => {
+        let data = [
+          bien.id,
+          bien.nombre,
+          bien.codigo,
+          bien.clase,
+          bien.id_ubicacion,
+          bien.valor,
+          bien.observaciones,
+          bien.sincronizado,
+        ];
+        trsc.executeSql(
+          'INSERT INTO bienes VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          data,
+        );
+      });
+    }).then(res => console.log('insertados bienes'));
   }
 
   vaciarBase() {
