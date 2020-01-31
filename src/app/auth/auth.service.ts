@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 // imports agregados por mi
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, share } from 'rxjs/operators';
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { Usuario } from './user';
 import { AuthRespuesta } from './auth-respuesta';
@@ -50,6 +50,17 @@ export class AuthService implements OnDestroy {
       }));
   }
 
+  get user() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if (user) {
+          return user;
+        } else {
+          return null;
+        }
+      }));
+  }
+
   logear(email: string, password: string ) {
     const datos = { email, password };
     return this.clienteHttp.post<RespuestaLogin>(`${this.NOMBRE_SERVIDOR}/api/login`, datos)
@@ -91,6 +102,21 @@ export class AuthService implements OnDestroy {
   }
 
   getHeaders() {
+    return this.user.pipe(
+      map(userData => {
+        if (!userData || !userData.token) {
+          return null;
+        }
+        console.log(userData);
+        return new HttpHeaders({
+          Authorization: 'Bearer ' + userData.token,
+          Accept: 'application/json'
+        });
+      }),
+    );
+  }
+
+  getHeaders2() {
     return from(Plugins.Storage.get({key: 'authData'})).pipe(
       map(authData => {
         if (!authData || !authData.value) {

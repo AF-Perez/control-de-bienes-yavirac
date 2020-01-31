@@ -67,6 +67,7 @@ export class SincronizacionService {
   sincronizarBienes() {
     return this.servicioBienes.obtenerBienesPendientes().pipe(
       mergeMap(bienesPend => {
+        console.log(bienesPend);
         let requests = [];
         bienesPend.forEach(bp => {
           requests.push(this.servicioBienes.guardarBien(bp));
