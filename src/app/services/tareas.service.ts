@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { switchMap, flatMap, map, take } from 'rxjs/operators';
+import { switchMap, flatMap, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { AuthService } from '../auth/auth.service';
@@ -34,13 +34,14 @@ export class TareasService {
     return this.servicioOffline.tieneConexion.pipe(
       switchMap(tieneConx => {
         if (tieneConx) {
+          console.log('por la buena');
           return this.authService.getHeaders().pipe(
-            take(1),
             switchMap(headers => {
               return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
             })
           );
         }
+        console.log('por la mala');
         return from(this.servicioBDD.cargarTareas());
       })
     );
@@ -51,16 +52,18 @@ export class TareasService {
       switchMap(tareas => {
         return this.servicioUbicaciones.obtenerUbicaciones5().pipe(
           map(ubicaciones => {
-            return {tareas, ubicaciones};
+            const ubicacionesArr = [];
+            for (const key in ubicaciones) {
+              ubicacionesArr.push(ubicaciones[key]);
+            }
+            return {tareas, ubicacionesArr};
           })
         );
       }),
-      map(({tareas, ubicaciones}) => {
-        console.log(tareas);
-        console.log(ubicaciones);
+      map(({tareas, ubicacionesArr}) => {
         let ubicacionesValidas = [];
         tareas.forEach(tarea => {
-          ubicaciones.forEach(ubicacion => {
+          ubicacionesArr.forEach(ubicacion => {
             if (ubicacion.id === tarea.id_ubicacion && tarea.tipo === tipoTarea && tarea.completada === 0) {
               ubicacionesValidas.push(ubicacion);
             }
@@ -73,7 +76,6 @@ export class TareasService {
 
   ingresarConteos(conteos) {
     return this.authService.getHeaders().pipe(
-      take(1),
       switchMap(headers => {
         let data = JSON.stringify(conteos);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, {headers});
@@ -83,7 +85,6 @@ export class TareasService {
 
   solicitarBajaBien(idBien, observaciones) {
     return this.authService.getHeaders().pipe(
-      take(1),
       switchMap(headers => {
         let data = {observaciones: observaciones};
         //JSON.stringify(data);

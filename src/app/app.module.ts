@@ -12,7 +12,9 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AuthModule } from  './auth/auth.module';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { TokenInterceptor } from './interceptors/token.interceptor'
 import { IonicSelectableModule } from 'ionic-selectable';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
@@ -38,6 +40,12 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    NativeStorage,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
     SQLite,
     BarcodeScanner,
     Network,

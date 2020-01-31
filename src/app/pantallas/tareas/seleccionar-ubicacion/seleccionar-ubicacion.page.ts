@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
 import { TareasService } from './../../../services/tareas.service';
+import { OfflineService } from './../../../services/offline.service';
+
 
 @Component({
   selector: 'app-seleccionar-ubicacion',
@@ -13,6 +15,7 @@ export class SeleccionarUbicacionPage implements OnInit {
   constructor(
     private router: Router,
     private servicioTareas: TareasService,
+    private servicioOffline: OfflineService,
   ){
   }
 
@@ -26,7 +29,6 @@ export class SeleccionarUbicacionPage implements OnInit {
   }
 
   irAGestionarBienes(ubicacion){
-    console.log(ubicacion);
     let navigationExtras: NavigationExtras = {
       state: {
         // aqui todo lo que se va a pasar a las sig pantalla

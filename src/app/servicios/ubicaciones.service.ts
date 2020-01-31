@@ -3,6 +3,7 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { tap, catchError, take, switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import { GlobalsService } from '../services/globals.service';
 import { OfflineService } from '../services/offline.service';
 import { DatabaseService } from '../services/database.service';
@@ -14,6 +15,7 @@ export class UbicacionesService {
 
   constructor(
     private  clienteHttp: HttpClient,
+    private almacenamiento: NativeStorage,
     private authService: AuthService,
     private variablesGlobales: GlobalsService,
     private servicioOffline: OfflineService,
@@ -37,12 +39,14 @@ export class UbicacionesService {
     return this.servicioOffline.tieneConexion.pipe(
       switchMap(tieneConx => {
         if (tieneConx) {
+          console.log('por la buena ubicaciones');
           return this.authService.getHeaders().pipe(
             switchMap(headers => {
-              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
+              return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
             }),
           );
         }
+        console.log('por la mala ubicaciones');
         return from(this.servicioBDD.cargarUbicaciones());
       })
       
@@ -51,7 +55,6 @@ export class UbicacionesService {
 
   obtenerUbicacion(idUbicacion) {
     return this.authService.getHeaders().pipe(
-      take(1),
       switchMap(headers => {
         return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}`, {headers});
       }),

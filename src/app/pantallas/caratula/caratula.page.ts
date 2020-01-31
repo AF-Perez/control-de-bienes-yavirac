@@ -63,7 +63,6 @@ export class CaratulaPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('caratula destruida');
     if (this.conexionSubscripcion) {
       this.conexionSubscripcion.unsubscribe();
     }
