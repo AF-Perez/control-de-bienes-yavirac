@@ -64,9 +64,6 @@ export class TareasService {
         );
       }),
       map(({tareas, ubicaciones}) => {
-        console.log('tareas.service');
-        console.log(tareas);
-        console.log(ubicaciones);
         let ubicacionesValidas = [];
         tareas.forEach(tarea => {
           ubicaciones.forEach(ubicacion => {

@@ -155,6 +155,14 @@ export class CrearBienesPage implements OnInit {
       );
   }
 
+  abrirScaner() {
+    this.barcodeScanner.scan().then(barcodeData => {
+      this.validations_form.patchValue({codigo: barcodeData.text});
+     }).catch(err => {
+         console.error('Error', err);
+     });
+  }
+
   validation_messages = {
     'username': [
       { type: 'required', message: 'Username is required.' },

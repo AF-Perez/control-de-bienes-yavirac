@@ -6,6 +6,7 @@ import { AuthService } from './auth/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { OfflineService } from './services/offline.service';
+import { SincronizacionService } from './services/sincronizacion.service';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private authSub: Subscription;
   private prevAuthState = false;
   private isOnline = false;
+  private offlineSub: Subscription;
 
   constructor(
     private platform: Platform,
@@ -23,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private servicioOffline: OfflineService,
+    private servicioSync: SincronizacionService,
   ) {
     this.initializeApp();
   }
@@ -41,7 +44,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.prevAuthState = isAuthenticated;
     });
-    this.servicioOffline.tieneConexion.subscribe(tieneCon => {
+    this.offlineSub = this.servicioOffline.tieneConexion.subscribe(tieneCon => {
       if (tieneCon) {
         this.isOnline = true;
       } else {
@@ -51,13 +54,26 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('app.component destroyed');
+    console.warn('app.component destroyed');
     if (this.authSub) {
       this.authSub.unsubscribe();
+    }
+    if (this.offlineSub) {
+      this.offlineSub.unsubscribe();
     }
   }
 
   onLogout() {
     this.authService.logout();
+  }
+
+  sincronizar() {
+    console.log('sincronizando...');
+    if (this.isOnline) {
+      this.servicioSync.sincronizarApp().subscribe(res => {
+        console.log('resultados sincronizacion boton');
+        console.log(res);
+      });
+    }
   }
 }

@@ -34,6 +34,12 @@
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle>
+          <ion-item lines="none" (click)="sincronizar()" button>
+            <ion-icon [color]="isOnline ? 'success' : 'danger'" name="sync" slot="end"></ion-icon>
+            <ion-label>Sincronizar</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle>
           <ion-item lines="none" (click)="onLogout()" button>
             <ion-icon name="exit" slot="start"></ion-icon>
             <ion-label>Salir</ion-label>
