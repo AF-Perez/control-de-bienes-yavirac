@@ -3,9 +3,10 @@ import { AuthService } from '../../auth/auth.service';
 import { Router } from "@angular/router";
 import { TareasService } from './../../services/tareas.service';
 import { OfflineService } from './../../services/offline.service';
-import { Subscription } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { DatabaseService } from './../../services/database.service';
 import { SincronizacionService } from 'src/app/services/sincronizacion.service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-caratula',
@@ -31,17 +32,19 @@ export class CaratulaPage implements OnInit, OnDestroy {
   disconnectSubscription: any;
   connectSubscription: any;
   private preguntadorTimer = null;
+  private timerSub: Subscription;
 
   ngOnInit() {
-    this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
+    console.log('init catatula');
+  this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
       this.tieneConexion = resultado;
     });
 
-    this.preguntadorTimer = setInterval(() => {
-      this.offlineService.comprobarConexion();
-    }, 10000);
-    
-    this.subscripcionBase = this.db.getDatabaseState().subscribe(levantadoDB => {
+    // this.preguntadorTimer = setInterval(() => {
+    //   this.offlineService.comprobarConexion();
+    // }, 10000);
+
+    this.subscripcionBase = this.db.getDatabaseState().pipe(take(1)).subscribe(levantadoDB => {
       if (levantadoDB) {
         // si la base se levanto correctamente se procede a sincronizar la base local con el servidor
         this.servicioSync.sincronizarApp().subscribe(res => {
@@ -59,7 +62,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
     if (this.subscripcionBase) {
       this.subscripcionBase.unsubscribe();
     }
-    clearInterval(this.preguntadorTimer);
+    // clearInterval(this.preguntadorTimer);
   }
 
   ionViewDidEnter() {

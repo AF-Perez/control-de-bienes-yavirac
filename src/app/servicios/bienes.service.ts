@@ -1,7 +1,7 @@
 import { DatabaseService } from './../services/database.service';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { tap, switchMap } from 'rxjs/operators';
+import { tap, switchMap, take } from 'rxjs/operators';
 import { BehaviorSubject, from } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
@@ -32,6 +32,7 @@ export class BienesService {
       switchMap(tieneConx => {
         if (tieneConx) {
           return this.authService.getHeaders().pipe(
+            take(1),
             switchMap(headers => {
               return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
             }),
@@ -46,6 +47,7 @@ export class BienesService {
   // guardar un bien en el servidor
   guardarBien(datosBien: Bien) {
     return this.authService.getHeaders().pipe(
+      take(1),
       switchMap(headers => {
         let postDataBien = {
           'nombre': datosBien.nombre,
@@ -84,6 +86,7 @@ export class BienesService {
       switchMap(tieneConx => {
         if (tieneConx) {
           return this.authService.getHeaders().pipe(
+            take(1),
             switchMap(headers => {
               return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
             })
@@ -96,6 +99,7 @@ export class BienesService {
 
   obtenerBienesAPI() {
     return this.authService.getHeaders().pipe(
+      take(1),
       switchMap(headers => {
         return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/bienes`, {headers});
       })

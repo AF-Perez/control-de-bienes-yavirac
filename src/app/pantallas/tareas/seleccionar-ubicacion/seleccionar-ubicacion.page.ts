@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
 import { TareasService } from './../../../services/tareas.service';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-seleccionar-ubicacion',
   templateUrl: './seleccionar-ubicacion.page.html',
   styleUrls: ['./seleccionar-ubicacion.page.scss'],
 })
-export class SeleccionarUbicacionPage implements OnInit {
+export class SeleccionarUbicacionPage implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
@@ -19,6 +21,7 @@ export class SeleccionarUbicacionPage implements OnInit {
   // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
   tipoTarea = 'REGISTRO';
+  private ubicacionesSub: Subscription;
 
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
@@ -26,7 +29,6 @@ export class SeleccionarUbicacionPage implements OnInit {
   }
 
   irAGestionarBienes(ubicacion){
-    console.log(ubicacion);
     let navigationExtras: NavigationExtras = {
       state: {
         // aqui todo lo que se va a pasar a las sig pantalla
@@ -38,8 +40,15 @@ export class SeleccionarUbicacionPage implements OnInit {
   }
 
   obtenerUbicaciones() {
-    this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).subscribe(ubicaciones => {
+    return this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).pipe(take(1)).subscribe(ubicaciones => {
       this.ubicaciones = ubicaciones;
     });
+  }
+
+  ngOnDestroy() {
+    console.log('seleccionar-ubicacion destroyed');
+    if (this.ubicacionesSub) {
+      this.ubicacionesSub.unsubscribe();
+    }
   }
 }
