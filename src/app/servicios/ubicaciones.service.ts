@@ -38,6 +38,7 @@ export class UbicacionesService {
       switchMap(tieneConx => {
         if (tieneConx) {
           return this.authService.getHeaders().pipe(
+            take(1),
             switchMap(headers => {
               return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
             }),
@@ -51,6 +52,7 @@ export class UbicacionesService {
 
   obtenerUbicacionesAPI() {
     return this.authService.getHeaders().pipe(
+      take(1),
       switchMap(headers => {
         return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
       }),

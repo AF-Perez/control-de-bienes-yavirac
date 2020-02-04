@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BienesService } from '../../../servicios/bienes.service';
@@ -6,6 +6,7 @@ import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-sca
 import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
 import { TareaRegistroService } from '../../../services/tarea-registro.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -13,7 +14,7 @@ import { TareaRegistroService } from '../../../services/tarea-registro.service';
   styleUrls: ['./crear-bienes.page.scss'],
 })
 
-export class CrearBienesPage implements OnInit {
+export class CrearBienesPage implements OnInit, OnDestroy {
 
   validations_form: FormGroup;
   tiposDeBien: Array<string>;
@@ -23,6 +24,7 @@ export class CrearBienesPage implements OnInit {
   encodeData: any;
   scannedData: {};
   barcodeScannerOptions: BarcodeScannerOptions;
+  private agregarBienSub: Subscription;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -66,6 +68,12 @@ export class CrearBienesPage implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.agregarBienSub) {
+      this.agregarBienSub.unsubscribe();
+    }
+  }
+
   onSubmitBck(valoresFormulario) {
     if (!this.validations_form.valid) {
       return;
@@ -99,7 +107,7 @@ export class CrearBienesPage implements OnInit {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.servicioRegistro.agregarBien(
+        this.agregarBienSub = this.servicioRegistro.agregarBien(
           valoresFormulario.codigo,
           valoresFormulario.tiposDeBien,
           valoresFormulario.nombre,

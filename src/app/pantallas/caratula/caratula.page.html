@@ -9,12 +9,12 @@
 <!-- cuerpo de la pantalla -->
 <ion-content>
 
-  <section text-center>
+  <section class="ion-text-center">
     <h1 style="font-size:1.2em">Bienvenido,<br> Por favor, elija una tarea que desee realizar</h1>
   </section>
 
   <ion-grid>
-    <ion-row align-items-center text-center padding>
+    <ion-row class="ion-align-items-center ion-text-center ion-padding">
         <ion-col col-6>
           <ion-button style="font-size:1.3em" [routerLink]="['/seleccionar-ubicacion']" color="medium" >
               <ion-icon name="done-all"></ion-icon>
@@ -22,7 +22,7 @@
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row align-items-center text-center padding>
+      <ion-row class="ion-align-items-center ion-text-center ion-padding">
         <ion-col col-6>
           <ion-button style="font-size:1.5em" [routerLink]="['/conteo/seleccionar-ubicacion']" color="medium">
             <ion-icon name="list-box"></ion-icon>
@@ -30,7 +30,7 @@
             </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row align-items-center text-center padding>
+      <ion-row class="ion-align-items-center ion-text-center ion-padding">
           <ion-col col-6>
               <ion-button style="font-size:1.2em" [routerLink]="['/bajas/seleccionar-ubicacion']" color="medium">
                 <ion-icon name="trash"></ion-icon>

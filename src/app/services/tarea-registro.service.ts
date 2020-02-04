@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { BehaviorSubject, Subscription, forkJoin } from 'rxjs';
 import { Bien } from '../models/bien.model';
-import { take, delay, tap } from 'rxjs/operators';
+import { take, delay, tap, map } from 'rxjs/operators';
 import { BienesService } from '../servicios/bienes.service';
 import { AuthService } from '../auth/auth.service';
 import { switchMap } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { OfflineService } from '../services/offline.service';
 @Injectable({
   providedIn: 'root'
 })
-export class TareaRegistroService {
+export class TareaRegistroService implements OnDestroy {
 
   constructor(
     private servicioBienes: BienesService,
@@ -24,7 +24,9 @@ export class TareaRegistroService {
 
   private _bienes = new BehaviorSubject<Bien[]>([]);
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
+  guardarBienSub: Subscription;
 
+  // usar esta variable mara mantener una referencia glbal a los bienes en memoria
   get bienes() {
     return this._bienes.asObservable();
   }
@@ -48,7 +50,6 @@ export class TareaRegistroService {
       observaciones,
     );
     return this.bienes.pipe(
-      take(1),
       delay(500),
       tap(bienes => {
         this._bienes.next(bienes.concat(nuevoBien));
@@ -58,24 +59,32 @@ export class TareaRegistroService {
 
   // recibe un array con elementos de tipo Bien
   // guarda en el servidor los elementos del array
-  guardarBienes(bienes: Bien[]) { 
-    this.offlineService.tieneConexion.subscribe(res => {
-      // bienes.forEach(element => {
-        if (res) {
-          // guarda en el servidor
-          this.servicioBienes.guardarBien(bienes[0]).subscribe(resp => {
-            console.log(resp);
+  guardarBienes(bienes: Bien[]) {
+    return this.offlineService.tieneConexion.pipe(
+      take(1),
+      switchMap(online => {
+        if (online) {
+          let requests = [];
+          bienes.forEach(bien => {
+            requests.push(this.servicioBienes.guardarBien(bien));
           });
-          return this.bienes
+          forkJoin(requests).subscribe(res => {
+            console.log(res);
+          });
+          return this.bienes;
         }
         else  {
           // guarda en el dispositivo
           this.servicioBienes.guardarBienEnDispositivo(bienes[0]);
-          return this.bienes
+          return this.bienes;
         }
-      // });
-    });
-    return this.bienes;
+      }),
+      take(1),
+      tap(res =>  {
+        console.log("bienesnexts");
+          this._bienes.next([]);
+      }),
+    )
   }
 
   vaciarBienes() {
@@ -84,12 +93,25 @@ export class TareaRegistroService {
 
   guardarDetallesTarea(detallesTarea) {
     return this.authService.getHeaders().pipe(
+      take(1),
       switchMap(headers => {
         let data = JSON.stringify(detallesTarea);
         console.log(data);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/asignacionTarea/${detallesTarea.id}/detalleTarea`, data, {headers});
       })
     );
+  }
+
+  ngOnDestroy() {
+
+  }
+
+  removerBien(idBien) {
+    return this.bienes.pipe(
+      take(1),
+      tap(bienes => {
+      this._bienes.next(bienes.filter(b => b.codigo !== idBien));
+    }));
   }
 
 }

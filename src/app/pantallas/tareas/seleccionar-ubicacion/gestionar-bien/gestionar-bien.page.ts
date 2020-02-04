@@ -4,6 +4,7 @@ import { TareaRegistroService } from 'src/app/services/tarea-registro.service';
 import { Subscription } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gestionar-bien',
@@ -17,6 +18,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   fecha: any;
   bienes: any = [];
   private bienesSubscripcion: Subscription;
+  private guardarBienesSub: Subscription;
   bienesEstaVacio: boolean = true;
   horaFechaInicio: number;
   horaFechaFin: number;
@@ -46,8 +48,12 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    console.log('gestionar-bien destroyed');
     if (this.bienesSubscripcion) {
       this.bienesSubscripcion.unsubscribe();
+    }
+    if (this.guardarBienesSub) {
+      this.guardarBienesSub.unsubscribe();
     }
   }
 
@@ -77,14 +83,19 @@ export class GestionarBienPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.servicioRegistro.guardarBienes(this.bienes)
-          .subscribe(bien => {
+        this.guardarBienesSub = this.servicioRegistro.guardarBienes(this.bienes)
+          .subscribe(() => {
             // acciones luego de guardar
             loadingEl.dismiss();
-            this.bienes = [];
             this._location.back();
           });
       })
+  }
+
+  quitar(bien) {
+    this.servicioRegistro.removerBien(bien.codigo).subscribe(res => {
+      // TODO
+    });
   }
 
 }
