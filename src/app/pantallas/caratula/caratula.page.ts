@@ -36,7 +36,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('init catatula');
-  this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
+    this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
       this.tieneConexion = resultado;
     });
 
@@ -44,8 +44,9 @@ export class CaratulaPage implements OnInit, OnDestroy {
     //   this.offlineService.comprobarConexion();
     // }, 10000);
 
-    this.subscripcionBase = this.db.getDatabaseState().pipe(take(1)).subscribe(levantadoDB => {
+    this.subscripcionBase = this.db.getDatabaseState().subscribe(levantadoDB => {
       if (levantadoDB) {
+        console.log(levantadoDB);
         // si la base se levanto correctamente se procede a sincronizar la base local con el servidor
         this.servicioSync.sincronizarApp().subscribe(res => {
           console.log('resultado sincr');
@@ -85,7 +86,6 @@ export class CaratulaPage implements OnInit, OnDestroy {
   obtenerTareas() {
     this.tareasService.obtenerTareas()
       .subscribe(tareas => {
-        console.log(tareas);
         this.tareas = tareas;
       });
   }

@@ -109,7 +109,7 @@ export class BienesService {
   obtenerBienesPendientes() {
     return from(this.db.cargarBienes().then(bienes => {
       return bienes.filter(bien => {
-        bien.sincronizado === false;
+        bien.sincronizado == 0;
       });
     }));
   }

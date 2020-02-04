@@ -1,3 +1,4 @@
+import { DatabaseService } from './database.service';
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription, forkJoin } from 'rxjs';
 import { Bien } from '../models/bien.model';
@@ -20,6 +21,7 @@ export class TareaRegistroService implements OnDestroy {
     private clienteHttp: HttpClient,
     private variablesGlobales: GlobalsService,
     private offlineService: OfflineService,
+    private db: DatabaseService,
   ) {}
 
   private _bienes = new BehaviorSubject<Bien[]>([]);
@@ -74,14 +76,17 @@ export class TareaRegistroService implements OnDestroy {
           return this.bienes;
         }
         else  {
+          let bienesModific = [];
+          bienes.forEach(bien => {
+            bienesModific.push({...bien, id_ubicacion: bien.idUbicacion});
+          });
           // guarda en el dispositivo
-          this.servicioBienes.guardarBienEnDispositivo(bienes[0]);
+          this.db.insertarBienes(bienesModific, false);
           return this.bienes;
         }
       }),
       take(1),
       tap(res =>  {
-        console.log("bienesnexts");
           this._bienes.next([]);
       }),
     )
@@ -96,7 +101,6 @@ export class TareaRegistroService implements OnDestroy {
       take(1),
       switchMap(headers => {
         let data = JSON.stringify(detallesTarea);
-        console.log(data);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/asignacionTarea/${detallesTarea.id}/detalleTarea`, data, {headers});
       })
     );

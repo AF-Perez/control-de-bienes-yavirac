@@ -107,7 +107,6 @@ export class AuthService implements OnDestroy {
         if (!userData || !userData.token) {
           return null;
         }
-        console.log(userData);
         return new HttpHeaders({
           Authorization: 'Bearer ' + userData.token,
           Accept: 'application/json'

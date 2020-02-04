@@ -66,12 +66,33 @@ export class DatabaseService {
         VALUES (?, ?, ?, ?, ?, ?, ?)`
       , data)
       .then(res => {
-        console.log('null');
       });
   }
 
   cargarBienes() {
     return this.database.executeSql('SELECT * FROM bienes', []).then(data => {
+      let bienes = [];
+      console.log(data);
+      if (data.rows.length > 0) {
+        for (var i = 0; i < data.rows.length; i++) {
+          bienes.push({ 
+            id: data.rows.item(i).id,
+            nombre: data.rows.item(i).nombre,
+            codigo: data.rows.item(i).codigo,
+            clase: data.rows.item(i).tipo,
+            id_ubicacion: data.rows.item(i).idUbicacion,
+            valor: data.rows.item(i).precioEstimado,
+            observaciones: data.rows.item(i).observaciones,
+            sincronizado: data.rows.item(i).sincronizado,
+           });
+        }
+      }
+      return bienes;
+    })
+  }
+
+  cargarBienesPorUbicacion(idUbicacion) {
+    return this.database.executeSql('SELECT * FROM bienes WHERE bienes.idUbicacion=' + idUbicacion, []).then(data => {
       let bienes = [];
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
@@ -91,8 +112,8 @@ export class DatabaseService {
     })
   }
 
-  cargarBienesPorUbicacion(idUbicacion) {
-    return this.database.executeSql('SELECT * FROM bienes WHERE bienes.idUbicacion=' + idUbicacion, []).then(data => {
+  cargarBienesPendientes() {
+    return this.database.executeSql('SELECT * FROM bienes WHERE sincronizado = 0', []).then(data => {
       let bienes = [];
       if (data.rows.length > 0) {
         for (var i = 0; i < data.rows.length; i++) {
@@ -126,7 +147,6 @@ export class DatabaseService {
             tipo: data.rows.item(i).tipo,
            });
         }
-        console.warn(tareas);
         return tareas;
       }
     });
@@ -182,7 +202,8 @@ export class DatabaseService {
     }).then(res => console.log('insertadas tareas'));
   }
 
-  insertarBienes(bienes) {
+  insertarBienes(bienes, online: boolean) {
+    console.warn(bienes);
     return this.database.transaction(trsc => {
       trsc.executeSql('DELETE FROM bienes', []);
       bienes.forEach(bien => {
@@ -194,7 +215,7 @@ export class DatabaseService {
           bien.id_ubicacion,
           bien.valor,
           bien.observaciones,
-          bien.sincronizado,
+          online ? 1 : 0,
         ];
         trsc.executeSql(
           'INSERT INTO bienes VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
