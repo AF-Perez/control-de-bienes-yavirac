@@ -73,7 +73,6 @@ export class TareasService {
             }
           })
         });
-        console.log(ubicacionesValidas);
         return ubicacionesValidas;
       }),
     );

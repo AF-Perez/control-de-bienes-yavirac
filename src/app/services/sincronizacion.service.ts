@@ -4,7 +4,7 @@ import { TareasService } from './tareas.service';
 import { Injectable } from '@angular/core';
 import { map, flatMap, switchMap, tap, mergeMap } from 'rxjs/operators';
 import { BienesService } from '../servicios/bienes.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, from } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -65,8 +65,20 @@ export class SincronizacionService {
   // se comprueba si existe bienes locales que aun no se han almacenado en el servidor
   // de ser asi se los envia, luego se iguala las 2 fuentes de datos
   sincronizarBienes() {
-    return this.servicioBienes.obtenerBienesPendientes().pipe(
+    return this.sincronizarBienesPendientes().pipe(
+      switchMap(() => {
+        return this.servicioBienes.obtenerBienesAPI();
+      }),
+      switchMap(bienes => {
+        return this.db.insertarBienes(bienes, true);
+      }),
+    );
+  }
+
+  sincronizarBienesPendientes() {
+    return from(this.db.cargarBienesPendientes()).pipe(
       mergeMap(bienesPend => {
+        console.log('bienes pendientes');
         console.log(bienesPend);
         let requests = [];
         bienesPend.forEach(bp => {
@@ -76,11 +88,8 @@ export class SincronizacionService {
           console.log('resultado requests');
           console.log(res);
         });
-        return this.servicioBienes.obtenerBienesAPI();
+        return bienesPend;
       }),
-      flatMap(bienes => {
-        return this.db.insertarBienes(bienes);
-      })
     );
   }
 

@@ -89,13 +89,12 @@ export class LoginPage implements OnInit {
         loadingEl.present();
         this.authService.logear(formulario.email, formulario.password).subscribe(
         (resp) => {
-          console.log(resp);
           this.cargando = false;
           loadingEl.dismiss();
           this.router.navigateByUrl('caratula');
         },
         (error) => {
-          console.warn(error.status);
+          console.error(error.status);
           let mensajeError = 'Error desconocido';
           if (error.status == '401') {
             mensajeError = 'El usuario no se encuentra registrado';

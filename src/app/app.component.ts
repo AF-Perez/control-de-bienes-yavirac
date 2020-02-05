@@ -74,32 +74,27 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   sincronizar() {
-    console.log('sincronizando...');
     this.loadingController
       .create({
         spinner: null,
         duration: 5000,
-        message: 'Sincroizando...',
+        message: 'Sincronizando...',
         translucent: true,
         cssClass: 'custom-class custom-loading'
       })
       .then(loadingElem => {
-      this.offlineSub2 = this.servicioOffline.tieneConexion.subscribe(tieneCon => {
-        if (tieneCon) {
-          this.servicioSync.sincronizarApp().subscribe(res => {
-            console.log('resultados sincronizacion boton');
-            console.log(res);
+        loadingElem.present();
+        this.offlineSub2 = this.servicioOffline.tieneConexion.subscribe(tieneCon => {
+          if (tieneCon) {
+            this.servicioSync.sincronizarBienesPendientes().subscribe(res => {
+              loadingElem.dismiss();
+            });
+          } else {
+            this.isOnline = false;
             loadingElem.dismiss();
-          });
-        } else {
-          this.isOnline = false;
-          loadingElem.dismiss();
-        }
+          }
+        });
       });
-    });
-
-   
-    
   }
 
 }

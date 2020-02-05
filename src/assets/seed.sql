@@ -48,3 +48,5 @@ CREATE TABLE IF NOT EXISTS registros(
     idTarea INTEGER,
     idBien INTEGER
 );
+
+INSERT INTO bienes (nombre, codigo, tipo, idUbicacion, precioEstimado, observaciones, sincronizado) VALUES ('maquina del tiempo', '128379348789', 'CONTROL ADMINISTRATIVO', 1, 0.25, 'visaje', 0);

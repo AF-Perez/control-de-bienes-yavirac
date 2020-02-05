@@ -145,7 +145,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
         this.scannedData = barcodeData;
       })
       .catch(err => {
-        console.log("Error", err);
+        console.error("Error", err);
       });
   }
 
@@ -154,11 +154,10 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       .encode(this.barcodeScanner.Encode.TEXT_TYPE, this.encodeData)
       .then(
         encodedData => {
-          console.log(encodedData);
           this.encodeData = encodedData;
         },
         err => {
-          console.log("Error occured : " + err);
+          console.error("Error occured : " + err);
         }
       );
   }
