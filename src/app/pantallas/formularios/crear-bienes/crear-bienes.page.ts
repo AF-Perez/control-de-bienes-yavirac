@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BienesService } from '../../../servicios/bienes.service';
@@ -7,6 +7,7 @@ import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
 import { TareaRegistroService } from '../../../services/tarea-registro.service';
 import { Subscription } from 'rxjs';
+import { IonicSelectableComponent } from 'ionic-selectable';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -25,6 +26,11 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   scannedData: {};
   barcodeScannerOptions: BarcodeScannerOptions;
   private agregarBienSub: Subscription;
+  private traerBienesPorUbicSub: Subscription;
+  bienesPadre = [];
+  bienPadre: any;
+
+  // @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -65,12 +71,21 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       estado: new FormControl('', Validators.required),
       precio: new FormControl('', Validators.required),
       observaciones: new FormControl(''),
+      codigoPadre: new FormControl(null),
+    });
+
+    this.traerBienesPorUbicSub = this.servicioBienes.traerBienesDeUbicacion(this.idUbicacion).subscribe(bienes => {
+      this.bienesPadre = bienes;
     });
   }
 
   ngOnDestroy() {
     if (this.agregarBienSub) {
       this.agregarBienSub.unsubscribe();
+    }
+
+    if (this.traerBienesPorUbicSub) {
+      this.traerBienesPorUbicSub.unsubscribe();
     }
   }
 
@@ -93,6 +108,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
           valoresFormulario.precio,
           this.idUbicacion,
           valoresFormulario.observaciones,
+          valoresFormulario.codigoPadre,
         )
         .subscribe(bien => {
           // acciones luego de guardar

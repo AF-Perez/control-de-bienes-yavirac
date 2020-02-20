@@ -34,7 +34,7 @@ export class BienesService {
           return this.authService.getHeaders().pipe(
             take(1),
             switchMap(headers => {
-              return this.clienteHttp.get(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
+              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones/${idUbicacion}/bienes`, {headers});
             }),
           );
         }

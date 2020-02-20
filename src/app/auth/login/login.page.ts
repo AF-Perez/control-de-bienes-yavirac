@@ -13,10 +13,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 
-
 export class LoginPage implements OnInit {
-
-
 
   constructor(
     // servicio para autenticarse
@@ -29,9 +26,7 @@ export class LoginPage implements OnInit {
     private alertCtrl: AlertController,
     // para spinner controller
     private loadingCtrl: LoadingController,
-  ) {
-
-  }
+  ) { }
 
   // variables de clase
   validationsForm: FormGroup;
@@ -55,7 +50,6 @@ export class LoginPage implements OnInit {
       { type: 'areEqual', message: 'Contraseñas no coincide' }
     ],
   };
-
 
   ngOnInit() {
 
