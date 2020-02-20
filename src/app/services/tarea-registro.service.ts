@@ -80,6 +80,7 @@ export class TareaRegistroService implements OnDestroy {
           bienes.forEach(bien => {
             bienesModific.push({...bien, id_ubicacion: bien.idUbicacion});
           });
+          console.log(bienesModific);
           // guarda en el dispositivo
           this.db.insertarBienes(bienesModific, false);
           return this.bienes;
