@@ -74,28 +74,6 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     }
   }
 
-  onSubmitBck(valoresFormulario) {
-    if (!this.validations_form.valid) {
-      return;
-    }
-
-    this.loadingCtrl
-      .create({
-        message: 'Procesando solicitud...'
-      })
-      .then(loadingEl => {
-        loadingEl.present();
-        let datosBien = { ...valoresFormulario, idUbicacion: this.idUbicacion }
-        this.servicioBienes.guardarBien(datosBien)
-          .subscribe(bien => {
-            // acciones luego de guardar
-            loadingEl.dismiss();
-            this.validations_form.reset();
-            this._location.back();
-          });
-      })
-  }
-
   onSubmit(valoresFormulario) {
     if (!this.validations_form.valid) {
       return;

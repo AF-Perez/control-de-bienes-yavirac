@@ -83,6 +83,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
+        console.log(this.bienes);
         this.guardarBienesSub = this.servicioRegistro.guardarBienes(this.bienes)
           .subscribe(() => {
             // acciones luego de guardar

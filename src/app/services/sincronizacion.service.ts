@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { map, flatMap, switchMap, tap, mergeMap } from 'rxjs/operators';
 import { BienesService } from '../servicios/bienes.service';
 import { forkJoin, from } from 'rxjs';
+import { Bien } from '../models/bien.model';
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +83,10 @@ export class SincronizacionService {
         console.log(bienesPend);
         let requests = [];
         bienesPend.forEach(bp => {
-          requests.push(this.servicioBienes.guardarBien(bp));
+          let bien = new Bien(bp.codigo, bp.clase, bp.nombre, bp.estado, bp.valor, bp.id_ubicacion, bp.observaciones);
+          console.log('sincronizar bienes pendientes');
+          console.log(bien);
+          requests.push(this.servicioBienes.guardarBien(bien));
         });
         forkJoin(requests).subscribe(res => {
           console.log('resultado requests');

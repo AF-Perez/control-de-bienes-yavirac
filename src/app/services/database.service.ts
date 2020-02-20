@@ -211,7 +211,7 @@ export class DatabaseService {
           bien.id,
           bien.nombre,
           bien.codigo,
-          bien.clase,
+          bien.tipo,
           bien.id_ubicacion,
           bien.valor,
           bien.observaciones,
