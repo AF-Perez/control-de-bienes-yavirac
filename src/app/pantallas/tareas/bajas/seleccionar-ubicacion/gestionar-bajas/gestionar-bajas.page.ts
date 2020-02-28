@@ -2,7 +2,8 @@ import { TareasService } from './../../../../../services/tareas.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BienesService } from '../../../../../servicios/bienes.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+import { ModalBajarPage } from './modal-bajas.page';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class GestionarBajasPage implements OnInit {
     private servicioBienes: BienesService,
     private servicioTareas: TareasService,
     public alertController: AlertController,
+    private modalController: ModalController,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -83,7 +85,19 @@ export class GestionarBajasPage implements OnInit {
 
     await alert.present();
   }
-  
+
+  async mostrarModal(idBien) {
+    const modal = await this.modalController.create({
+      component: ModalBajarPage,
+      componentProps: {
+        'a': 'dfjlfjasdk',
+        'b': 'dsjfkldslk',
+        'c': 'hola mudo',
+      },
+    });
+    return await modal.present();
   }
+  
+}
 
 
