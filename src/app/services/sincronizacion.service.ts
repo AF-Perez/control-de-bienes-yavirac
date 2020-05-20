@@ -83,7 +83,7 @@ export class SincronizacionService {
         console.log(bienesPend);
         let requests = [];
         bienesPend.forEach(bp => {
-          let bien = new Bien(bp.codigo, bp.clase, bp.nombre, bp.estado, bp.valor, bp.id_ubicacion, bp.observaciones);
+          let bien = new Bien(bp.codigo, bp.clase, bp.nombre, bp.estado, bp.valor, bp.id_ubicacion, bp.observaciones, bp.codigoPadre);
           console.log('sincronizar bienes pendientes');
           console.log(bien);
           requests.push(this.servicioBienes.guardarBien(bien));

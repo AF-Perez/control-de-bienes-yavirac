@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BienesService } from '../../../servicios/bienes.service';
 import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ActionSheetController } from '@ionic/angular';
 import {Location} from '@angular/common';
 import { TareaRegistroService } from '../../../services/tarea-registro.service';
 import { Subscription } from 'rxjs';
@@ -13,7 +13,6 @@ import { Subscription } from 'rxjs';
   templateUrl: './crear-bienes.page.html',
   styleUrls: ['./crear-bienes.page.scss'],
 })
-
 export class CrearBienesPage implements OnInit, OnDestroy {
 
   validations_form: FormGroup;
@@ -25,6 +24,11 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   scannedData: {};
   barcodeScannerOptions: BarcodeScannerOptions;
   private agregarBienSub: Subscription;
+  private traerBienesPorUbicSub: Subscription;
+  bienesPadre = [];
+  bienPadre: any;
+
+  // @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -34,7 +38,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     private barcodeScanner: BarcodeScanner,
     private loadingCtrl: LoadingController,
     private _location: Location,
-
+    private actionSheetController: ActionSheetController,
   ) { }
 
   ngOnInit() {
@@ -65,12 +69,27 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       estado: new FormControl('', Validators.required),
       precio: new FormControl('', Validators.required),
       observaciones: new FormControl(''),
+      codigoPadre: new FormControl({id: -1, nombre: 'Ninguno'}),
     });
+
+    this.traerBienesPorUbicSub = this.servicioBienes.traerBienesDeUbicacion(this.idUbicacion).subscribe(bienes => {
+      this.bienesPadre = bienes;
+    });
+
+    this.barcodeScannerOptions = {
+      showTorchButton: true,
+      showFlipCameraButton: true,
+      // formats : "QR_CODE",
+    };
   }
 
   ngOnDestroy() {
     if (this.agregarBienSub) {
       this.agregarBienSub.unsubscribe();
+    }
+
+    if (this.traerBienesPorUbicSub) {
+      this.traerBienesPorUbicSub.unsubscribe();
     }
   }
 
@@ -93,6 +112,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
           valoresFormulario.precio,
           this.idUbicacion,
           valoresFormulario.observaciones,
+          valoresFormulario.codigoPadre,
         )
         .subscribe(bien => {
           // acciones luego de guardar
@@ -141,12 +161,45 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   }
 
   abrirScaner() {
-    this.barcodeScanner.scan().then(barcodeData => {
+    this.barcodeScanner.scan(this.barcodeScannerOptions).then(barcodeData => {
       this.validations_form.patchValue({codigo: barcodeData.text});
      }).catch(err => {
          console.error('Error', err);
      });
   }
+
+  abrirScanerQR() {
+    // Optionally request the permission early
+   
+  }
+
+  async mostrarActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Escanear...',
+      buttons: [{
+        text: 'Código de barras',
+        icon: 'barcode',
+        handler: () => {
+          this.abrirScaner();
+        }
+      }, {
+        text: 'Código QR',
+        icon: 'qr-scanner',
+        handler: () => {
+          this.abrirScanerQR();
+        }
+      }, {
+        text: 'Cancelar',
+        icon: 'close',
+        role: 'cancel',
+        handler: () => {
+          console.log('Cancel clicked');
+        }
+      }]
+    });
+    await actionSheet.present();
+  }
+
 
   validation_messages = {
     'username': [

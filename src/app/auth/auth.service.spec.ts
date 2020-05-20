@@ -10,3 +10,18 @@ describe('AuthService', () => {
     expect(service).toBeTruthy();
   });
 });
+
+let authService = null;
+
+describe("Magic 8 Ball Service", () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+  });
+
+  it("Should return a non empty array", () => {
+    const service: AuthService = TestBed.get(AuthService);
+    let result = service.getHeaders();
+    expect(result instanceof Object).toBeTruthy;
+    expect((Object.keys(result)).length).toBeTruthy;
+  });
+});

@@ -25,7 +25,7 @@
       {{bien.clase}}
 
       <div *ngIf="bien.enviado == true; else elseBlock">Pendiente</div>
-      <ion-button color="danger" style="font-size:1.2em" (click)="mostrarAlertObservacion(bien.id)" [disabled]="bien.enviado == true ? true : false">
+      <ion-button color="danger" style="font-size:1.2em" (click)="mostrarModal(bien.id)" [disabled]="bien.enviado == true ? true : false">
         <ng-template #elseBlock>
           
         </ng-template>

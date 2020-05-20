@@ -7,6 +7,7 @@ export class Bien {
       public precio: number,
       public idUbicacion: string,
       public observaciones: string,
+      public codigoPadre: string,
     ) {}
   }
   
