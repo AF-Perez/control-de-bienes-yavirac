@@ -7,6 +7,10 @@ import { LoadingController, ActionSheetController } from '@ionic/angular';
 import {Location} from '@angular/common';
 import { TareaRegistroService } from '../../../services/tarea-registro.service';
 import { Subscription } from 'rxjs';
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -27,6 +31,8 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   private traerBienesPorUbicSub: Subscription;
   bienesPadre = [];
   bienPadre: any;
+  formDataFoto: any;
+  imgDAta: any;
 
   // @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
@@ -39,6 +45,9 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private _location: Location,
     private actionSheetController: ActionSheetController,
+    private camera: Camera,
+    private file: File,
+    private filePath: FilePath,
   ) { }
 
   ngOnInit() {
@@ -113,6 +122,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
           this.idUbicacion,
           valoresFormulario.observaciones,
           valoresFormulario.codigoPadre,
+          this.imgDAta,
         )
         .subscribe(bien => {
           // acciones luego de guardar
@@ -198,6 +208,41 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       }]
     });
     await actionSheet.present();
+  }
+
+  leerArchivo(file: any) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imgBlob = new Blob([reader.result], {type: file.type});
+      const formData = new FormData();
+      formData.append('file', imgBlob, file.name);
+      this.imgDAta = {blob: imgBlob, name: file.name};
+      console.log('dsafjlskdjkdlfasslfdjlkdfj');
+      console.log(this.imgDAta);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  tomarFoto() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+    };
+
+    this.camera.getPicture(options).then((imageData) => {
+      console.log(imageData);
+      this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
+        entry.file(file => {
+          console.log(file);
+          this.imgDAta = file;
+          this.leerArchivo(file);
+        });
+      });
+    }, (err) => {
+      // manejar errores
+    });
   }
 
 

@@ -9,6 +9,7 @@ import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { OfflineService } from '../services/offline.service';
+import { File } from '@ionic-native/file/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,7 @@ export class TareaRegistroService implements OnDestroy {
     idUbicacion: string,
     observaciones: string,
     codigoPadre: string,
+    imgData: File,
   ) {
     const nuevoBien = new Bien(
       codigo,
@@ -51,11 +53,13 @@ export class TareaRegistroService implements OnDestroy {
       precio,
       idUbicacion,
       observaciones,
-      codigoPadre
+      codigoPadre,
+      imgData,
     );
     return this.bienes.pipe(
       delay(500),
       tap(bienes => {
+        console.log(nuevoBien);
         this._bienes.next(bienes.concat(nuevoBien));
       })
     );

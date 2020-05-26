@@ -15,6 +15,7 @@
 <ion-content class="form-content ion-padding">
   <form [formGroup]="validations_form">
     <ion-grid>
+
       <!--Codigo Administrativo-->
       <ion-row>
         <ion-col size="10">
@@ -37,45 +38,49 @@
           </ion-button>
         </ion-col>
       </ion-row>
+
       <!-- Tipo de bien -->
       <ion-row>
-          <ion-col size-sm="6" offset-sm="1">
-            <ion-item>
-              <ion-label position="floating" color="primary">Tipo de bien</ion-label>
-              <ion-select formControlName="tiposDeBien" cancelText="Cancel" okText="OK">
-                <ion-select-option *ngFor="let tipo of tiposDeBien" [value]="tipo">{{tipo}}</ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-col>
+        <ion-col size-sm="6" offset-sm="1">
+          <ion-item>
+            <ion-label position="floating" color="primary">Tipo de bien</ion-label>
+            <ion-select formControlName="tiposDeBien" cancelText="Cancel" okText="OK">
+              <ion-select-option *ngFor="let tipo of tiposDeBien" [value]="tipo">{{tipo}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
       </ion-row>
+
       <!--nombre-->
       <ion-row>
-          <ion-col size-sm="6" offset-sm="1">
-            <ion-item>
-              <ion-label position="floating" color="primary">Nombre del bien</ion-label>
-              <ion-input type="text" formControlName="nombre"></ion-input>
-            </ion-item>
-            <div class="validation-errors">
-              <ng-container *ngFor="let validation of validation_messages.nombre">
-                <div class="error-message"
-                  *ngIf="validations_form.get('nombre').hasError(validation.type) && (validations_form.get('nombre').dirty || validations_form.get('nombre').touched)">
-                  <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
-                </div>
-              </ng-container>
-            </div>
-          </ion-col>
+        <ion-col size-sm="6" offset-sm="1">
+          <ion-item>
+            <ion-label position="floating" color="primary">Nombre del bien</ion-label>
+            <ion-input type="text" formControlName="nombre"></ion-input>
+          </ion-item>
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.nombre">
+              <div class="error-message"
+                *ngIf="validations_form.get('nombre').hasError(validation.type) && (validations_form.get('nombre').dirty || validations_form.get('nombre').touched)">
+                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+        </ion-col>
       </ion-row>
+
       <!-- Estado del bien -->
       <ion-row>
-          <ion-col size-sm="6" offset-sm="1">
-            <ion-item>
-              <ion-label position="floating" color="primary">Estado</ion-label>
-              <ion-select formControlName="estado" cancelText="Cancel" okText="OK">
-                <ion-select-option *ngFor="let estado of estados" [value]="estado">{{estado}}</ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-col>
+        <ion-col size-sm="6" offset-sm="1">
+          <ion-item>
+            <ion-label position="floating" color="primary">Estado</ion-label>
+            <ion-select formControlName="estado" cancelText="Cancel" okText="OK">
+              <ion-select-option *ngFor="let estado of estados" [value]="estado">{{estado}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-col>
       </ion-row>
+
       <!--Precio Unitario-->
       <ion-row>
         <ion-col size-sm="6" offset-sm="1">
@@ -93,6 +98,7 @@
           </div>
         </ion-col>
       </ion-row>
+
       <!-- Observaciones -->
       <ion-row>
         <ion-col size-sm="6" offset-sm="1">
@@ -101,19 +107,14 @@
           </ion-item>
         </ion-col>
       </ion-row>
+
       <!-- codigo padre -->
       <ion-row>
         <ion-col size-sm="6" offset-sm="1">
           <ion-item>
             <ion-label>Pertenece a:</ion-label>
-            <ionic-selectable
-              #bienSelector
-              formControlName="codigoPadre"
-              itemValueField="id"
-              itemTextField="nombre"
-              [items]="bienesPadre"
-              [canSearch]="true"
-            >
+            <ionic-selectable #bienSelector formControlName="codigoPadre" itemValueField="id" itemTextField="nombre"
+              [items]="bienesPadre" [canSearch]="true">
               <ng-template ionicSelectableSearchFailTemplate>
                 <div padding>
                   No se ha encontrado ningún item.
@@ -126,7 +127,38 @@
           </ion-item>
         </ion-col>
       </ion-row>
+
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="1">
+          <ion-item>
+            <ion-item text-wrap>
+              <ion-thumbnail slot="start" *ngIf="imgData.localUrl">
+                <ion-img  [src]="imgData.localUrl"></ion-img>
+              </ion-thumbnail>
+              <ion-label>
+                {{ 'formDataFoto.name' }}
+              </ion-label>
+              <ion-button slot="end" fill="clear" (click)="startUpload(img)">
+                <ion-icon slot="icon-only" name="cloud-upload"></ion-icon>
+              </ion-button>
+              <ion-button slot="end" fill="clear" (click)="deleteImage(img, pos)">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
     </ion-grid>
   </form>
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <ion-button fill="clear" expand="full" color="light" (click)="tomarFoto()">
+      <ion-icon slot="start" name="camera"></ion-icon>
+      Registrar imagen
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

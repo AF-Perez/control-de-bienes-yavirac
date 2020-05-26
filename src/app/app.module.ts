@@ -18,7 +18,12 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
-// import { Camera } from '@ionic-native/camera/ngx';
+
+import { File } from '@ionic-native/file/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -42,7 +47,10 @@ import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
     BarcodeScanner,
     Network,
     SQLitePorter,
-    // Camera,
+    Camera,
+    File,
+    WebView,
+    FilePath,
   ],
   bootstrap: [AppComponent]
 })
