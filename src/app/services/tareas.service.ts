@@ -24,7 +24,7 @@ export class TareasService {
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
-  private _tareas  =  new BehaviorSubject([]);
+  private _tareas = new BehaviorSubject([]);
 
   get tareas() {
     return this._tareas.asObservable();
@@ -98,4 +98,5 @@ export class TareasService {
       }),
     );
   }
+
 }

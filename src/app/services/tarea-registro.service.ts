@@ -43,7 +43,7 @@ export class TareaRegistroService implements OnDestroy {
     idUbicacion: string,
     observaciones: string,
     codigoPadre: string,
-    imgData: File,
+    imgUrl: string,
   ) {
     const nuevoBien = new Bien(
       codigo,
@@ -54,7 +54,7 @@ export class TareaRegistroService implements OnDestroy {
       idUbicacion,
       observaciones,
       codigoPadre,
-      imgData,
+      imgUrl,
     );
     return this.bienes.pipe(
       delay(500),

@@ -8,7 +8,7 @@ export class Bien {
       public idUbicacion: string,
       public observaciones: string,
       public codigoPadre: string,
-      public imagen: object,
+      public pathImagenLocal: string,
     ) {}
   }
   

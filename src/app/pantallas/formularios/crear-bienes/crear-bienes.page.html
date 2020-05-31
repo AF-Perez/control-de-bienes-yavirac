@@ -128,12 +128,13 @@
         </ion-col>
       </ion-row>
 
+      <!-- foto -->
       <ion-row>
         <ion-col size-sm="6" offset-sm="1">
           <ion-item>
             <ion-item text-wrap>
-              <ion-thumbnail slot="start" *ngIf="imgData.localUrl">
-                <ion-img  [src]="imgData.localUrl"></ion-img>
+              <ion-thumbnail slot="start" *ngIf="0">
+                <ion-img  src="imgData.localUrl"></ion-img>
               </ion-thumbnail>
               <ion-label>
                 {{ 'formDataFoto.name' }}
@@ -158,7 +159,7 @@
   <ion-toolbar color="primary">
     <ion-button fill="clear" expand="full" color="light" (click)="tomarFoto()">
       <ion-icon slot="start" name="camera"></ion-icon>
-      Registrar imagen
+      Registrar foto
     </ion-button>
   </ion-toolbar>
 </ion-footer>

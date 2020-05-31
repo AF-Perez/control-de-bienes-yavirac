@@ -1,13 +1,24 @@
+.caratula-button {
+  ion-badge {
+    position: absolute;
+    opacity: 0.9;
+    top: 0.1rem;
+    right: 0.2rem;
+    font-size: large;
+  }
 
-page-caratula{
-  ion-icon{
-    font-size:5cm;
+  .icon-button {
+    font-size: 2.3rem;
   }
-  .page-background-image {
-    background: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(../../../assets/icon/YAVIRAC.jpg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    height: 50vh;
+  
+  .label-button {
+    margin-inline-end: 10px;
+    font-size: 12px;
   }
+}
+
+ion-button div {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 }

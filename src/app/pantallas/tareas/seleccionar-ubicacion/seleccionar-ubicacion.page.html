@@ -8,13 +8,17 @@
   </ion-header>
    
 
-<ion-content>
+<ion-content >
   <ion-list>
     <ion-item *ngFor="let ubicacion of ubicaciones" (click)="irAGestionarBienes(ubicacion)">
  
       {{ubicacion.nombre}}
 
     </ion-item>
+
+    <div class="not-tasks-msg" *ngIf="!ubicaciones.length" style="padding: 20px;">
+      <p>Actualmente no tiene actividades asignadas para dicha tarea. Siga intentando.</p>
+    </div>
     
   </ion-list>
 

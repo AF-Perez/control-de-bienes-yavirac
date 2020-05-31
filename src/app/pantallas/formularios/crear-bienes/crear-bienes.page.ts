@@ -178,38 +178,6 @@ export class CrearBienesPage implements OnInit, OnDestroy {
      });
   }
 
-  abrirScanerQR() {
-    // Optionally request the permission early
-   
-  }
-
-  async mostrarActionSheet() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Escanear...',
-      buttons: [{
-        text: 'Código de barras',
-        icon: 'barcode',
-        handler: () => {
-          this.abrirScaner();
-        }
-      }, {
-        text: 'Código QR',
-        icon: 'qr-scanner',
-        handler: () => {
-          this.abrirScanerQR();
-        }
-      }, {
-        text: 'Cancelar',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
-      }]
-    });
-    await actionSheet.present();
-  }
-
   leerArchivo(file: any) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -217,7 +185,6 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       const formData = new FormData();
       formData.append('file', imgBlob, file.name);
       this.imgDAta = {blob: imgBlob, name: file.name};
-      console.log('dsafjlskdjkdlfasslfdjlkdfj');
       console.log(this.imgDAta);
     };
     reader.readAsArrayBuffer(file);
@@ -237,7 +204,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
         entry.file(file => {
           console.log(file);
           this.imgDAta = file;
-          this.leerArchivo(file);
+          // this.leerArchivo(file);
         });
       });
     }, (err) => {
