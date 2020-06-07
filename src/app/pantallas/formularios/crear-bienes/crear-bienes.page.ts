@@ -32,7 +32,8 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   bienesPadre = [];
   bienPadre: any;
   formDataFoto: any;
-  imgDAta: any;
+  imgData: any;
+  imgURL: any;
 
   // @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
@@ -48,6 +49,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     private camera: Camera,
     private file: File,
     private filePath: FilePath,
+    private webview: WebView,
   ) { }
 
   ngOnInit() {
@@ -122,7 +124,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
           this.idUbicacion,
           valoresFormulario.observaciones,
           valoresFormulario.codigoPadre,
-          this.imgDAta,
+          this.imgData,
         )
         .subscribe(bien => {
           // acciones luego de guardar
@@ -181,11 +183,12 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   leerArchivo(file: any) {
     const reader = new FileReader();
     reader.onload = () => {
+      console.warn(reader.result);
       const imgBlob = new Blob([reader.result], {type: file.type});
       const formData = new FormData();
-      formData.append('file', imgBlob, file.name);
-      this.imgDAta = {blob: imgBlob, name: file.name};
-      console.log(this.imgDAta);
+      // formData.append('file', imgBlob, file.name);
+      // this.imgData = {blob: imgBlob, name: file.name};
+      // console.log(this.imgData);
     };
     reader.readAsArrayBuffer(file);
   }
@@ -202,9 +205,11 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       console.log(imageData);
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
-          console.log(file);
-          this.imgDAta = file;
-          // this.leerArchivo(file);
+          // console.log(file);
+          console.log(this.validPathForDisplayImage(file.localURL));
+          this.imgURL = this.validPathForDisplayImage(imageData);
+          this.imgData = file;
+          this.leerArchivo(file);
         });
       });
     }, (err) => {
@@ -212,6 +217,14 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     });
   }
 
+  validPathForDisplayImage(img) {
+    if (img === null) {
+      return '';
+    } else {
+      let converted = this.webview.convertFileSrc(img);
+      return converted;
+    }
+  }
 
   validation_messages = {
     'username': [

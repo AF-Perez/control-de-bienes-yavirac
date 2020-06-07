@@ -46,6 +46,22 @@ export class TareasService {
     );
   }
 
+  obtenerTareasTodo() {
+    return this.servicioOffline.tieneConexion.pipe(
+      switchMap(tieneConx => {
+        if (tieneConx) {
+          return this.authService.getHeaders().pipe(
+            take(1),
+            switchMap(headers => {
+              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
+            })
+          );
+        }
+        return from(this.servicioBDD.cargarTareas());
+      })
+    );
+  }
+
   obtenerTareasAPI() {
     return this.authService.getHeaders().pipe(
       take(1),
@@ -74,6 +90,18 @@ export class TareasService {
           })
         });
         return ubicacionesValidas;
+      }),
+    );
+  }
+
+  obtenerTareasIncompletas() {
+    return this.obtenerTareas().pipe(
+      map(tareas => {
+        let tareasIncompletas = tareas.filter(tarea => {
+          return tarea.completada === 0;
+        });
+        console.log(tareasIncompletas);
+        return tareasIncompletas;
       }),
     );
   }

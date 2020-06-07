@@ -58,7 +58,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
     });
 
     // consultar el numero de tareas pendientes por cada tipo
-    this.tareasService.obtenerTareas().subscribe(tareas => {
+    this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
       tareas.forEach(tarea => {
         this.registrosNum, this.conteosNum, this.bajasNum = 0;
         switch (tarea.tipo) {
@@ -107,17 +107,21 @@ export class CaratulaPage implements OnInit, OnDestroy {
   }
 
   obtenerTareas() {
-    this.tareasService.obtenerTareas()
+    this.tareasService.obtenerTareasIncompletas()
       .subscribe(tareas => {
+        console.log(tareas);
         this.tareas = tareas;
       });
   }
 
-  doRefresh() {
+  doRefresh(event) {
+    this.registrosNum = 0;
+    this.conteosNum = 0; 
+    this.bajasNum = 0;
     // consultar el numero de tareas pendientes por cada tipo
-    this.tareasService.obtenerTareas().subscribe(tareas => {
+    this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
       tareas.forEach(tarea => {
-        this.registrosNum, this.conteosNum, this.bajasNum = 0;
+        
         switch (tarea.tipo) {
           case 'REGISTRO':
             this.registrosNum++;
@@ -130,6 +134,9 @@ export class CaratulaPage implements OnInit, OnDestroy {
             break;
           default:
             break;
+        }
+        if (event) {
+          event.target.complete();
         }
       });
     });
