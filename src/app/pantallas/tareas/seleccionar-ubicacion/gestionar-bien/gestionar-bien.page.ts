@@ -4,7 +4,7 @@ import { TareaRegistroService } from 'src/app/services/tarea-registro.service';
 import { Subscription } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
-import { take } from 'rxjs/operators';
+import { FilesService } from 'src/app/services/files.service';
 
 @Component({
   selector: 'app-gestionar-bien',
@@ -22,6 +22,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   bienesEstaVacio: boolean = true;
   horaFechaInicio: number;
   horaFechaFin: number;
+  imgURL: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +30,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
     private servicioRegistro: TareaRegistroService,
     private loadingCtrl: LoadingController,
     private _location: Location,
+    private filesService: FilesService,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -42,7 +44,8 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.resetearHoraFecha();
     this.iniciarTimer();
-    this.bienesSubscripcion = this.servicioRegistro.bienes.subscribe(bienes => {
+    this.bienesSubscripcion = this.servicioRegistro.bienes$.subscribe(bienes => {
+      console.log(bienes);
       this.bienes = bienes;
     });
   }
@@ -83,7 +86,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        console.log(this.bienes);
         this.guardarBienesSub = this.servicioRegistro.guardarBienes(this.bienes)
           .subscribe(() => {
             // acciones luego de guardar
@@ -94,9 +96,12 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   }
 
   quitar(bien) {
-    this.servicioRegistro.removerBien(bien.codigo).subscribe(res => {
-      // TODO
-    });
+    this.servicioRegistro.removerBien(bien.codigo);
+  }
+
+  transformarUrlImagen(stupidUrl) {
+    console.log(stupidUrl);
+    this.filesService.validPathForDisplayImage(stupidUrl);
   }
 
 }

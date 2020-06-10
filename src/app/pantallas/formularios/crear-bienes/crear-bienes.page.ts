@@ -4,13 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { BienesService } from '../../../servicios/bienes.service';
 import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { LoadingController, ActionSheetController } from '@ionic/angular';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import { TareaRegistroService } from '../../../services/tarea-registro.service';
 import { Subscription } from 'rxjs';
 import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
 import { File, FileEntry } from '@ionic-native/file/ngx';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { FilePath } from '@ionic-native/file-path/ngx';
+import { FilesService } from 'src/app/services/files.service';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -50,6 +51,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     private file: File,
     private filePath: FilePath,
     private webview: WebView,
+    private filesService: FilesService,
   ) { }
 
   ngOnInit() {
@@ -80,7 +82,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       estado: new FormControl('', Validators.required),
       precio: new FormControl('', Validators.required),
       observaciones: new FormControl(''),
-      codigoPadre: new FormControl({id: -1, nombre: 'Ninguno'}),
+      codigoPadre: new FormControl({ id: -1, nombre: 'Ninguno' }),
     });
 
     this.traerBienesPorUbicSub = this.servicioBienes.traerBienesDeUbicacion(this.idUbicacion).subscribe(bienes => {
@@ -115,7 +117,8 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.agregarBienSub = this.servicioRegistro.agregarBien(
+        
+        this.servicioRegistro.agregarBien(
           valoresFormulario.codigo,
           valoresFormulario.tiposDeBien,
           valoresFormulario.nombre,
@@ -125,13 +128,11 @@ export class CrearBienesPage implements OnInit, OnDestroy {
           valoresFormulario.observaciones,
           valoresFormulario.codigoPadre,
           this.imgData,
-        )
-        .subscribe(bien => {
-          // acciones luego de guardar
-          loadingEl.dismiss();
-          this.validations_form.reset();
-          this._location.back();
-        });
+        );
+        loadingEl.dismiss();
+        this.validations_form.reset();
+        this._location.back();
+
       })
   }
 
@@ -174,17 +175,16 @@ export class CrearBienesPage implements OnInit, OnDestroy {
 
   abrirScaner() {
     this.barcodeScanner.scan(this.barcodeScannerOptions).then(barcodeData => {
-      this.validations_form.patchValue({codigo: barcodeData.text});
-     }).catch(err => {
-         console.error('Error', err);
-     });
+      this.validations_form.patchValue({ codigo: barcodeData.text });
+    }).catch(err => {
+      console.error('Error', err);
+    });
   }
 
   leerArchivo(file: any) {
     const reader = new FileReader();
     reader.onload = () => {
-      console.warn(reader.result);
-      const imgBlob = new Blob([reader.result], {type: file.type});
+      const imgBlob = new Blob([reader.result], { type: file.type });
       const formData = new FormData();
       // formData.append('file', imgBlob, file.name);
       // this.imgData = {blob: imgBlob, name: file.name};
@@ -202,28 +202,16 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     };
 
     this.camera.getPicture(options).then((imageData) => {
-      console.log(imageData);
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
-          // console.log(file);
-          console.log(this.validPathForDisplayImage(file.localURL));
-          this.imgURL = this.validPathForDisplayImage(imageData);
-          this.imgData = file;
-          this.leerArchivo(file);
+          this.imgURL = this.filesService.validPathForDisplayImage(imageData);
+          
         });
+        this.imgData = entry;
       });
     }, (err) => {
-      // manejar errores
+      console.error("Error: " + err);
     });
-  }
-
-  validPathForDisplayImage(img) {
-    if (img === null) {
-      return '';
-    } else {
-      let converted = this.webview.convertFileSrc(img);
-      return converted;
-    }
   }
 
   validation_messages = {

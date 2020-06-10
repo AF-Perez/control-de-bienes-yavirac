@@ -9,7 +9,7 @@ import { switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { OfflineService } from '../services/offline.service';
-import { File } from '@ionic-native/file/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -25,14 +25,31 @@ export class TareaRegistroService implements OnDestroy {
     private db: DatabaseService,
   ) {}
 
-  private _bienes = new BehaviorSubject<Bien[]>([]);
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
   guardarBienSub: Subscription;
 
-  // usar esta variable mara mantener una referencia glbal a los bienes en memoria
-  get bienes() {
-    return this._bienes.asObservable();
+  // - We set the initial state in BehaviorSubject's constructor
+  // - Nobody outside the Store should have access to the BehaviorSubject 
+  //   because it has the write rights
+  // - Writing to state should be handled by specialized Store methods (ex: addBien, removeBien, etc)
+  // - Create one BehaviorSubject per store entity, for example if you have TodoGroups
+  //   create a new BehaviorSubject for it, as well as the observable$, and getters/setters
+  private readonly _bienes = new BehaviorSubject<Bien[]>([]);
+  
+  // Exponer la parte observable$ del subject _bienes
+  readonly bienes$ = this._bienes.asObservable();
+
+  // Este getter retornara el ultimo valor emitido en el subject _bienes
+  get bienes(): Bien[] {
+    return this._bienes.getValue();
   }
+
+  // al asignar un valor a this.bienes se lo incluira en el obsrevable 
+  // y se esparsira a todos sus subscriptores (ex: this.bienes = [])
+  set bienes(val: Bien[]) {
+    this._bienes.next(val);
+  }
+
 
   agregarBien(
     codigo: string,
@@ -43,7 +60,7 @@ export class TareaRegistroService implements OnDestroy {
     idUbicacion: string,
     observaciones: string,
     codigoPadre: string,
-    imgUrl: string,
+    imgUrl: FileEntry,
   ) {
     const nuevoBien = new Bien(
       codigo,
@@ -56,13 +73,11 @@ export class TareaRegistroService implements OnDestroy {
       codigoPadre,
       imgUrl,
     );
-    return this.bienes.pipe(
-      delay(500),
-      tap(bienes => {
-        console.log(nuevoBien);
-        this._bienes.next(bienes.concat(nuevoBien));
-      })
-    );
+
+    this.bienes = [
+      ...this.bienes,
+      nuevoBien,
+    ];
   }
 
   // recibe un array con elementos de tipo Bien
@@ -113,16 +128,11 @@ export class TareaRegistroService implements OnDestroy {
     );
   }
 
+  removerBien(idBien) {
+    this.bienes = this.bienes.filter(b => b.codigo !== idBien);
+  }
+
   ngOnDestroy() {
 
   }
-
-  removerBien(idBien) {
-    return this.bienes.pipe(
-      take(1),
-      tap(bienes => {
-      this._bienes.next(bienes.filter(b => b.codigo !== idBien));
-    }));
-  }
-
 }
