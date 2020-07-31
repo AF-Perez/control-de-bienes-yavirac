@@ -1,0 +1,3 @@
+http://localhost/_capacitor_file_/storage/emulated/0/Android/data/com.yavirac.app/cache/1591914203605.jpg
+
+          <img src="{{bien.imagenBien.toURL().replace('file:///', 'http://localhost/_capacitor_file_/')}}">

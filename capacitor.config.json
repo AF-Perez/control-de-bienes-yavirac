@@ -1,12 +1,1 @@
-{
-  "appId": "com.yavirac.app",
-  "appName": "control-de-bienes-yavirac",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "www",
-  "server": {
-    "cleartext": true,
-    "originalCleartext": true,
-    "url": "http://192.168.0.2:8100"
-  }
-}
+{}

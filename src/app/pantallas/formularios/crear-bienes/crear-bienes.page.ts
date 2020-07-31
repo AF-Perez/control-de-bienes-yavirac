@@ -117,7 +117,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        
+
         this.servicioRegistro.agregarBien(
           valoresFormulario.codigo,
           valoresFormulario.tiposDeBien,
@@ -185,10 +185,8 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     const reader = new FileReader();
     reader.onload = () => {
       const imgBlob = new Blob([reader.result], { type: file.type });
-      const formData = new FormData();
-      // formData.append('file', imgBlob, file.name);
-      // this.imgData = {blob: imgBlob, name: file.name};
-      // console.log(this.imgData);
+      this.imgData = { blob: imgBlob, name: file.name };
+      console.log(this.imgData);
     };
     reader.readAsArrayBuffer(file);
   }
@@ -205,9 +203,9 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
         entry.file(file => {
           this.imgURL = this.filesService.validPathForDisplayImage(imageData);
-          
+          this.leerArchivo(file);
         });
-        this.imgData = entry;
+        // this.imgData = entry;
       });
     }, (err) => {
       console.error("Error: " + err);

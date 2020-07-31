@@ -47,26 +47,21 @@ export class BienesService {
   }
 
   // guardar un bien en el servidor
-  guardarBien(datosBien: Bien) {
+  guardarBien(bien: Bien) {
 
 
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
         const formData = new FormData();
-        formData.append('nombre', datosBien.nombre);
+        formData.append('nombre', bien.nombre);
         formData.append('clase', "CONTROL ADMINISTRATIVO");
-        formData.append('observaciones', datosBien.observaciones);
-        formData.append('valor_unitario', datosBien.precio.toString());
-        formData.append('id_ubicacion', datosBien.idUbicacion);
-        formData.append('codigo', datosBien.codigo);
-        formData.append('id_padre', datosBien.codigoPadre);
-
-        let imgBlob = this.filesService.obtenerBlob(datosBien.imagenBien.name);
-
-
-
-        // formData.append('imagen_bien', imgBlob, datosBien.imagenBien);
+        formData.append('observaciones', bien.observaciones);
+        formData.append('valor_unitario', bien.precio.toString());
+        formData.append('id_ubicacion', bien.idUbicacion);
+        formData.append('codigo', bien.codigo);
+        formData.append('id_padre', bien.codigoPadre);
+        formData.append('imagen_bien', bien.imagenBien.blob, bien.imagenBien.name);
 
         // let postDataBien = {
         //   'nombre': datosBien.nombre,
@@ -77,7 +72,7 @@ export class BienesService {
         //   'codigo': datosBien.codigo,
         //   'tipo_de_bien': datosBien.tipo,
         // }
-        console.log(datosBien);
+        console.log(bien);
         // estudiar switch map porque por eso retorno correctamente, asi que es crucial entender
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes`, formData, {headers});
       }),

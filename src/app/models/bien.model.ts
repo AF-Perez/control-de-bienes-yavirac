@@ -9,8 +9,8 @@ export class Bien {
       public precio: number,
       public idUbicacion: string,
       public observaciones: string,
-      public codigoPadre: string,
-      public imagenBien: FileEntry,
+      public codigoPadre: string = '-1',
+      public imagenBien: any,
     ) {}
   }
   

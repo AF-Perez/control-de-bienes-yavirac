@@ -60,7 +60,7 @@ export class TareaRegistroService implements OnDestroy {
     idUbicacion: string,
     observaciones: string,
     codigoPadre: string,
-    imgUrl: FileEntry,
+    imgUrl: any,
   ) {
     const nuevoBien = new Bien(
       codigo,
