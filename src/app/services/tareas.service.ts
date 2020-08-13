@@ -24,13 +24,29 @@ export class TareasService {
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
-  private _tareas  =  new BehaviorSubject([]);
+  private _tareas = new BehaviorSubject([]);
 
   get tareas() {
     return this._tareas.asObservable();
   }
 
   obtenerTareas() {
+    return this.servicioOffline.tieneConexion.pipe(
+      switchMap(tieneConx => {
+        if (tieneConx) {
+          return this.authService.getHeaders().pipe(
+            take(1),
+            switchMap(headers => {
+              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
+            })
+          );
+        }
+        return from(this.servicioBDD.cargarTareas());
+      })
+    );
+  }
+
+  obtenerTareasTodo() {
     return this.servicioOffline.tieneConexion.pipe(
       switchMap(tieneConx => {
         if (tieneConx) {
@@ -78,6 +94,18 @@ export class TareasService {
     );
   }
 
+  obtenerTareasIncompletas() {
+    return this.obtenerTareas().pipe(
+      map(tareas => {
+        let tareasIncompletas = tareas.filter(tarea => {
+          return tarea.completada === 0;
+        });
+        console.log(tareasIncompletas);
+        return tareasIncompletas;
+      }),
+    );
+  }
+
   ingresarConteos(conteos) {
     return this.authService.getHeaders().pipe(
       take(1),
@@ -98,4 +126,5 @@ export class TareasService {
       }),
     );
   }
+
 }

@@ -83,10 +83,10 @@ export class SincronizacionService {
         console.log(bienesPend);
         let requests = [];
         bienesPend.forEach(bp => {
-          let bien = new Bien(bp.codigo, bp.clase, bp.nombre, bp.estado, bp.valor, bp.id_ubicacion, bp.observaciones, bp.codigoPadre);
-          console.log('sincronizar bienes pendientes');
-          console.log(bien);
-          requests.push(this.servicioBienes.guardarBien(bien));
+          // let bien = new Bien(bp.codigo, bp.clase, bp.nombre, bp.estado, bp.valor, bp.id_ubicacion, bp.observaciones, bp.codigoPadre, 'dummy_url_to_image');
+          // console.log('sincronizar bienes pendientes');
+          // console.log(bien);
+          // requests.push(this.servicioBienes.guardarBien(bien));
         });
         forkJoin(requests).subscribe(res => {
           console.log('resultado requests');

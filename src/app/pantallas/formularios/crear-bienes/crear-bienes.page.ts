@@ -4,9 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { BienesService } from '../../../servicios/bienes.service';
 import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { LoadingController, ActionSheetController } from '@ionic/angular';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import { TareaRegistroService } from '../../../services/tarea-registro.service';
 import { Subscription } from 'rxjs';
+import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { File, FileEntry } from '@ionic-native/file/ngx';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { FilePath } from '@ionic-native/file-path/ngx';
+import { FilesService } from 'src/app/services/files.service';
 
 @Component({
   selector: 'app-crear-bienes',
@@ -27,6 +32,9 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   private traerBienesPorUbicSub: Subscription;
   bienesPadre = [];
   bienPadre: any;
+  formDataFoto: any;
+  imgData: any;
+  imgURL: any;
 
   // @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
@@ -39,6 +47,11 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private _location: Location,
     private actionSheetController: ActionSheetController,
+    private camera: Camera,
+    private file: File,
+    private filePath: FilePath,
+    private webview: WebView,
+    private filesService: FilesService,
   ) { }
 
   ngOnInit() {
@@ -69,7 +82,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       estado: new FormControl('', Validators.required),
       precio: new FormControl('', Validators.required),
       observaciones: new FormControl(''),
-      codigoPadre: new FormControl({id: -1, nombre: 'Ninguno'}),
+      codigoPadre: new FormControl({ id: -1, nombre: 'Ninguno' }),
     });
 
     this.traerBienesPorUbicSub = this.servicioBienes.traerBienesDeUbicacion(this.idUbicacion).subscribe(bienes => {
@@ -104,7 +117,8 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.agregarBienSub = this.servicioRegistro.agregarBien(
+
+        this.servicioRegistro.agregarBien(
           valoresFormulario.codigo,
           valoresFormulario.tiposDeBien,
           valoresFormulario.nombre,
@@ -113,13 +127,12 @@ export class CrearBienesPage implements OnInit, OnDestroy {
           this.idUbicacion,
           valoresFormulario.observaciones,
           valoresFormulario.codigoPadre,
-        )
-        .subscribe(bien => {
-          // acciones luego de guardar
-          loadingEl.dismiss();
-          this.validations_form.reset();
-          this._location.back();
-        });
+          this.imgData,
+        );
+        loadingEl.dismiss();
+        this.validations_form.reset();
+        this._location.back();
+
       })
   }
 
@@ -162,44 +175,42 @@ export class CrearBienesPage implements OnInit, OnDestroy {
 
   abrirScaner() {
     this.barcodeScanner.scan(this.barcodeScannerOptions).then(barcodeData => {
-      this.validations_form.patchValue({codigo: barcodeData.text});
-     }).catch(err => {
-         console.error('Error', err);
-     });
-  }
-
-  abrirScanerQR() {
-    // Optionally request the permission early
-   
-  }
-
-  async mostrarActionSheet() {
-    const actionSheet = await this.actionSheetController.create({
-      header: 'Escanear...',
-      buttons: [{
-        text: 'Código de barras',
-        icon: 'barcode',
-        handler: () => {
-          this.abrirScaner();
-        }
-      }, {
-        text: 'Código QR',
-        icon: 'qr-scanner',
-        handler: () => {
-          this.abrirScanerQR();
-        }
-      }, {
-        text: 'Cancelar',
-        icon: 'close',
-        role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
-      }]
+      this.validations_form.patchValue({ codigo: barcodeData.text });
+    }).catch(err => {
+      console.error('Error', err);
     });
-    await actionSheet.present();
   }
 
+  leerArchivo(file: any) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imgBlob = new Blob([reader.result], { type: file.type });
+      this.imgData = { blob: imgBlob, name: file.name };
+      console.log(this.imgData);
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  tomarFoto() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+    };
+
+    this.camera.getPicture(options).then((imageData) => {
+      this.file.resolveLocalFilesystemUrl(imageData).then((entry: FileEntry) => {
+        entry.file(file => {
+          this.imgURL = this.filesService.validPathForDisplayImage(imageData);
+          this.leerArchivo(file);
+        });
+        // this.imgData = entry;
+      });
+    }, (err) => {
+      console.error("Error: " + err);
+    });
+  }
 
   validation_messages = {
     'username': [

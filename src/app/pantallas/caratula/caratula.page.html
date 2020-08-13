@@ -9,33 +9,61 @@
 <!-- cuerpo de la pantalla -->
 <ion-content>
 
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
   <section class="ion-text-center">
-    <h1 style="font-size:1.2em">Bienvenido,<br> Por favor, elija una tarea que desee realizar</h1>
+    <h1 style="font-size:1.2em">Bienvenido<br> Por favor, elija el tipo de <strong>TAREA</strong> que desee realizar</h1>
   </section>
 
   <ion-grid>
-    <ion-row class="ion-align-items-center ion-text-center ion-padding">
+    <ion-row class="ion-align-items-center ion-text-center">
         <ion-col col-6>
-          <ion-button style="font-size:1.3em" [routerLink]="['/seleccionar-ubicacion']" color="medium" >
-              <ion-icon name="done-all"></ion-icon>
-              REGISTRO
+          <ion-button 
+            class="caratula-button"
+            [routerLink]="['/seleccionar-ubicacion']"
+            expand="full"
+            size="large"
+            >
+            <div>
+              <ion-icon class="icon-button" slot="start" name="save"></ion-icon>
+              <ion-label class="label-button">REGISTRO</ion-label>
+            </div>
+            <ion-badge color="danger">{{registrosNum}}</ion-badge>
           </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row class="ion-align-items-center ion-text-center ion-padding">
+      <ion-row class="ion-align-items-center ion-text-center">
         <ion-col col-6>
-          <ion-button style="font-size:1.5em" [routerLink]="['/conteo/seleccionar-ubicacion']" color="medium">
-            <ion-icon name="list-box"></ion-icon>
-              CONTEO
-            </ion-button>
+          <ion-button
+            class="caratula-button"
+            [routerLink]="['/conteo/seleccionar-ubicacion']" 
+            expand="full"
+            size="large"
+            >
+            <div>
+              <ion-icon class="icon-button" slot="start" name="checkbox-outline"></ion-icon>
+              <ion-label class="label-button">CONTEO</ion-label>
+            </div>
+            <ion-badge slot="end" color="danger">{{conteosNum}}</ion-badge>
+          </ion-button>
         </ion-col>
       </ion-row>
-      <ion-row class="ion-align-items-center ion-text-center ion-padding">
+      <ion-row class="ion-align-items-center ion-text-center">
           <ion-col col-6>
-              <ion-button style="font-size:1.2em" [routerLink]="['/bajas/seleccionar-ubicacion']" color="medium">
-                <ion-icon name="trash"></ion-icon>
-                  DAR DE BAJA
-              </ion-button>
+              <ion-button
+                class="caratula-button"
+                [routerLink]="['/bajas/seleccionar-ubicacion']"
+                expand="full"
+                size="large"
+                >
+                <div>
+                  <ion-icon class="icon-button" slot="start" name="remove-circle-outline"></ion-icon>
+                  <ion-label class="label-button">DAR DE BAJA</ion-label>
+                </div>
+                <ion-badge slot="end" color="danger">{{bajasNum}}</ion-badge>
+                </ion-button>
           </ion-col>
     </ion-row>
   </ion-grid>

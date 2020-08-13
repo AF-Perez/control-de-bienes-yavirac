@@ -33,6 +33,9 @@ export class CaratulaPage implements OnInit, OnDestroy {
   connectSubscription: any;
   private preguntadorTimer = null;
   private timerSub: Subscription;
+  private registrosNum: number = 0;
+  private conteosNum: number = 0;
+  private bajasNum: number = 0;
 
   ngOnInit() {
     console.log('init catatula');
@@ -52,6 +55,26 @@ export class CaratulaPage implements OnInit, OnDestroy {
           console.log('resultado sincr');
         });
       }
+    });
+
+    // consultar el numero de tareas pendientes por cada tipo
+    this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
+      tareas.forEach(tarea => {
+        this.registrosNum, this.conteosNum, this.bajasNum = 0;
+        switch (tarea.tipo) {
+          case 'REGISTRO':
+            this.registrosNum++;
+            break;
+          case 'CONTEO':
+            this.conteosNum++;
+            break;
+          case 'BAJAS':
+            this.bajasNum++;
+            break;
+          default:
+            break;
+        }
+      });
     });
   }
 
@@ -84,9 +107,38 @@ export class CaratulaPage implements OnInit, OnDestroy {
   }
 
   obtenerTareas() {
-    this.tareasService.obtenerTareas()
+    this.tareasService.obtenerTareasIncompletas()
       .subscribe(tareas => {
+        console.log(tareas);
         this.tareas = tareas;
       });
+  }
+
+  doRefresh(event) {
+    this.registrosNum = 0;
+    this.conteosNum = 0; 
+    this.bajasNum = 0;
+    // consultar el numero de tareas pendientes por cada tipo
+    this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
+      tareas.forEach(tarea => {
+        
+        switch (tarea.tipo) {
+          case 'REGISTRO':
+            this.registrosNum++;
+            break;
+          case 'CONTEO':
+            this.conteosNum++;
+            break;
+          case 'BAJAS':
+            this.bajasNum++;
+            break;
+          default:
+            break;
+        }
+        if (event) {
+          event.target.complete();
+        }
+      });
+    });
   }
 }

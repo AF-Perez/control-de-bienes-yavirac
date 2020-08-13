@@ -1,3 +1,5 @@
+import { FileEntry } from '@ionic-native/file/ngx';
+
 export class Bien {
     constructor(
       public codigo: string,
@@ -7,7 +9,8 @@ export class Bien {
       public precio: number,
       public idUbicacion: string,
       public observaciones: string,
-      public codigoPadre: string,
+      public codigoPadre: string = '-1',
+      public imagenBien: any,
     ) {}
   }
   

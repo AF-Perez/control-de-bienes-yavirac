@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ubicacion.nombre}} ({{horaFechaFin | date:'mm:ss'}} mins.)</ion-title>
+    <ion-title>({{horaFechaFin | date:'mm:ss'}} mins.) {{ubicacion.nombre}}</ion-title>
     <ion-buttons slot="primary">
       <ion-button (click)="onSubmit()" [disabled]="bienesEstaVacio">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
@@ -30,12 +30,16 @@
           Eliminar
         </ion-item-option>
       </ion-item-options>
-      <ion-item >
+      <ion-item>
         <ion-label>
           <h2>{{ bien.nombre }}</h2>
-          <h3>{{ bien.codigo_barras }}</h3>
+          <h3>{{ bien.codigo }}</h3>
           <p>{{ bien.observaciones }}</p>
+          <p>{{ bien.imagenBien.name }}</p>
         </ion-label>
+        <ion-thumbnail slot="end">
+          <img src="http://localhost/_capacitor_file_/storage/emulated/0/Android/data/com.yavirac.app/cache/{{bien.imagenBien.name}}">
+        </ion-thumbnail>
       </ion-item>
       <ion-item-options side="end">
         <ion-item-option color="tertiary" expandable>

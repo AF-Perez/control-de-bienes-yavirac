@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { Bien } from '../models/bien.model';
 import { OfflineService } from '../services/offline.service';
+import { FilesService } from '../services/files.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class BienesService {
     private variablesGlobales: GlobalsService,
     private servicioOffline: OfflineService,
     private servicioBDD: DatabaseService,
+    private filesService: FilesService,
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
@@ -45,20 +47,34 @@ export class BienesService {
   }
 
   // guardar un bien en el servidor
-  guardarBien(datosBien: Bien) {
+  guardarBien(bien: Bien) {
+
+
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
-        let postDataBien = {
-          'nombre': datosBien.nombre,
-          'clase': "CONTROL ADMINISTRATIVO",
-          'observaciones': datosBien.observaciones,
-          'valor_unitario': datosBien.precio,
-          'id_ubicacion': datosBien.idUbicacion,
-          'codigo': datosBien.codigo,
-          'tipo_de_bien': datosBien.tipo,
-        }
-        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes`, postDataBien, {headers});
+        const formData = new FormData();
+        formData.append('nombre', bien.nombre);
+        formData.append('clase', "CONTROL ADMINISTRATIVO");
+        formData.append('observaciones', bien.observaciones);
+        formData.append('valor_unitario', bien.precio.toString());
+        formData.append('id_ubicacion', bien.idUbicacion);
+        formData.append('codigo', bien.codigo);
+        formData.append('id_padre', bien.codigoPadre);
+        formData.append('imagen_bien', bien.imagenBien.blob, bien.imagenBien.name);
+
+        // let postDataBien = {
+        //   'nombre': datosBien.nombre,
+        //   'clase': "CONTROL ADMINISTRATIVO",
+        //   'observaciones': datosBien.observaciones,
+        //   'valor_unitario': datosBien.precio,
+        //   'id_ubicacion': datosBien.idUbicacion,
+        //   'codigo': datosBien.codigo,
+        //   'tipo_de_bien': datosBien.tipo,
+        // }
+        console.log(bien);
+        // estudiar switch map porque por eso retorno correctamente, asi que es crucial entender
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes`, formData, {headers});
       }),
     );
   }
