@@ -118,6 +118,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
     this.registrosNum = 0;
     this.conteosNum = 0; 
     this.bajasNum = 0;
+    
     // consultar el numero de tareas pendientes por cada tipo
     this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
       tareas.forEach(tarea => {
