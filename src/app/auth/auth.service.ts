@@ -28,8 +28,12 @@ export class AuthService implements OnDestroy {
   private _userId = null;
   private activeLogoutTimer: any;
 
+  // al final retorna un observable que contiene un booleano
   get userIsAuthenticated() {
+    // el metodo pipe permite el procesamiento de un observables con mas de una alteracion
     return this._token.asObservable().pipe(
+      // en este caso se mapea el observable original que devolvia el token a uno que devuelve un booleano
+      // true si el usuario esta autenticado, false si no
       map(token => {
         if (token) {
           return !!token;

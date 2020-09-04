@@ -39,9 +39,9 @@ export class CaratulaPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('init catatula');
-    this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
-      this.tieneConexion = resultado;
-    });
+    // this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
+    //   this.tieneConexion = resultado;
+    // });
 
     // this.preguntadorTimer = setInterval(() => {
     //   this.offlineService.comprobarConexion();

@@ -80,7 +80,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       tiposDeBien: new FormControl('', Validators.required),
       nombre: new FormControl('', Validators.required),
       estado: new FormControl('', Validators.required),
-      precio: new FormControl('', Validators.required),
+      precio: new FormControl(''),
       observaciones: new FormControl(''),
       codigoPadre: new FormControl({ id: -1, nombre: 'Ninguno' }),
     });
