@@ -2,7 +2,7 @@ import { DatabaseService } from './database.service';
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subscription, forkJoin } from 'rxjs';
 import { Bien } from '../models/bien.model';
-import { take, delay, tap, map } from 'rxjs/operators';
+import { take, delay, tap, map, catchError } from 'rxjs/operators';
 import { BienesService } from '../servicios/bienes.service';
 import { AuthService } from '../auth/auth.service';
 import { switchMap } from 'rxjs/operators';
@@ -10,6 +10,10 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { OfflineService } from '../services/offline.service';
 import { File, FileEntry } from '@ionic-native/file/ngx';
+import { Observable, from } from 'rxjs';
+import { NetworkService, ConnectionStatus } from './network.service';
+import { Storage } from '@ionic/storage';
+
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +27,8 @@ export class TareaRegistroService implements OnDestroy {
     private variablesGlobales: GlobalsService,
     private offlineService: OfflineService,
     private db: DatabaseService,
+    private networkService: NetworkService,
+    private storage: Storage,
   ) {}
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
@@ -112,6 +118,21 @@ export class TareaRegistroService implements OnDestroy {
           this._bienes.next([]);
       }),
     )
+  }
+
+  guardarBienes2(data): Observable<any> {
+    console.log('mmmmm', data);
+    let url = `${this.NOMBRE_SERVIDOR}/users/`;
+    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {
+      return from(this.offlineService.storeRequest(url, 'POST', data));
+    } else {
+      return this.clienteHttp.put(url, data).pipe(
+        catchError(err => {
+          this.offlineService.storeRequest(url, 'POST', data);
+          throw new Error(err);
+        })
+      );
+    }
   }
 
   vaciarBienes() {

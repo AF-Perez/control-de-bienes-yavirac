@@ -64,8 +64,8 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     ];
 
     this.estados = [
-      "Bueno",
-      "Regular",
+      "Nuevo",
+      "Usado",
       "Malo",
     ];
 
@@ -76,11 +76,11 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     ];
 
     this.validations_form = this.formBuilder.group({
-      codigo: new FormControl('', Validators.required),
-      tiposDeBien: new FormControl('', Validators.required),
+      codigo: new FormControl(this.getSomeRandomString(), Validators.required),
+      tiposDeBien: new FormControl('Muebles', Validators.required),
       nombre: new FormControl('', Validators.required),
-      estado: new FormControl('', Validators.required),
-      precio: new FormControl(''),
+      estado: new FormControl('Usado', Validators.required),
+      precio: new FormControl('0.0'),
       observaciones: new FormControl(''),
       codigoPadre: new FormControl({ id: -1, nombre: 'Ninguno' }),
     });
@@ -210,6 +210,14 @@ export class CrearBienesPage implements OnInit, OnDestroy {
     }, (err) => {
       console.error("Error: " + err);
     });
+  }
+
+  getSomeRandomString() {
+    return Math.random().toString(20).substr(2, 6);
+  }
+
+  cambiarCodigo() {
+    this.validations_form.controls['codigo'].setValue(this.getSomeRandomString());
   }
 
   validation_messages = {

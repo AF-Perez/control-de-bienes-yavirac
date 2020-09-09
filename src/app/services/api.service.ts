@@ -14,9 +14,15 @@ const API_URL = 'https://reqres.in/api';
 })
 export class ApiService {
  
-  constructor(private http: HttpClient, private networkService: NetworkService, private storage: Storage, private offlineManager: OfflineService) { }
+  constructor(
+    private http: HttpClient,
+    private networkService: NetworkService,
+    private storage: Storage,
+    private offlineManager: OfflineService
+    ) { }
  
   getUsers(forceRefresh: boolean = false): Observable<any[]> {
+    // validacion, tiene o no tiene conexion a la red?
     if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline || !forceRefresh) {
       // Return the cached data from Storage
       return from(this.getLocalData('users'));
@@ -28,6 +34,7 @@ export class ApiService {
       return this.http.get(`${API_URL}/users?per_page=2&page=${page}`).pipe(
         map(res => res['data']),
         tap(res => {
+          // guarda el json directamente en el local storage
           this.setLocalData('users', res);
         })
       )

@@ -37,11 +37,15 @@ export class OfflineService {
   // el objetivo de esta funcion es comprobar si existen requests almacenadas en el storage, de ser asi
   // se las envia al servidor
   checkForEvents(): Observable<any> {
+    // transforma una promesa en un observable
     return from(this.storage.get(STORAGE_REQ_KEY)).pipe(
       switchMap(storedOperations => {
+        // decodifica el json almacenado
         let storedObj = JSON.parse(storedOperations);
+        // comprueba si hay o no request en el storage
         if (storedObj && storedObj.length > 0) {
           return this.sendRequests(storedObj).pipe(
+            // crea un toast
             finalize(() => {
               let toast = this.toastController.create({
                 message: `Local data succesfully synced to API!`,
@@ -49,11 +53,13 @@ export class OfflineService {
                 position: 'bottom'
               });
               toast.then(toast => toast.present());
- 
+              
+              // elimina las requests desde el estorage
               this.storage.remove(STORAGE_REQ_KEY);
             })
           );
         } else {
+          // si no hubo request en el storage retorna un observable con valor false
           console.log('no local events to sync');
           return of(false);
         }
@@ -64,8 +70,8 @@ export class OfflineService {
   // 
   storeRequest(url, type, data) {
     let toast = this.toastController.create({
-      message: `Your data is stored locally because you seem to be offline.`,
-      duration: 3000,
+      message: `Tus datos se han guardado en el dispositivo.`,
+      duration: 4000,
       position: 'bottom'
     });
     toast.then(toast => toast.present());
@@ -87,7 +93,7 @@ export class OfflineService {
       } else {
         storedObj = [action];
       }
-      // Save old & new local transactions back to Storage
+      // Save OLD & NEW local transactions back to Storage
       return this.storage.set(STORAGE_REQ_KEY, JSON.stringify(storedObj));
     });
   }
@@ -102,6 +108,7 @@ export class OfflineService {
     }
  
     // Send out all local events and return once they are finished
+    // forkJoin permite ejecutar un ARRAY de observables
     return forkJoin(obs);
   }
 

@@ -15,7 +15,11 @@ export class NetworkService {
 
   private status: BehaviorSubject<ConnectionStatus> = new BehaviorSubject(ConnectionStatus.Offline);
  
-  constructor(private network: Network, private toastController: ToastController, private plt: Platform) {
+  constructor(
+    private network: Network,
+    private toastController: ToastController,
+    private plt: Platform
+    ) {
     this.plt.ready().then(() => {
       this.initializeNetworkEvents();
       let status =  this.network.type !== 'none' ? ConnectionStatus.Online : ConnectionStatus.Offline;
@@ -27,14 +31,14 @@ export class NetworkService {
  
     this.network.onDisconnect().subscribe(() => {
       if (this.status.getValue() === ConnectionStatus.Online) {
-        console.log('WE ARE OFFLINE');
+        console.log('Sin conexión');
         this.updateNetworkStatus(ConnectionStatus.Offline);
       }
     });
  
     this.network.onConnect().subscribe(() => {
       if (this.status.getValue() === ConnectionStatus.Offline) {
-        console.log('WE ARE ONLINE');
+        console.log('Conexión establecida');
         this.updateNetworkStatus(ConnectionStatus.Online);
       }
     });
