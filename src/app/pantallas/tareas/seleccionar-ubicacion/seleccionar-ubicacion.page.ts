@@ -22,10 +22,12 @@ export class SeleccionarUbicacionPage implements OnInit, OnDestroy {
   ubicaciones: any = [];
   tipoTarea = 'REGISTRO';
   private ubicacionesSub: Subscription;
+  tareas: any = [];
 
   // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
     this.obtenerUbicaciones();
+    this.obtenerTareas();
   }
 
   irAGestionarBienes(ubicacion){
@@ -42,6 +44,13 @@ export class SeleccionarUbicacionPage implements OnInit, OnDestroy {
   obtenerUbicaciones() {
     return this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).pipe(take(1)).subscribe(ubicaciones => {
       this.ubicaciones = ubicaciones;
+    });
+  }
+
+  obtenerTareas() {
+    return this.servicioTareas.obtenerTareasUsuario(this.tipoTarea).subscribe(tareas => {
+      this.tareas = tareas;
+      console.log('tareas', this.tareas);
     });
   }
 

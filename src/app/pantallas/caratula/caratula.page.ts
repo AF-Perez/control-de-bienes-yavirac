@@ -31,11 +31,12 @@ export class CaratulaPage implements OnInit, OnDestroy {
   private conexionSubscripcion: Subscription;
   disconnectSubscription: any;
   connectSubscription: any;
-  private preguntadorTimer = null;
-  private timerSub: Subscription;
-  private registrosNum: number = 0;
-  private conteosNum: number = 0;
-  private bajasNum: number = 0;
+  preguntadorTimer = null;
+  timerSub: Subscription;
+  registrosNum: number = 0;
+  conteosNum: number = 0;
+  bajasNum: number = 0;
+  hayConteos = false;
 
   ngOnInit() {
     console.log('init catatula');
@@ -76,6 +77,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
         }
       });
     });
+
   }
 
   ngOnDestroy() {

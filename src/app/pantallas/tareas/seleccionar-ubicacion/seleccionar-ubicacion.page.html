@@ -10,10 +10,11 @@
 
 <ion-content >
   <ion-list>
-    <ion-item *ngFor="let ubicacion of ubicaciones" (click)="irAGestionarBienes(ubicacion)">
- 
-      {{ubicacion.nombre}}
-
+    <ion-item *ngFor="let tarea of tareas" (click)="irAGestionarBienes(tarea.id_ubicacion)">
+      <ion-label>
+        <h2>{{tarea.ubicacionNombre}}</h2>
+        <p> {{tarea.fecha_asignacion|date:'mediumDate'}}</p>
+      </ion-label>
     </ion-item>
 
     <div class="not-tasks-msg" *ngIf="!ubicaciones.length" style="padding: 20px;">

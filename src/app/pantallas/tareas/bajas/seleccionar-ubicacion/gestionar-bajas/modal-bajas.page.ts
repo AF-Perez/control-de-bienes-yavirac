@@ -1,6 +1,10 @@
-import { Input } from '@angular/core';
+import { Input, Component } from '@angular/core';
 import { NavParams } from '@ionic/angular';
 
+@Component({
+  selector: 'modal-bajas-page',
+  templateUrl: './modal-bajas.page.html',
+})
 export class ModalBajarPage {
 
     // Data passed in by componentProps

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { switchMap, flatMap, map, take } from 'rxjs/operators';
+import { switchMap, flatMap, map, take, tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { AuthService } from '../auth/auth.service';
@@ -30,6 +30,8 @@ export class TareasService {
     return this._tareas.asObservable();
   }
 
+  hola = 1;
+
   obtenerTareas() {
     return this.servicioOffline.tieneConexion.pipe(
       switchMap(tieneConx => {
@@ -41,6 +43,7 @@ export class TareasService {
             })
           );
         }
+        
         return from(this.servicioBDD.cargarTareas());
       })
     );
@@ -90,6 +93,39 @@ export class TareasService {
           })
         });
         return ubicacionesValidas;
+      }),
+    );
+  }
+
+  obtenerTareasUsuario(tipoTarea) {
+
+    return this.obtenerTareas().pipe(
+     
+      // proceso 1, t
+      switchMap(tareas => {
+        return this.servicioUbicaciones.obtenerUbicaciones5().pipe(
+          tap((dato) => {
+            console.warn(dato);
+          }),
+          map(ubicaciones => {
+            return {tareas, ubicaciones};
+          })
+        );
+      }),
+
+      // proceso 2
+      map(({tareas, ubicaciones}) => {
+        let tareasConUbicaciones = [];
+        tareas.forEach(tarea => {
+          ubicaciones.forEach(ubicacion => {
+            if (ubicacion.id === tarea.id_ubicacion && tarea.tipo === tipoTarea && tarea.completada === 0) {
+              tarea.ubicacionNombre = ubicacion.nombre;
+              tareasConUbicaciones.push(tarea);
+            }
+          })
+        });
+        console.log('tareasConUbicaciones', tareasConUbicaciones);
+        return tareasConUbicaciones;
       }),
     );
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UbicacionesService } from '../../../../servicios/ubicaciones.service';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
+import { TareasService } from 'src/app/services/tareas.service';
 
 @Component({
   selector: 'app-seleccionar-ubicacion',
@@ -12,15 +13,19 @@ export class SeleccionarUbicacionPage implements OnInit {
 
   constructor(
     private servicioUbicaciones: UbicacionesService,
+    private servicioTareas: TareasService,
     private router: Router,
   ) { }
 
   ngOnInit() {
-    this.obtenerUbicaciones();
+    // this.obtenerUbicaciones();
+    this.obtenerTareas();
   }
 
   // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
+  tipoTarea = 'BAJAS';
+  tareas: any = [];
 
   irAGestionDeBajas(ubicacion){
     let navigationExtras: NavigationExtras = {
@@ -37,9 +42,14 @@ export class SeleccionarUbicacionPage implements OnInit {
   obtenerUbicaciones() {
     this.servicioUbicaciones.obtenerUbicaciones5()
       .subscribe(ubicaciones => {
-        console.log(ubicaciones);
         this.ubicaciones = ubicaciones;
       });
+  }
+
+  obtenerTareas() {
+    return this.servicioTareas.obtenerTareasUsuario(this.tipoTarea).subscribe(tareas => {
+      this.tareas = tareas;
+    });
   }
 
 }

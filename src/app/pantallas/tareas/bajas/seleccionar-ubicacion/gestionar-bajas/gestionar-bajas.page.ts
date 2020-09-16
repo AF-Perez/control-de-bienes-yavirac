@@ -41,7 +41,7 @@ export class GestionarBajasPage implements OnInit {
   }
 
   obtenerBienes() {
-    this.servicioBienes.traerBienesDeUbicacion(this.ubicacion.id)
+    this.servicioBienes.traerBienesDeUbicacion(this.ubicacion)
       .subscribe(bienes => {
         console.log(bienes);
         this.bienes = bienes;

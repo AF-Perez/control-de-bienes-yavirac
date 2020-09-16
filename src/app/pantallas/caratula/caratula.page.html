@@ -25,6 +25,7 @@
             [routerLink]="['/seleccionar-ubicacion']"
             expand="full"
             size="large"
+            [attr.disabled]="registrosNum === 0 ? 'true' : 'false'"
             >
             <div>
               <ion-icon class="icon-button" slot="start" name="save"></ion-icon>
@@ -41,6 +42,7 @@
             [routerLink]="['/conteo/seleccionar-ubicacion']" 
             expand="full"
             size="large"
+            [attr.disabled]="conteosNum === 0 ? 'true' : 'false'"
             >
             <div>
               <ion-icon class="icon-button" slot="start" name="checkbox-outline"></ion-icon>
@@ -57,6 +59,7 @@
                 [routerLink]="['/bajas/seleccionar-ubicacion']"
                 expand="full"
                 size="large"
+                [attr.disabled]="bajasNum === 0 ? 'true' : 'false'"
                 >
                 <div>
                   <ion-icon class="icon-button" slot="start" name="remove-circle-outline"></ion-icon>

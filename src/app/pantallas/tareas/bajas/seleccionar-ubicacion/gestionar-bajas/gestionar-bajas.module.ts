@@ -27,7 +27,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [GestionarBajasPage]
+  declarations: [
+    GestionarBajasPage,
+  ],
 })
 
 export class GestionarBajasPageModule {}
