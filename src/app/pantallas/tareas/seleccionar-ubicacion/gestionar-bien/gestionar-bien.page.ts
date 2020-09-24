@@ -93,6 +93,9 @@ export class GestionarBienPage implements OnInit, OnDestroy {
             this.servicioRegistro.vaciarBienes();
             loadingEl.dismiss();
             this._location.back();
+          },
+          (err) => {
+            loadingEl.dismiss();
           });
       })
   }

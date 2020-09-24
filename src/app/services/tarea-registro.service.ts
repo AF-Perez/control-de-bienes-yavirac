@@ -121,15 +121,23 @@ export class TareaRegistroService implements OnDestroy {
   }
 
   guardarBienes2(data): Observable<any> {
+    data = {bienes: data};
     console.log('mmmmm', data);
-    let url = `${this.NOMBRE_SERVIDOR}/users/`;
+    console.log('mmmmm', data.idUbicacion);
+
+    let url = `${this.NOMBRE_SERVIDOR}/api/registrarbienes/`;
     if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {
       return from(this.offlineService.storeRequest(url, 'POST', data));
     } else {
-      return this.clienteHttp.put(url, data).pipe(
-        catchError(err => {
-          this.offlineService.storeRequest(url, 'POST', data);
-          throw new Error(err);
+      return this.authService.getHeaders().pipe(
+        take(1),
+        switchMap(headers => {
+          return this.clienteHttp.post(url, data, {headers}).pipe(
+            catchError(err => {
+              this.offlineService.storeRequest(url, 'POST', data);
+              throw new Error(err);
+            })
+          );
         })
       );
     }
