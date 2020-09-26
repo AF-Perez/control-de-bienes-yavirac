@@ -25,6 +25,7 @@ export class CrearBienesPage implements OnInit, OnDestroy {
   estados: Array<string>;
   ubicaciones: Array<string>;
   idUbicacion = null;
+  idAsignacion = null;
   encodeData: any;
   scannedData: {};
   barcodeScannerOptions: BarcodeScannerOptions;
@@ -94,6 +95,9 @@ export class CrearBienesPage implements OnInit, OnDestroy {
       showFlipCameraButton: true,
       // formats : "QR_CODE",
     };
+
+    this.idAsignacion = history.state.idAsignacion;
+    console.log(this.idAsignacion);
   }
 
   ngOnDestroy() {

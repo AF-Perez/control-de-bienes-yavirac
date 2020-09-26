@@ -120,8 +120,8 @@ export class TareaRegistroService implements OnDestroy {
     )
   }
 
-  guardarBienes2(data): Observable<any> {
-    data = {bienes: data};
+  guardarBienes2(data, idAsignacion): Observable<any> {
+    data = {bienes: data, idAsignacionTarea: idAsignacion};
     console.log('mmmmm', data);
     console.log('mmmmm', data.idUbicacion);
 

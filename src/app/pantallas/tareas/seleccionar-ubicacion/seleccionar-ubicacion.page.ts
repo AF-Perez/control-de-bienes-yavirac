@@ -30,12 +30,14 @@ export class SeleccionarUbicacionPage implements OnInit, OnDestroy {
     this.obtenerTareas();
   }
 
-  irAGestionarBienes(ubicacion){
+  irAGestionarBienes(tarea){
     let navigationExtras: NavigationExtras = {
       state: {
         // aqui todo lo que se va a pasar a las sig pantalla
         user: 1,
-        ubicacion: ubicacion,
+        idUbicacion: tarea.id_ubicacion,
+        idAsignacion: tarea.id,
+
       }
     };
     this.router.navigate(['gestionar-bien'], navigationExtras);
