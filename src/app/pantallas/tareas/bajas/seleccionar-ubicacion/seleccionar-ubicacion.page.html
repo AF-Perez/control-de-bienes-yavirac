@@ -11,7 +11,7 @@
 <ion-content>
   <ion-list>
 
-    <ion-item *ngFor="let tarea of tareas" (click)="irAGestionDeBajas(tarea.id_ubicacion)"  detail >
+    <ion-item *ngFor="let tarea of tareas" (click)="irAGestionDeBajas(tarea)"  detail >
       <ion-label>
         <h2>{{tarea.ubicacionNombre}}</h2>
         <p> {{tarea.fecha_asignacion|date:'mediumDate'}}</p>

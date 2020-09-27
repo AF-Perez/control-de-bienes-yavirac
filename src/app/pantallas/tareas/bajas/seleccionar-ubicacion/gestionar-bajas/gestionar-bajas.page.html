@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  {{fecha.toTimeString()}}
+  {{fecha|date:'mediumDate'}}
 
    <!-- fab placed to the (vertical) center and end -->
   
@@ -20,12 +20,13 @@
     
     <ion-item *ngFor="let bien of bienes">
 
-      {{bien.nombre}}
-      {{bien.descripcion}}
-      {{bien.clase}}
+      <ion-label>
+        <h2>{{bien.nombre}}</h2>
+        <p>{{bien.codigo_barras}}</p>
+      </ion-label>
 
       <div *ngIf="bien.enviado == true; else elseBlock">Pendiente</div>
-      <ion-button color="danger" style="font-size:1.2em" (click)="mostrarModal(bien.id)" [disabled]="bien.enviado == true ? true : false">
+      <ion-button color="danger" style="flex-flow: column;" (click)="mostrarModal(bien.id)" [disabled]="bien.enviado == true ? true : false">
         <ng-template #elseBlock>
           
         </ng-template>

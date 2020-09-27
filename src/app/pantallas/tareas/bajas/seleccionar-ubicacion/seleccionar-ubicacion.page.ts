@@ -27,13 +27,13 @@ export class SeleccionarUbicacionPage implements OnInit {
   tipoTarea = 'BAJAS';
   tareas: any = [];
 
-  irAGestionDeBajas(ubicacion){
+  irAGestionDeBajas(tarea){
     let navigationExtras: NavigationExtras = {
       state: {
         // aqui todo lo que se va a pasar a las sig pantalla
         user: 1,
-        ubicacion: ubicacion,
-        // ...
+        ubicacion: tarea.id_ubicacion,
+        idAsignacion: tarea.id,
       }
     };
     this.router.navigate(['gestionar-bajas'], navigationExtras);

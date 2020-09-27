@@ -163,4 +163,20 @@ export class TareasService {
     );
   }
 
+  submitBaja(idBien, idTarea, motivo, imagen) {
+    return this.authService.getHeaders().pipe(
+      take(1),
+      switchMap(headers => {
+        let data = {
+          id_bien: idBien,
+          id_asignacion_tarea: idTarea,
+          motivo: motivo,
+          imagen: imagen,
+        };
+        //JSON.stringify(data);
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/dar_baja_bien`, data, {headers});
+      }),
+    );
+  }
+
 }

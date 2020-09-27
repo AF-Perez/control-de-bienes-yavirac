@@ -18,6 +18,7 @@ export class GestionarBajasPage implements OnInit {
   fecha: any;
   observaciones: any;
   bienes: any = [];
+  idAsignacion: any;
 
   constructor(
     private route: ActivatedRoute, 
@@ -31,6 +32,7 @@ export class GestionarBajasPage implements OnInit {
       if (this.router.getCurrentNavigation().extras.state) {
         // llenar la variable
         this.ubicacion = this.router.getCurrentNavigation().extras.state.ubicacion;
+        this.idAsignacion = this.router.getCurrentNavigation().extras.state.idAsignacion;
       }
     });
    }
@@ -90,9 +92,8 @@ export class GestionarBajasPage implements OnInit {
     const modal = await this.modalController.create({
       component: ModalBajarPage,
       componentProps: {
-        'a': 'dfjlfjasdk',
-        'b': 'dsjfkldslk',
-        'c': 'hola mudo',
+        idBien,
+        idAsignacion: this.idAsignacion,
       },
     });
     return await modal.present();
