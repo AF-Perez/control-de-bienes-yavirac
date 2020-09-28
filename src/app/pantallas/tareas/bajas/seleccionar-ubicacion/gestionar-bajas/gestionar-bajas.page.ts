@@ -46,7 +46,10 @@ export class GestionarBajasPage implements OnInit {
     this.servicioBienes.traerBienesDeUbicacion(this.ubicacion)
       .subscribe(bienes => {
         console.log(bienes);
-        this.bienes = bienes;
+        this.bienes = bienes.filter(bien => {
+          return bien.is_baja !== 1;
+        });
+        // this.bienes = bienes;
       });
   }
 
@@ -96,6 +99,14 @@ export class GestionarBajasPage implements OnInit {
         idAsignacion: this.idAsignacion,
       },
     });
+
+    modal.onDidDismiss()
+      .then((data) => {
+        this.bienes = this.bienes.filter(bien => {
+          return bien.is_baja !== data['data'].idDeleted;
+        });
+    });
+
     return await modal.present();
   }
   

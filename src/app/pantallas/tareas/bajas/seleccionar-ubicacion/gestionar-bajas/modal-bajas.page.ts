@@ -27,6 +27,7 @@ export class ModalBajarPage {
   imgURL: any;
   images = [];
   imageBaja: any;
+  idDeleted = -1;
 
   // Data passed in by componentProps
   @Input() idBien: string;
@@ -65,6 +66,8 @@ export class ModalBajarPage {
     this.plt.ready().then(() => {
       this.loadStoredImages();
     });
+
+    this.idDeleted = -1;
   }
 
   loadStoredImages() {
@@ -102,7 +105,7 @@ export class ModalBajarPage {
         valoresFormulario.razonBaja,
         imgData,
       ).subscribe((_) => {
-        console.log('ranndlfjkfdj');
+        
       });
     };
     reader.readAsArrayBuffer(file);
@@ -187,9 +190,7 @@ export class ModalBajarPage {
             loadingEl.dismiss();
             this.form.reset();
             this.imageBaja = null;
-            // this._location.back();
-            this.closeModal();
-            
+            this.closeModal(this.navParams.get('idBien'));
           });
       })
   }
@@ -250,9 +251,11 @@ export class ModalBajarPage {
     //   });
   }
 
-  closeModal()
+  closeModal(idDeleted)
   {
-    this.modalCtrl.dismiss();
+    this.modalCtrl.dismiss({
+      idDeleted,
+    });
   }
 
 }
