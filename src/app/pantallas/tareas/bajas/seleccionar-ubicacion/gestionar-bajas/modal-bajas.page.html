@@ -1,56 +1,59 @@
-<ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button defaultHref="gestionar-bien"></ion-back-button>
-      </ion-buttons>
-      <ion-title>Ingreso de registro</ion-title>
-      <ion-buttons slot="primary">
-        <ion-button (click)="onSubmit(form.value)" [disabled]="!form.valid">
-          <ion-icon name="checkmark" slot="icon-only"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content class="form-content ion-padding">
-    <form [formGroup]="form">
-      <ion-grid>
-  
-        <!-- Observaciones -->
-        <ion-row>
-          <ion-col size-sm="6" offset-sm="1">
-            <ion-item>
-              <ion-textarea formControlName="razonBaja" placeholder="Motivo de la baja"></ion-textarea>
-            </ion-item>
-          </ion-col>
-        </ion-row>
-  
-  
-        <!-- foto -->
-        <ion-row>
-          <ion-col size-sm="6" offset-sm="1">
-  
-            <ion-item *ngIf="imgData">
-  
-              <ion-img [src]="imgURL"></ion-img>
-  
-              <ion-label>
-              </ion-label>
-            </ion-item>
-  
-          </ion-col>
-        </ion-row>
-  
-      </ion-grid>
-    </form>
-  
-  </ion-content>
-  
-  <ion-footer>
-    <ion-toolbar color="primary">
-      <ion-button fill="clear" expand="full" color="light" (click)="tomarFoto()">
-        <ion-icon slot="start" name="camera"></ion-icon>
-        Registrar foto
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="closeModal()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-title>Dar de baja</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmit(form.value)" [disabled]="!form.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
-    </ion-toolbar>
-  </ion-footer>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="form-content ion-padding">
+  <form [formGroup]="form">
+    <ion-grid>
+
+      <!-- Observaciones -->
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="1">
+          <ion-item>
+            <ion-textarea formControlName="razonBaja" placeholder="Motivo de la baja"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+
+      <!-- foto -->
+      <ion-row>
+        <ion-col size-sm="6" offset-sm="1">
+
+          <ion-item *ngIf="imageBaja">
+            <ion-thumbnail>
+              <ion-img [src]="imageBaja.path"></ion-img>
+            </ion-thumbnail>
+            <ion-label>
+              {{ imageBaja.name }}
+            </ion-label>
+            <ion-button slot="end" fill="clear" (click)="deleteImage(imageBaja)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-button>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </form>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar color="primary">
+    <ion-button fill="clear" expand="full" color="light" (click)="tomarFoto()">
+      <ion-icon slot="start" name="camera"></ion-icon>
+      Registrar foto
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
