@@ -164,20 +164,25 @@ export class TareasService {
   }
 
   submitBaja(idBien, idTarea, motivo, imagen) {
-    console.log('en el servicio');
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
-        console.log(idBien, idTarea, motivo, imagen);
         const formData = new FormData();
         formData.append('id_bien', idBien);
         formData.append('id_asignacion_tarea', idTarea);
         formData.append('motivo', motivo);
         formData.append('imagen', imagen.blob, imagen.name);
-
        
-        console.log(formData);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/dar_baja_bien`, formData, {headers});
+      }),
+    );
+  }
+
+  completarTarea(idTarea) {
+    return this.authService.getHeaders().pipe(
+      take(1),
+      switchMap((headers) => {
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/completarTarea/${idTarea}`, [], {headers});
       }),
     );
   }

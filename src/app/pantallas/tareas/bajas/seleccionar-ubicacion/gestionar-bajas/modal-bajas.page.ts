@@ -98,15 +98,19 @@ export class ModalBajarPage {
     reader.onload = () => {
       const imgBlob = new Blob([reader.result], { type: file.type });
       const imgData = { blob: imgBlob, name: file.name };
-      console.warn(imgData);
+      console.warn(valoresFormulario);
       this.servicioTareas.submitBaja(
         this.navParams.get('idBien'),
         this.navParams.get('idAsignacion'),
         valoresFormulario.razonBaja,
         imgData,
       ).subscribe((_) => {
-        
-      });
+        console.log('dljfkadfjl');
+      },
+        (err) => {
+          console.error("Error " + err)
+        }
+      )
     };
     reader.readAsArrayBuffer(file);
   }
@@ -176,7 +180,7 @@ export class ModalBajarPage {
     if (!this.form.valid) {
       return;
     }
-  
+
     this.loadingCtrl
       .create({
         message: 'Procesando solicitud...'
@@ -251,8 +255,7 @@ export class ModalBajarPage {
     //   });
   }
 
-  closeModal(idDeleted)
-  {
+  closeModal(idDeleted) {
     this.modalCtrl.dismiss({
       idDeleted,
     });

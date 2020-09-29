@@ -6,6 +6,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { ModalBajarPage } from './modal-bajas.page';
 
 
+
 @Component({
   selector: 'app-gestionar-bajas',
   templateUrl: './gestionar-bajas.page.html',
@@ -45,7 +46,6 @@ export class GestionarBajasPage implements OnInit {
   obtenerBienes() {
     this.servicioBienes.traerBienesDeUbicacion(this.ubicacion)
       .subscribe(bienes => {
-        console.log(bienes);
         this.bienes = bienes.filter(bien => {
           return bien.is_baja !== 1;
         });
@@ -103,11 +103,36 @@ export class GestionarBajasPage implements OnInit {
     modal.onDidDismiss()
       .then((data) => {
         this.bienes = this.bienes.filter(bien => {
-          return bien.is_baja !== data['data'].idDeleted;
+          return bien.id !== data['data'].idDeleted;
         });
     });
 
     return await modal.present();
+  }
+
+  async finTarea(idTarea) {
+
+    const alert = await this.alertController.create({
+      header: '¿Terminar la tarea?',
+      buttons: [
+        {
+          text: 'Sí',
+          handler: () => {
+            this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
+              this.router.navigate(['/caratula']);
+            }); 
+          }
+        },
+        {
+          text: 'No',
+          role: 'cancel',
+        },
+        
+      ],
+
+    });
+
+    await alert.present();
   }
   
 }

@@ -8,7 +8,7 @@ export class GlobalsService {
 
   // public NOMBRE_SERVIDOR = 'http://192.168.137.4:8000'; 
   // public NOMBRE_SERVIDOR = 'http://10.0.2.2:8000';
-  public NOMBRE_SERVIDOR = 'http://192.168.1.132:8000';
+  public NOMBRE_SERVIDOR = 'http://192.168.0.4:8000';
 
   // nobody outside the Store should have access to the BehaviourSubject
   private readonly _hostName = new BehaviorSubject<String>('');

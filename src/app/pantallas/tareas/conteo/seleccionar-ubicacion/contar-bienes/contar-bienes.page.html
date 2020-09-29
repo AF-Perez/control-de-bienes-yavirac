@@ -15,8 +15,6 @@
 
 <ion-content>
 
-  {{ fecha.toTimeString()}}
-  
   <ion-row>
     <ion-col size="10">
       <ion-item >
@@ -44,10 +42,10 @@
     </ion-col>
   </ion-row>
 
-  <ion-row justify-content-center>
+  <ion-row class="ion-justify-content-center">
     <ion-col text-center>
       <ion-button shape="round" size="small" (click)="agregarItem()">
-          <ion-icon slot="icon-only" name="add-circle"></ion-icon>
+          <ion-icon slot="icon-only" name="add-circle">Agregar item</ion-icon>
         </ion-button>
     </ion-col>
   </ion-row>
@@ -61,7 +59,7 @@
     </ion-item>
   </ion-list>
   
-  <ion-row justify-content-center>
+  <ion-row class="ion-justify-content-center">
     <ion-col size="6" text-center>
       <ion-button color="danger" (click)="cancelarConteo()">
         Cancelar
