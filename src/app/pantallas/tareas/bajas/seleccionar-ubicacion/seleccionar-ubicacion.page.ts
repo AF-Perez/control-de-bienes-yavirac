@@ -3,6 +3,7 @@ import { UbicacionesService } from '../../../../servicios/ubicaciones.service';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
 import { TareasService } from 'src/app/services/tareas.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-seleccionar-ubicacion',
@@ -20,14 +21,21 @@ export class SeleccionarUbicacionPage implements OnInit {
   ngOnInit() {
     // this.obtenerUbicaciones();
     this.obtenerTareas();
+    this.tareasIcompSubs = this.servicioTareas.tareasIncompletas.subscribe(ti => {
+      this.tareas = ti.filter(tarea => {
+        return tarea === this.tipoTarea;
+      });
+    });
   }
 
   // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
   tipoTarea = 'BAJAS';
   tareas: any = [];
+  private tareasIcompSubs: Subscription;
 
-  irAGestionDeBajas(tarea){
+
+  irAGestionDeBajas(tarea) {
     let navigationExtras: NavigationExtras = {
       state: {
         // aqui todo lo que se va a pasar a las sig pantalla
@@ -52,4 +60,9 @@ export class SeleccionarUbicacionPage implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this.tareasIcompSubs) {
+      this.tareasIcompSubs.unsubscribe();
+    }
+  }
 }

@@ -22,8 +22,8 @@ export class CaratulaPage implements OnInit, OnDestroy {
     private offlineService: OfflineService,
     private db: DatabaseService,
     private servicioSync: SincronizacionService,
-    ) { }
-    
+  ) { }
+
   private subscripcionBase: Subscription;
   tareas: any = [];
   ubicaciones: any = [];
@@ -37,9 +37,9 @@ export class CaratulaPage implements OnInit, OnDestroy {
   conteosNum: number = 0;
   bajasNum: number = 0;
   hayConteos = false;
+  private tareasIcompSubs: Subscription;
 
   ngOnInit() {
-    console.log('init catatula');
     // this.conexionSubscripcion = this.offlineService.tieneConexion.subscribe(resultado => {
     //   this.tieneConexion = resultado;
     // });
@@ -59,34 +59,24 @@ export class CaratulaPage implements OnInit, OnDestroy {
     });
 
     // consultar el numero de tareas pendientes por cada tipo
-    this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
-      tareas.forEach(tarea => {
-        this.registrosNum, this.conteosNum, this.bajasNum = 0;
-        switch (tarea.tipo) {
-          case 'REGISTRO':
-            this.registrosNum++;
-            break;
-          case 'CONTEO':
-            this.conteosNum++;
-            break;
-          case 'BAJAS':
-            this.bajasNum++;
-            break;
-          default:
-            break;
-        }
-      });
+    this.tareasService.cargarTareasIncompletas().subscribe(tareas => {
+      // this.updateIncomplete(tareas);
     });
 
+    this.tareasIcompSubs = this.tareasService.tareasIncompletas.subscribe(ti => {
+      this.updateIncomplete(ti);
+    });
   }
 
   ngOnDestroy() {
-    console.log('caratula destruida');
     if (this.conexionSubscripcion) {
       this.conexionSubscripcion.unsubscribe();
     }
     if (this.subscripcionBase) {
       this.subscripcionBase.unsubscribe();
+    }
+    if (this.tareasIcompSubs) {
+      this.tareasIcompSubs.unsubscribe();
     }
     // clearInterval(this.preguntadorTimer);
   }
@@ -117,31 +107,37 @@ export class CaratulaPage implements OnInit, OnDestroy {
   }
 
   doRefresh(event) {
-    this.registrosNum = 0;
-    this.conteosNum = 0; 
-    this.bajasNum = 0;
-    
-    // consultar el numero de tareas pendientes por cada tipo
+    this.resetCounters();
     this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
-      tareas.forEach(tarea => {
-        
-        switch (tarea.tipo) {
-          case 'REGISTRO':
-            this.registrosNum++;
-            break;
-          case 'CONTEO':
-            this.conteosNum++;
-            break;
-          case 'BAJAS':
-            this.bajasNum++;
-            break;
-          default:
-            break;
-        }
-        if (event) {
-          event.target.complete();
-        }
-      });
+      this.updateIncomplete(tareas);
+      if (event) {
+        event.target.complete();
+      }
     });
+  }
+
+  updateIncomplete(tareasIncompletas) {
+    this.resetCounters();
+    tareasIncompletas.forEach(tarea => {
+      switch (tarea.tipo) {
+        case 'REGISTRO':
+          this.registrosNum++;
+          break;
+        case 'CONTEO':
+          this.conteosNum++;
+          break;
+        case 'BAJAS':
+          this.bajasNum++;
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  resetCounters() {
+    this.registrosNum = 0;
+    this.conteosNum = 0;
+    this.bajasNum = 0;
   }
 }

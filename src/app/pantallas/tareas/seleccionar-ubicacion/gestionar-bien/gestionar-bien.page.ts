@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
 import { FilesService } from 'src/app/services/files.service';
+import { TareasService } from 'src/app/services/tareas.service';
 
 @Component({
   selector: 'app-gestionar-bien',
@@ -24,6 +25,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   horaFechaInicio: number;
   horaFechaFin: number;
   imgURL: any;
+  private tareasSubs: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -32,6 +34,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private _location: Location,
     private filesService: FilesService,
+    private tareasService: TareasService,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -47,7 +50,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
     this.resetearHoraFecha();
     this.iniciarTimer();
     this.bienesSubscripcion = this.servicioRegistro.bienes$.subscribe(bienes => {
-      console.log(bienes);
       this.bienes = bienes;
     });
   }
@@ -93,6 +95,7 @@ export class GestionarBienPage implements OnInit, OnDestroy {
             // acciones luego de guardar
             this.bienes = [];
             this.servicioRegistro.vaciarBienes();
+            this.tareasService.removerTarea(this.idAsignacion);
             loadingEl.dismiss();
             this._location.back();
           },
@@ -107,13 +110,10 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   }
 
   transformarUrlImagen(stupidUrl) {
-    console.log(stupidUrl);
     this.filesService.validPathForDisplayImage(stupidUrl);
   }
 
   irARegistro() {
-    console.log(this.idUbicacion);
-    console.log(this.idAsignacion);
     this.router.navigate(['/crear-bienes', this.idUbicacion], {state: {idAsignacion: this.idAsignacion}});
   }
 

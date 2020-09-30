@@ -4,8 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BienesService } from '../../../../../servicios/bienes.service';
 import { AlertController, ModalController } from '@ionic/angular';
 import { ModalBajarPage } from './modal-bajas.page';
-
-
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-gestionar-bajas',
@@ -28,6 +27,8 @@ export class GestionarBajasPage implements OnInit {
     private servicioTareas: TareasService,
     public alertController: AlertController,
     private modalController: ModalController,
+    private tareasService: TareasService,
+    private _location: Location,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -119,7 +120,8 @@ export class GestionarBajasPage implements OnInit {
           text: 'Sí',
           handler: () => {
             this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
-              this.router.navigate(['/caratula']);
+              this.tareasService.removerTarea(this.idAsignacion);
+              this._location.back();
             }); 
           }
         },
