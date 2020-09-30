@@ -142,11 +142,17 @@ export class TareasService {
     );
   }
 
-  ingresarConteos(conteos) {
+  ingresarConteos(numeroBienes, idUbicacion, idTarea) {
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
-        let data = JSON.stringify(conteos);
+        let data = {
+          numero_de_bienes: numeroBienes,
+          id_ubicacion: idUbicacion,
+          id_asignacion_tarea: idTarea,
+        };
+        // let data = JSON.stringify(conteos);
+        console.log(data);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, {headers});
       })
     );

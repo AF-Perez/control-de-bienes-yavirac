@@ -23,11 +23,13 @@ export class ContarBienesPage implements OnInit {
   conteos: any = [];
   bien: any;
   contadorBien: number;
-    
+  idAsignacion: any;
+  idUbicacion: any;
+
   @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
   constructor(
-    private route: ActivatedRoute, 
+    private route: ActivatedRoute,
     private router: Router,
     private servicioBienes: BienesService,
     private servicioTareas: TareasService,
@@ -36,19 +38,21 @@ export class ContarBienesPage implements OnInit {
     private loadingCtrl: LoadingController,
     public toastController: ToastController,
     private barcodeScanner: BarcodeScanner
-  ) { 
+  ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         // llenar la variable
-        this.ubicacion = this.router.getCurrentNavigation().extras.state.ubicacion;
+        this.idUbicacion = this.router.getCurrentNavigation().extras.state.ubicacion;
+        this.idAsignacion = this.router.getCurrentNavigation().extras.state.idAsignacion;
       }
+     
     });
   }
 
 
   // cuando se genere la pagina
   ngOnInit() {
-    this.obtenerFechaActual();    
+    this.obtenerFechaActual();
     this.obtenerBienes();
     this.contadorBien = 0;
   }
@@ -71,10 +75,10 @@ export class ContarBienesPage implements OnInit {
     // console.log('bien:', event.value);
     // event.value = {...event.value, numero: 3};
     // this.conteos = [...this.conteos, event.value];
-    
+
   }
 
-  onCloseSelect(event: {component: IonicSelectableComponent}) {
+  onCloseSelect(event: { component: IonicSelectableComponent }) {
     // event.component.clear();
   }
 
@@ -82,13 +86,15 @@ export class ContarBienesPage implements OnInit {
 
     if (this.bien == null || this.contadorBien <= 0) return;
 
-    let nuevoItem = {bien: this.bien, cantidad: this.contadorBien}
-    
+    let nuevoItem = { bien: this.bien, cantidad: this.contadorBien }
+
     this.conteos = [...this.conteos, nuevoItem];
-    
+
+    console.log(this.conteos);
+
     // eliminar bien ya seleccionado
     let idBien = this.bien.id;
-    this.bienes = this.bienes.filter(function(bien) {
+    this.bienes = this.bienes.filter(function (bien) {
       return bien.id != idBien;
     });
 
@@ -103,29 +109,18 @@ export class ContarBienesPage implements OnInit {
         message: 'Procesando solicitud...'
       })
       .then(loadingEl => {
+
         loadingEl.present();
-        this.servicioTareas.ingresarConteos(this.conteos)
+
+        let total = 0;
+        this.conteos.forEach(bien => {
+          total = total + bien.cantidad;
+        });
+        console.log(total, this.idAsignacion, this.idUbicacion);
+        this.servicioTareas.ingresarConteos(total, this.idUbicacion, this.idAsignacion)
           .subscribe(response => {
             // acciones luego de guardar
-            var random_boolean = Math.random() >= 0.5;
-            if (random_boolean) {
-              loadingEl.dismiss();
-              // this.validations_form.reset();
-              this.toastController.create({
-                message: 'Proceso completado con éxito.',
-                duration: 2000
-              }).then(toastEl => {
-                toastEl.present();
-              });
-            } else {
-              loadingEl.dismiss();
-              this.toastController.create({
-                message: 'Los datos no concuerdan con nuestra base.',
-                duration: 2000
-              }).then(toastEl => {
-                toastEl.present();
-              });
-            }
+            loadingEl.dismiss();
             this.location.back();
           });
       })
@@ -141,20 +136,20 @@ export class ContarBienesPage implements OnInit {
   }
 
   cancelarConteo() {
-     this.location.back();
+    this.location.back();
   }
 
   abrirScaner() {
     this.barcodeScanner.scan().then(barcodeData => {
       console.log('Barcode data', barcodeData);
-      this.conteos = [...this.conteos,  {codigo: barcodeData.text}];
+      this.conteos = [...this.conteos, { codigo: barcodeData.text }];
       console.log(this.conteos);
       // limpiar campos
       this.bienSelector.clear();
       this.contadorBien = 0;
-     }).catch(err => {
-         console.log('Error', err);
-     });
+    }).catch(err => {
+      console.log('Error', err);
+    });
   }
 
   async presentToastWithOptions() {
