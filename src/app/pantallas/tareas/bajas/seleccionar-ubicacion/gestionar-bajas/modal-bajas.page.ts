@@ -52,8 +52,8 @@ export class ModalBajarPage {
     private modalCtrl: ModalController,
   ) {
     // componentProps can also be accessed at construction time using NavParams
-    // console.log(navParams.get('idBien'));
-    // console.log(navParams.get('idAsignacion'));
+    this.idBien = navParams.get('idBien');
+    this.idAsignacion = navParams.get('idAsignacion');
   }
 
   ngOnInit() {
@@ -98,10 +98,15 @@ export class ModalBajarPage {
     reader.onload = () => {
       const imgBlob = new Blob([reader.result], { type: file.type });
       const imgData = { blob: imgBlob, name: file.name };
-      console.warn(valoresFormulario);
+      console.log(
+        this.idBien,
+        this.idAsignacion,
+        valoresFormulario.razonBaja,
+        imgData,
+      );
       this.servicioTareas.submitBaja(
-        this.navParams.get('idBien'),
-        this.navParams.get('idAsignacion'),
+        this.idBien,
+        this.idAsignacion,
         valoresFormulario.razonBaja,
         imgData,
       ).subscribe((_) => {

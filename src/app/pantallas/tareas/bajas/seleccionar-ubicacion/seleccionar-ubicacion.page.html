@@ -20,4 +20,8 @@
     
   </ion-list>
 
+  <div class="not-tasks-msg" *ngIf="!tareas.length" style="padding: 20px;">
+    <p>Actualmente no tiene actividades asignadas para dicha tarea.</p>
+  </div>
+
 </ion-content>

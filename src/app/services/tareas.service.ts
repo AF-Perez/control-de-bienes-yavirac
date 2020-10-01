@@ -103,20 +103,13 @@ export class TareasService {
   obtenerTareasUsuario(tipoTarea) {
 
     return this.obtenerTareas().pipe(
-     
-      // proceso 1, t
       switchMap(tareas => {
         return this.servicioUbicaciones.obtenerUbicaciones5().pipe(
-          tap((dato) => {
-            console.warn(dato);
-          }),
           map(ubicaciones => {
             return {tareas, ubicaciones};
           })
         );
       }),
-
-      // proceso 2
       map(({tareas, ubicaciones}) => {
         let tareasConUbicaciones = [];
         tareas.forEach(tarea => {
@@ -127,7 +120,6 @@ export class TareasService {
             }
           })
         });
-        console.log('tareasConUbicaciones', tareasConUbicaciones);
         return tareasConUbicaciones;
       }),
     );
@@ -139,7 +131,6 @@ export class TareasService {
         let tareasIncompletas = tareas.filter(tarea => {
           return tarea.completada === 0;
         });
-        console.log(tareasIncompletas);
         return tareasIncompletas;
       }),
     );
@@ -167,7 +158,6 @@ export class TareasService {
           id_asignacion_tarea: idTarea,
         };
         // let data = JSON.stringify(conteos);
-        console.log(data);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, {headers});
       })
     );

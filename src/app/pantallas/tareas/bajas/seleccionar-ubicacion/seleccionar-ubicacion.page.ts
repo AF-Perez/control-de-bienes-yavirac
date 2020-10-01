@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UbicacionesService } from '../../../../servicios/ubicaciones.service';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
@@ -13,45 +13,38 @@ import { Subscription } from 'rxjs';
 export class SeleccionarUbicacionPage implements OnInit {
 
   constructor(
-    private servicioUbicaciones: UbicacionesService,
     private servicioTareas: TareasService,
     private router: Router,
+    private cdr: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
     // this.obtenerUbicaciones();
     this.obtenerTareas();
     this.tareasIcompSubs = this.servicioTareas.tareasIncompletas.subscribe(ti => {
+      console.log('subscripcion seleccionar ubicacion bajas');
       this.tareas = ti.filter(tarea => {
         return tarea === this.tipoTarea;
       });
+      console.log(this.tareas);
+      this.cdr.detectChanges();
     });
   }
 
-  // todas estas variables estan accesibles en el html
-  ubicaciones: any = [];
-  tipoTarea = 'BAJAS';
-  tareas: any = [];
+  private tipoTarea = 'BAJAS';
+  public tareas: any = [];
   private tareasIcompSubs: Subscription;
 
 
   irAGestionDeBajas(tarea) {
     let navigationExtras: NavigationExtras = {
       state: {
-        // aqui todo lo que se va a pasar a las sig pantalla
         user: 1,
         ubicacion: tarea.id_ubicacion,
         idAsignacion: tarea.id,
       }
     };
     this.router.navigate(['gestionar-bajas'], navigationExtras);
-  }
-
-  obtenerUbicaciones() {
-    this.servicioUbicaciones.obtenerUbicaciones5()
-      .subscribe(ubicaciones => {
-        this.ubicaciones = ubicaciones;
-      });
   }
 
   obtenerTareas() {
