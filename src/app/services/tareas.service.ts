@@ -102,9 +102,9 @@ export class TareasService {
 
   obtenerTareasUsuario(tipoTarea) {
 
-    return this.obtenerTareas().pipe(
+    return this.tareasIncompletas.pipe(
       switchMap(tareas => {
-        return this.servicioUbicaciones.obtenerUbicaciones5().pipe(
+        return this.servicioUbicaciones.ubicaciones.pipe(
           map(ubicaciones => {
             return {tareas, ubicaciones};
           })

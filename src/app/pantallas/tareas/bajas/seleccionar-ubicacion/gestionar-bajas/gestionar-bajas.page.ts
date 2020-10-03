@@ -103,9 +103,11 @@ export class GestionarBajasPage implements OnInit {
 
     modal.onDidDismiss()
       .then((data) => {
-        this.bienes = this.bienes.filter(bien => {
-          return bien.id !== data['data'].idDeleted;
-        });
+        if (data['data'].idDeleted !== -1) {
+          this.bienes = this.bienes.filter(bien => {
+            return bien.id !== data['data'].idDeleted;
+          });
+        }
     });
 
     return await modal.present();

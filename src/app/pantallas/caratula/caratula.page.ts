@@ -7,6 +7,7 @@ import { Subscription, timer } from 'rxjs';
 import { DatabaseService } from './../../services/database.service';
 import { SincronizacionService } from 'src/app/services/sincronizacion.service';
 import { take } from 'rxjs/operators';
+import { UbicacionesService } from 'src/app/servicios/ubicaciones.service';
 
 @Component({
   selector: 'app-caratula',
@@ -19,6 +20,7 @@ export class CaratulaPage implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private tareasService: TareasService,
+    private ubicacionesService: UbicacionesService,
     private offlineService: OfflineService,
     private db: DatabaseService,
     private servicioSync: SincronizacionService,
@@ -44,24 +46,24 @@ export class CaratulaPage implements OnInit, OnDestroy {
     //   this.tieneConexion = resultado;
     // });
 
-    // this.preguntadorTimer = setInterval(() => {
-    //   this.offlineService.comprobarConexion();
-    // }, 10000);
-
-    this.subscripcionBase = this.db.getDatabaseState().subscribe(levantadoDB => {
-      if (levantadoDB) {
-        console.log(levantadoDB);
-        // si la base se levanto correctamente se procede a sincronizar la base local con el servidor
-        this.servicioSync.sincronizarApp().subscribe(res => {
-          console.log('resultado sincr');
-        });
-      }
-    });
+    // this.subscripcionBase = this.db.getDatabaseState().subscribe(levantadoDB => {
+    //   if (levantadoDB) {
+    //     // si la base se levanto correctamente se procede a sincronizar la base local con el servidor
+    //     this.servicioSync.sincronizarApp().subscribe(res => {
+    //       console.log('resultado sincr');
+    //     });
+    //   }
+    // });
 
     // consultar el numero de tareas pendientes por cada tipo
     this.tareasService.cargarTareasIncompletas().subscribe(tareas => {
       // this.updateIncomplete(tareas);
     });
+
+    this.ubicacionesService.cargarUbicacionesAPI().subscribe(tareas => {
+      // this.updateIncomplete(tareas);
+    });
+
 
     this.tareasIcompSubs = this.tareasService.tareasIncompletas.subscribe(ti => {
       this.updateIncomplete(ti);
