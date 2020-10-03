@@ -103,7 +103,6 @@ export class CaratulaPage implements OnInit, OnDestroy {
   obtenerTareas() {
     this.tareasService.obtenerTareasIncompletas()
       .subscribe(tareas => {
-        console.log(tareas);
         this.tareas = tareas;
       });
   }

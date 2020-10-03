@@ -5,9 +5,9 @@ import { BienesService } from '../../../../../servicios/bienes.service';
 import { TareasService } from '../../../../../services/tareas.service';
 import { AlertController } from '@ionic/angular';
 import { Location } from '@angular/common';
-import { LoadingController } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, Platform, ToastController } from '@ionic/angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+
 
 @Component({
   selector: 'app-contar-bien',
@@ -37,16 +37,19 @@ export class ContarBienesPage implements OnInit {
     private location: Location,
     private loadingCtrl: LoadingController,
     public toastController: ToastController,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
+    private tareasService: TareasService,
+    private platform: Platform,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        // llenar la variable
         this.idUbicacion = this.router.getCurrentNavigation().extras.state.ubicacion;
         this.idAsignacion = this.router.getCurrentNavigation().extras.state.idAsignacion;
       }
-     
     });
+    // this.platform.backButton.subscribeWithPriority(10, () => {
+    //   console.log('Handler was called!');
+    // });
   }
 
 
@@ -90,9 +93,7 @@ export class ContarBienesPage implements OnInit {
 
     this.conteos = [...this.conteos, nuevoItem];
 
-    console.log(this.conteos);
-
-    // eliminar bien ya seleccionado
+    // eliminar bien seleccionado
     let idBien = this.bien.id;
     this.bienes = this.bienes.filter(function (bien) {
       return bien.id != idBien;
@@ -109,29 +110,29 @@ export class ContarBienesPage implements OnInit {
         message: 'Procesando solicitud...'
       })
       .then(loadingEl => {
-
         loadingEl.present();
 
         let total = 0;
         this.conteos.forEach(bien => {
           total = total + bien.cantidad;
         });
-        console.log(total, this.idAsignacion, this.idUbicacion);
+
         this.servicioTareas.ingresarConteos(total, this.idUbicacion, this.idAsignacion)
           .subscribe(response => {
-            // acciones luego de guardar
-            loadingEl.dismiss();
-            this.location.back();
+            if (response['resultado'] === 0) {
+              this.tareasService.removerTarea(this.idAsignacion);
+              loadingEl.dismiss();
+              this.location.back();
+            } else {
+              loadingEl.dismiss();
+              this.toastController.create({
+                message: 'Los datos ingresados no concuerdan con los de nuestra base.',
+                duration: 3000
+              }).then(toastEl => {
+                toastEl.present();
+              });
+            }
           });
-      })
-      .catch(err => {
-        this.toastController.create({
-          message: 'Los datos no concuerdan con nuestra base.',
-          duration: 2000
-        }).then(toastEl => {
-          toastEl.present();
-        });
-        this.location.back();
       })
   }
 

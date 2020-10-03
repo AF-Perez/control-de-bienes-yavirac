@@ -1,20 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/conteo/seleccionar-ubicacion"></ion-back-button>
+      <ion-button color="danger" fill="clear" (click)="cancelarConteo()">
+        Cancelar
+        <ion-icon slot="start" name="close"></ion-icon>
+      </ion-button>
     </ion-buttons>
-    
-    <ion-title *ngIf="0">{{ ubicacion.nombre }}</ion-title>
-
-    <ion-button color="danger" fill="clear" (click)="cancelarConteo()">
-      Cancelar
-      <ion-icon slot="start" name="close"></ion-icon>
-    </ion-button>
-
-    <ion-button color="success" fill="clear" (click)="ingresarConteo()">
-      Aceptar
-      <ion-icon slot="start" name="checkmark"></ion-icon>
-    </ion-button>
+    <ion-buttons slot="primary">
+      <ion-button fill="clear" (click)="ingresarConteo()" [disabled]="conteos.length === 0">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

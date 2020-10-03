@@ -19,16 +19,12 @@ export class SeleccionarUbicacionPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.obtenerUbicaciones();
     this.obtenerTareas();
+
     this.tareasIcompSubs = this.servicioTareas.tareasIncompletas.subscribe(ti => {
-      console.log('subscripcion seleccionar ubicacion bajas');
-      this.tareas = ti.filter(tarea => {
-        return tarea === this.tipoTarea;
-      });
-      console.log(this.tareas);
-      this.cdr.detectChanges();
+      this.obtenerTareas();
     });
+
   }
 
   private tipoTarea = 'BAJAS';

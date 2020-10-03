@@ -30,16 +30,8 @@ export class SeleccionarUbicacionPage implements OnInit, OnDestroy {
     this.obtenerTareas();
 
     this.tareasIcompSubs = this.servicioTareas.tareasIncompletas.subscribe(ti => {
-      // console.log(ti);
-      // this.tareas = ti;
       this.obtenerTareas();
     });
-
-    // this.ubicacionSub = this.servicioUbicaciones.ubicaciones.subscribe(ub => {
-
-    // });
-
-    
   }
 
   irAGestionarBienes(tarea) {
