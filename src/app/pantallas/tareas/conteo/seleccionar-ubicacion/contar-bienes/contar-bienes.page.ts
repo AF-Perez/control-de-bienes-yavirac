@@ -136,8 +136,27 @@ export class ContarBienesPage implements OnInit {
       })
   }
 
-  cancelarConteo() {
-    this.location.back();
+  // cancelarConteo() {
+  //   this.location.back();
+  // }
+
+  async cancelarConteo() {
+    const alert = await this.alertController.create({
+      header: 'Se perderán sus cambios. ¿Esta seguro?',
+      buttons: [
+        {
+          text: 'Sí',
+          handler: () => {
+              this.location.back();
+          }
+        },
+        {
+          text: 'No',
+          role: 'cancel',
+        },
+      ],
+    });
+    await alert.present();
   }
 
   abrirScaner() {

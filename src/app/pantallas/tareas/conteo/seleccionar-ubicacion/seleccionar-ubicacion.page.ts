@@ -1,4 +1,3 @@
-import { UbicacionesService } from '../../../../servicios/ubicaciones.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
@@ -11,24 +10,20 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./seleccionar-ubicacion.page.scss'],
 })
 export class SeleccionarUbicacionPage implements OnInit {
-
-  constructor(
-    private router: Router,
-    private servicioTareas: TareasService,
-    
-  ){ }
-
+  
   // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
   tipoTarea = 'CONTEO';
   tareas: any = [];
   private tareasIcompSubs: Subscription;
 
+  constructor(
+    private router: Router,
+    private servicioTareas: TareasService,
+  ){ }
 
-  // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
     this.obtenerTareas();
-
     this.tareasIcompSubs = this.servicioTareas.tareasIncompletas.subscribe(ti => {
       this.obtenerTareas();
     });
@@ -48,7 +43,6 @@ export class SeleccionarUbicacionPage implements OnInit {
   obtenerTareas() {
     return this.servicioTareas.obtenerTareasUsuario(this.tipoTarea).subscribe(tareas => {
       this.tareas = tareas;
-      console.log('tareas', this.tareas);
     });
   }
 
