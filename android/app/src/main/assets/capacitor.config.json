@@ -2,9 +2,5 @@
   "appId": "org.example.tareasinven",
   "appName": "tareasInven",
   "webDir": "www",
-  "npmClient": "npm",
-  "server": {
-    "url": "http://192.168.100.8:8100",
-    "cleartext": true
-  }
+  "npmClient": "npm"
 }

@@ -49,7 +49,7 @@ export class NetworkService {
  
     let connection = status == ConnectionStatus.Offline ? 'Offline' : 'Online';
     let toast = this.toastController.create({
-      message: `You are now ${connection}`,
+      message: `Está en modo ${connection}`,
       duration: 3000,
       position: 'bottom'
     });

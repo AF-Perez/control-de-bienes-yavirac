@@ -25,7 +25,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   horaFechaInicio: number;
   horaFechaFin: number;
   imgURL: any;
-  private tareasSubs: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +37,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        // obtener las variables pasadas desde la pantalla seleccionar ubicacion
         this.idUbicacion = this.router.getCurrentNavigation().extras.state.idUbicacion;
         this.idAsignacion = this.router.getCurrentNavigation().extras.state.idAsignacion;
       }
@@ -92,7 +90,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
         loadingEl.present();
         this.guardarBienesSub = this.servicioRegistro.guardarBienes2(this.bienes, this.idAsignacion)
           .subscribe(() => {
-            // acciones luego de guardar
             this.bienes = [];
             this.servicioRegistro.vaciarBienes();
             this.tareasService.removerTarea(this.idAsignacion);

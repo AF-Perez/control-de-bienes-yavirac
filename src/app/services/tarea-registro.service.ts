@@ -122,8 +122,6 @@ export class TareaRegistroService implements OnDestroy {
 
   guardarBienes2(data, idAsignacion): Observable<any> {
     data = {bienes: data, idAsignacionTarea: idAsignacion};
-    console.log('mmmmm', data);
-    console.log('mmmmm', data.idUbicacion);
 
     let url = `${this.NOMBRE_SERVIDOR}/api/registrarbienes/`;
     if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {

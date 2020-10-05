@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { ToastController } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
 import { take, delay, tap, map } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
 
 const STORAGE_REQ_KEY = 'storedreq';
 
@@ -32,8 +33,9 @@ export class OfflineService {
     private toastController: ToastController,
     private sqlite: SQLite,
     private network: Network,
-    ) { }
- 
+    private authService: AuthService,
+  ) { }
+
   // el objetivo de esta funcion es comprobar si existen requests almacenadas en el storage, de ser asi
   // se las envia al servidor
   checkForEvents(): Observable<any> {
@@ -53,7 +55,7 @@ export class OfflineService {
                 position: 'bottom'
               });
               toast.then(toast => toast.present());
-              
+
               // elimina las requests desde el estorage
               this.storage.remove(STORAGE_REQ_KEY);
             })
@@ -66,7 +68,7 @@ export class OfflineService {
       })
     )
   }
- 
+
   // 
   storeRequest(url, type, data) {
     let toast = this.toastController.create({
@@ -75,7 +77,7 @@ export class OfflineService {
       position: 'bottom'
     });
     toast.then(toast => toast.present());
- 
+
     let action: StoredRequest = {
       url: url,
       type: type,
@@ -84,10 +86,10 @@ export class OfflineService {
       id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
     };
     // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
- 
+
     return this.storage.get(STORAGE_REQ_KEY).then(storedOperations => {
       let storedObj = JSON.parse(storedOperations);
- 
+
       if (storedObj) {
         storedObj.push(action);
       } else {
@@ -97,19 +99,22 @@ export class OfflineService {
       return this.storage.set(STORAGE_REQ_KEY, JSON.stringify(storedObj));
     });
   }
- 
+
   sendRequests(operations: StoredRequest[]) {
-    let obs = [];
- 
-    for (let op of operations) {
-      console.log('Make one request: ', op);
-      let oneObs = this.http.request(op.type, op.url, op.data);
-      obs.push(oneObs);
-    }
- 
-    // Send out all local events and return once they are finished
-    // forkJoin permite ejecutar un ARRAY de observables
-    return forkJoin(obs);
+    return this.authService.headers.pipe(
+      switchMap(headers => {
+        let obs = [];
+        for (let op of operations) {
+          console.log('Make one request: ', op);
+          let oneObs = this.http.request(op.type, op.url, {body: op.data, headers: headers});
+          obs.push(oneObs);
+        }
+  
+        // Send out all local events and return once they are finished
+        // forkJoin permite ejecutar un ARRAY de observables
+        return forkJoin(obs);
+      })
+    )
   }
 
   comprobarConexion() {
@@ -120,7 +125,7 @@ export class OfflineService {
       this._tieneConexion.next(false);
     }
   }
-  
+
   get tieneConexion() {
     return this._tieneConexion.asObservable().pipe(
       map(con => {
@@ -132,5 +137,5 @@ export class OfflineService {
       })
     );
   }
-  
+
 }

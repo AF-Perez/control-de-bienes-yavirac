@@ -54,6 +54,20 @@ export class AuthService implements OnDestroy {
       }));
   }
 
+  get headers() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if (user) {
+          return new HttpHeaders({
+            Authorization: 'Bearer ' + user.token,
+            Accept: 'application/json'
+          });
+        } else {
+          return null;
+        }
+      }));
+  }
+
   get user() {
     return this._user.asObservable().pipe(
       map(user => {
