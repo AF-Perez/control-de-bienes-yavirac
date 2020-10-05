@@ -46,7 +46,6 @@ export class TareasService {
             })
           );
         }
-        
         return from(this.servicioBDD.cargarTareas());
       })
     );
@@ -101,7 +100,6 @@ export class TareasService {
   }
 
   obtenerTareasUsuario(tipoTarea) {
-
     return this.tareasIncompletas.pipe(
       switchMap(tareas => {
         return this.servicioUbicaciones.ubicaciones.pipe(
@@ -138,11 +136,10 @@ export class TareasService {
 
   cargarTareasIncompletas() {
     return this.obtenerTareas().pipe(
-      map(tareas => {
+      tap(tareas => {
         let tareasIncompletas = tareas.filter(tarea => {
           return tarea.completada === 0;
         });
-        // return tareasIncompletas;
         this._tareasIncompletas.next(tareasIncompletas);
       }),
     );
@@ -202,7 +199,5 @@ export class TareasService {
     let tareasIncompletas = this._tareasIncompletas.getValue().filter(t => t.id !== idTarea);
     this._tareasIncompletas.next(tareasIncompletas);
   }
-
-  
 
 }

@@ -10,7 +10,7 @@
 
 <ion-content >
   <ion-list>
-    <ion-item *ngFor="let tarea of tareas" (click)="irAGestionarBienes(tarea)">
+    <ion-item *ngFor="let tarea of tareas" (click)="irAGestionarBienes(tarea)" detail>
       <ion-label>
         <h2>{{tarea.ubicacionNombre}}</h2>
         <p> {{tarea.fecha_asignacion|date:'mediumDate'}}</p>

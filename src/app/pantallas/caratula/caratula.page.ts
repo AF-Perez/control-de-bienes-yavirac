@@ -55,15 +55,8 @@ export class CaratulaPage implements OnInit, OnDestroy {
     //   }
     // });
 
-    // consultar el numero de tareas pendientes por cada tipo
-    this.tareasService.cargarTareasIncompletas().subscribe(tareas => {
-      // this.updateIncomplete(tareas);
-    });
-
-    this.ubicacionesService.cargarUbicacionesAPI().subscribe(tareas => {
-      // this.updateIncomplete(tareas);
-    });
-
+    this.tareasService.cargarTareasIncompletas().subscribe();
+    this.ubicacionesService.cargarUbicacionesAPI().subscribe();
 
     this.tareasIcompSubs = this.tareasService.tareasIncompletas.subscribe(ti => {
       this.updateIncomplete(ti);
@@ -108,9 +101,8 @@ export class CaratulaPage implements OnInit, OnDestroy {
   }
 
   doRefresh(event) {
-    this.resetCounters();
-    this.tareasService.obtenerTareasIncompletas().subscribe(tareas => {
-      this.updateIncomplete(tareas);
+    // this.resetCounters();
+    this.tareasService.cargarTareasIncompletas().subscribe(_ => {
       if (event) {
         event.target.complete();
       }

@@ -14,9 +14,7 @@
   </ion-toolbar>
 </ion-header>
 
-
 <ion-content>
-
   <ion-row>
     <ion-col size="8">
       <ion-item>
@@ -38,7 +36,6 @@
       </ion-button>
     </ion-col>
   </ion-row>
-
   <ion-row *ngIf="0" class="ion-justify-content-center">
     <ion-col class="ion-text-center">
       <ion-button shape="round" size="small" (click)="agregarItem()">
@@ -46,8 +43,6 @@
       </ion-button>
     </ion-col>
   </ion-row>
-
-
   <ion-list>
     <ion-item *ngFor="let conteo of conteos">
       <ion-label>
@@ -56,12 +51,10 @@
       </ion-label>
     </ion-item>
   </ion-list>
-
   <!-- fab placed to the (vertical) center and end -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="abrirScaner()">
       <ion-icon name="barcode"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </ion-content>
