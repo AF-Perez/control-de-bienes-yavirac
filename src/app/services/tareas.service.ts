@@ -7,6 +7,7 @@ import { UbicacionesService } from '../servicios/ubicaciones.service';
 import { BehaviorSubject, from } from 'rxjs';
 import { OfflineService } from './offline.service';
 import { DatabaseService } from './database.service';
+import { Baja } from '../models/baja.model';
 
 
 @Injectable({
@@ -26,6 +27,7 @@ export class TareasService {
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
   private _tareas = new BehaviorSubject([]);
   private _tareasIncompletas = new BehaviorSubject([]);
+  private _bajasTarea = new BehaviorSubject<Baja[]>([]);
 
   get tareas() {
     return this._tareas.asObservable();
@@ -33,6 +35,10 @@ export class TareasService {
 
   get tareasIncompletas() {
     return this._tareasIncompletas.asObservable();
+  }
+
+  get bajasTarea() {
+    return this._bajasTarea.asObservable();
   }
 
   obtenerTareas() {
@@ -171,12 +177,12 @@ export class TareasService {
     );
   }
 
-  submitBaja(idBien, idTarea, motivo, imagen) {
+  submitBaja(codigoBien, idTarea, motivo, imagen) {
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
         const formData = new FormData();
-        formData.append('id_bien', idBien);
+        formData.append('codigo_bien', codigoBien);
         formData.append('id_asignacion_tarea', idTarea);
         formData.append('motivo', motivo);
         formData.append('imagen', imagen.blob, imagen.name);
@@ -184,6 +190,11 @@ export class TareasService {
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/dar_baja_bien`, formData, {headers});
       }),
     );
+  }
+
+  agregarBaja(baja: Baja) {
+    let bajas = [...this._bajasTarea.getValue(), baja]
+    this._bajasTarea.next(bajas);
   }
 
   completarTarea(idTarea) {

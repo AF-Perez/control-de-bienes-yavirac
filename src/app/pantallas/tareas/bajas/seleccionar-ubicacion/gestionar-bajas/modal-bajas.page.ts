@@ -1,16 +1,13 @@
 import { Input, Component, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Camera, CameraOptions, PictureSourceType } from '@ionic-native/camera/ngx';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { LoadingController, ModalController, NavParams, Platform, ToastController } from '@ionic/angular';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
-import { FilePath } from '@ionic-native/file-path/ngx';
-import { FilesService } from 'src/app/services/files.service';
-import { File, FileEntry } from '@ionic-native/file/ngx';
-import { Location } from '@angular/common';
+import { File } from '@ionic-native/file/ngx';
 import { TareasService } from 'src/app/services/tareas.service';
 import { Storage } from '@ionic/storage';
-
-import { finalize } from 'rxjs/operators';
+import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
+import { Baja } from 'src/app/models/baja.model';
 
 
 const STORAGE_KEY = 'my_images';
@@ -19,7 +16,7 @@ const STORAGE_KEY = 'my_images';
   selector: 'modal-bajas-page',
   templateUrl: './modal-bajas.page.html',
 })
-export class ModalBajarPage {
+export class ModalBajasPage {
 
   form: FormGroup;
   formDataFoto: any;
@@ -28,6 +25,7 @@ export class ModalBajarPage {
   images = [];
   imageBaja: any;
   idDeleted = -1;
+  barcodeScannerOptions: BarcodeScannerOptions;
 
   // Data passed in by componentProps
   @Input() idBien: string;
@@ -39,17 +37,15 @@ export class ModalBajarPage {
     public formBuilder: FormBuilder,
     private camera: Camera,
     private file: File,
-    private filePath: FilePath,
     private webview: WebView,
     private storage: Storage,
-    private filesService: FilesService,
     private loadingCtrl: LoadingController,
-    private _location: Location,
     public servicioTareas: TareasService,
     private plt: Platform,
     private toastController: ToastController,
     private ref: ChangeDetectorRef,
     private modalCtrl: ModalController,
+    private barcodeScanner: BarcodeScanner,
   ) {
     // componentProps can also be accessed at construction time using NavParams
     this.idBien = navParams.get('idBien');
@@ -59,7 +55,8 @@ export class ModalBajarPage {
   ngOnInit() {
 
     this.form = this.formBuilder.group({
-      razonBaja: new FormControl('', Validators.required),
+      codigoBien: new FormControl('', Validators.required),
+      motivoBaja: new FormControl(''),
       // imagen: new FormControl('', Validators.required),
     });
 
@@ -93,33 +90,6 @@ export class ModalBajarPage {
     }
   }
 
-  readFile(file: any, valoresFormulario) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const imgBlob = new Blob([reader.result], { type: file.type });
-      const imgData = { blob: imgBlob, name: file.name };
-      console.log(
-        this.idBien,
-        this.idAsignacion,
-        valoresFormulario.razonBaja,
-        imgData,
-      );
-      this.servicioTareas.submitBaja(
-        this.idBien,
-        this.idAsignacion,
-        valoresFormulario.razonBaja,
-        imgData,
-      ).subscribe((_) => {
-        console.log('dljfkadfjl');
-      },
-        (err) => {
-          console.error("Error " + err)
-        }
-      )
-    };
-    reader.readAsArrayBuffer(file);
-  }
-
   tomarFoto() {
     const options: CameraOptions = {
       quality: 100,
@@ -132,7 +102,6 @@ export class ModalBajarPage {
       var currentName = imgPath.substr(imgPath.lastIndexOf('/') + 1);
       var correctPath = imgPath.substr(0, imgPath.lastIndexOf('/') + 1);
       this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-
     }, (err) => {
       console.error("Error: " + err);
     });
@@ -181,7 +150,7 @@ export class ModalBajarPage {
     });
   }
 
-  onSubmit(valoresFormulario) {
+  onSubmit(formValues) {
     if (!this.form.valid) {
       return;
     }
@@ -192,15 +161,18 @@ export class ModalBajarPage {
       })
       .then(loadingEl => {
         loadingEl.present();
-        console.log(this.imageBaja.filePath);
-        this.file.resolveLocalFilesystemUrl(this.imageBaja.filePath)
-          .then(entry => {
-            (<FileEntry>entry).file(file => this.readFile(file, valoresFormulario));
-            loadingEl.dismiss();
-            this.form.reset();
-            this.imageBaja = null;
-            this.closeModal(this.navParams.get('idBien'));
-          });
+        const baja = new Baja(formValues.codigoBien, formValues.motivoBaja, this.imageBaja);
+        console.log(baja);
+        this.servicioTareas.agregarBaja(baja);
+        loadingEl.dismiss();
+        this.form.reset();
+        this.imageBaja = null;
+        this.closeModal(this.navParams.get('idBien'));
+
+        // this.file.resolveLocalFilesystemUrl(this.imageBaja.filePath)
+        //   .then(entry => {
+        //     // (<FileEntry>entry).file(file => this.readFile(file, formValues));
+        //   });
       })
   }
 
@@ -229,41 +201,30 @@ export class ModalBajarPage {
     });
   }
 
-  startUpload(imgEntry) {
-    this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
-      .then(entry => {
-        (<FileEntry>entry).file(file => this.readFile(file, ''))
-      })
-      .catch(err => {
-        this.presentToast('Error al leer el archivo.');
-      });
-  }
-
-  async uploadImageData(formData: FormData) {
-    const loading = await this.loadingCtrl.create({
-      message: 'Uploading image...',
-    });
-    await loading.present();
-
-    // this.http.post("http://localhost:8888/upload.php", formData)
-    //   .pipe(
-    //     finalize(() => {
-    //       loading.dismiss();
-    //     })
-    //   )
-    //   .subscribe(res => {
-    //     if (res['success']) {
-    //       this.presentToast('File upload complete.')
-    //     } else {
-    //       this.presentToast('File upload failed.')
-    //     }
-    //   });
-  }
+  
 
   closeModal(idDeleted) {
     this.modalCtrl.dismiss({
       idDeleted,
     });
   }
+
+  abrirScaner() {
+    this.barcodeScanner.scan(this.barcodeScannerOptions).then(barcodeData => {
+      this.form.patchValue({ codigo: barcodeData.text });
+    }).catch(err => {
+      console.error('Error', err);
+    });
+  }
+
+  validation_messages = {
+    'codigoBien': [
+      { type: 'required', message: 'Campo obligatorio.' },
+      // { type: 'minlength', message: 'Username must be at least 5 characters long.' },
+      // { type: 'maxlength', message: 'Username cannot be more than 25 characters long.' },
+      // { type: 'pattern', message: 'Your username must contain only numbers and letters.' },
+      // { type: 'validUsername', message: 'Your username has already been taken.' }
+    ],
+  };
 
 }

@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { GestionarBajasPage } from './gestionar-bajas.page';
-import { ModalBajarPage } from './modal-bajas.page';
+import { ModalBajasPage } from './modal-bajas.page';
 
 // import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
@@ -31,9 +31,9 @@ const routes: Routes = [
   ],
   declarations: [
     GestionarBajasPage,
-    ModalBajarPage,
+    ModalBajasPage,
   ],
-  entryComponents: [ModalBajarPage],
+  entryComponents: [ModalBajasPage],
 })
 
 export class GestionarBajasPageModule {}

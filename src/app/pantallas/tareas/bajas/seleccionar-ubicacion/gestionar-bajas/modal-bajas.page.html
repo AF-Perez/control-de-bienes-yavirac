@@ -16,20 +16,42 @@
   <form [formGroup]="form">
     <ion-grid>
 
-      <!-- Observaciones -->
+      <!-- codigoBien -->
       <ion-row>
-        <ion-col size-sm="6" offset-sm="1">
+        <ion-col size="10">
           <ion-item>
-            <ion-textarea formControlName="razonBaja" placeholder="Motivo de la baja"></ion-textarea>
+            <ion-label position="floating" color="primary">Código del Bien</ion-label>
+            <ion-input type="text" formControlName="codigoBien"></ion-input>
+          </ion-item>
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.codigoBien">
+              <div class="error-message"
+                *ngIf="form.get('codigoBien').hasError(validation.type) && (form.get('codigoBien').dirty || form.get('codigoBien').touched)">
+                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+        </ion-col>
+        <ion-col size="2" class="ion-align-self-center">
+          <ion-button (click)="abrirScaner()">
+            <ion-icon name="barcode" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <!-- Motivo Baja -->
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating" color="primary">Motivo de la baja</ion-label>
+            <ion-textarea formControlName="motivoBaja"></ion-textarea>
           </ion-item>
         </ion-col>
       </ion-row>
 
-
       <!-- foto -->
       <ion-row>
-        <ion-col size-sm="6" offset-sm="1">
-
+        <ion-col size="12">
           <ion-item *ngIf="imageBaja">
             <ion-thumbnail>
               <ion-img [src]="imageBaja.path"></ion-img>
@@ -43,7 +65,6 @@
           </ion-item>
         </ion-col>
       </ion-row>
-
     </ion-grid>
   </form>
 

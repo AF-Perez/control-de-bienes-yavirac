@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>{{ubicacion.nombre}}</ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="finTarea(idAsignacion)">
+      <ion-button (click)="ingresarTarea(idAsignacion)">
         <ion-icon name="checkmark" slot="icon-only">Completar</ion-icon>
       </ion-button>
     </ion-buttons>
@@ -15,37 +15,26 @@
 <ion-content>
   {{fecha|date:'mediumDate'}}
 
-   <!-- fab placed to the (vertical) center and end -->
-  
-
   <ion-list>
     <ion-list-header>
-      <ion-label>BIENES ACTUALES</ion-label>
+      <ion-label>Bienes a dar de baja:</ion-label>
     </ion-list-header>
-    
-    <ion-item *ngFor="let bien of bienes">
 
+    <ion-item *ngFor="let baja of bajas">
       <ion-label>
-        <h2>{{bien.nombre}}</h2>
-        <p>{{bien.codigo_barras}}</p>
+        <h2>{{baja.codigoBien}}</h2>
+        <p>{{baja.motivoBaja}}</p>
       </ion-label>
-
-      <div *ngIf="bien.enviado == true; else elseBlock">Pendiente</div>
-      <ion-button color="danger" style="flex-flow: column;" (click)="mostrarModal(bien.id)" [disabled]="bien.enviado == true ? true : false">
-        <ng-template #elseBlock>
-          
-        </ng-template>
-        <p>Dar de baja</p>
-
-      </ion-button>
-        
+      <ion-thumbnail>
+        <ion-img [src]="baja.imgData.path"></ion-img>
+      </ion-thumbnail>
     </ion-item>
   </ion-list>
 
-   
-
-
-  
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
-
