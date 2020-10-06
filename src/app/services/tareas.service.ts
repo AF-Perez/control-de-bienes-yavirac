@@ -4,10 +4,11 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalsService } from '../services/globals.service';
 import { AuthService } from '../auth/auth.service';
 import { UbicacionesService } from '../servicios/ubicaciones.service';
-import { BehaviorSubject, from } from 'rxjs';
+import { BehaviorSubject, from, Observable } from 'rxjs';
 import { OfflineService } from './offline.service';
 import { DatabaseService } from './database.service';
 import { Baja } from '../models/baja.model';
+import { ConnectionStatus, NetworkService } from './network.service';
 
 
 @Injectable({
@@ -22,6 +23,8 @@ export class TareasService {
     private servicioUbicaciones: UbicacionesService,
     private servicioOffline: OfflineService,
     private servicioBDD: DatabaseService,
+    private networkService: NetworkService,
+    private offlineService: OfflineService,
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
@@ -48,7 +51,7 @@ export class TareasService {
           return this.authService.getHeaders().pipe(
             take(1),
             switchMap(headers => {
-              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
+              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, { headers });
             })
           );
         }
@@ -64,7 +67,7 @@ export class TareasService {
           return this.authService.getHeaders().pipe(
             take(1),
             switchMap(headers => {
-              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
+              return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, { headers });
             })
           );
         }
@@ -77,7 +80,7 @@ export class TareasService {
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
-        return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, {headers});
+        return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/misTareas`, { headers });
       })
     );
   }
@@ -87,11 +90,11 @@ export class TareasService {
       switchMap(tareas => {
         return this.servicioUbicaciones.obtenerUbicaciones5().pipe(
           map(ubicaciones => {
-            return {tareas, ubicaciones};
+            return { tareas, ubicaciones };
           })
         );
       }),
-      map(({tareas, ubicaciones}) => {
+      map(({ tareas, ubicaciones }) => {
         let ubicacionesValidas = [];
         tareas.forEach(tarea => {
           ubicaciones.forEach(ubicacion => {
@@ -110,11 +113,11 @@ export class TareasService {
       switchMap(tareas => {
         return this.servicioUbicaciones.ubicaciones.pipe(
           map(ubicaciones => {
-            return {tareas, ubicaciones};
+            return { tareas, ubicaciones };
           })
         );
       }),
-      map(({tareas, ubicaciones}) => {
+      map(({ tareas, ubicaciones }) => {
         let tareasConUbicaciones = [];
         tareas.forEach(tarea => {
           ubicaciones.forEach(ubicacion => {
@@ -161,7 +164,7 @@ export class TareasService {
           id_asignacion_tarea: idTarea,
         };
         // let data = JSON.stringify(conteos);
-        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, {headers});
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, { headers });
       })
     );
   }
@@ -170,26 +173,33 @@ export class TareasService {
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
-        let data = {observaciones: observaciones};
+        let data = { observaciones: observaciones };
         //JSON.stringify(data);
-        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes/${idBien}/solicitarBaja`, data, {headers});
+        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/bienes/${idBien}/solicitarBaja`, data, { headers });
       }),
     );
   }
 
-  submitBaja(codigoBien, idTarea, motivo, imagen) {
-    return this.authService.getHeaders().pipe(
-      take(1),
-      switchMap(headers => {
-        const formData = new FormData();
-        formData.append('codigo_bien', codigoBien);
-        formData.append('id_asignacion_tarea', idTarea);
-        formData.append('motivo', motivo);
-        formData.append('imagen', imagen.blob, imagen.name);
-       
-        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/dar_baja_bien`, formData, {headers});
-      }),
-    );
+  submitBaja(codigoBien, idTarea, motivo, imagen): Observable<any> {
+
+    let url = `${this.NOMBRE_SERVIDOR}/api/dar_baja_bien/`;
+    const formData = new FormData();
+    formData.append('codigo_bien', codigoBien);
+    formData.append('id_asignacion_tarea', idTarea);
+    formData.append('motivo', motivo);
+    formData.append('imagen', imagen.blob, imagen.name);
+
+    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {
+      return from(this.offlineService.storeRequest(url, 'POST', formData));
+    } else {
+      return this.authService.getHeaders().pipe(
+        take(1),
+        switchMap(headers => {
+          return this.clienteHttp.post(url, formData, { headers });
+        }),
+      );
+    }
+
   }
 
   agregarBaja(baja: Baja) {
@@ -197,13 +207,24 @@ export class TareasService {
     this._bajasTarea.next(bajas);
   }
 
+  removerBaja(codigoBien) {
+    let bajas = this._bajasTarea.getValue().filter(t => t.codigoBien !== codigoBien);
+    this._bajasTarea.next(bajas);
+  }
+
   completarTarea(idTarea) {
-    return this.authService.getHeaders().pipe(
-      take(1),
-      switchMap((headers) => {
-        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/completarTarea/${idTarea}`, [], {headers});
-      }),
-    );
+    let url = `${this.NOMBRE_SERVIDOR}/api/completarTarea/${idTarea}`;
+
+    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {
+      return from(this.offlineService.storeRequest(url, 'POST', []));
+    } else {
+      return this.authService.getHeaders().pipe(
+        take(1),
+        switchMap((headers) => {
+          return this.clienteHttp.post(url, [], { headers });
+        }),
+      );
+    }
   }
 
   removerTarea(idTarea) {

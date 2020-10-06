@@ -90,34 +90,34 @@ export class GestionarBajasPage implements OnInit {
   }
 
   async ingresarTarea(idTarea) {
-    const alert = await this.alertController.create({
-      header: '¿Terminar la tarea?',
-      buttons: [
-        {
-          text: 'Sí',
-          handler: () => {
-            this.bajas.forEach(baja => {
-              this.file.resolveLocalFilesystemUrl(baja.imgData.filePath)
-                .then(entry => {
-                  (<FileEntry>entry).file(file => this.readFile(file, baja));
-                });
-            });
-            this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
-              this.tareasService.removerTarea(this.idAsignacion);
-              this._location.back();
-            });
-          }
-        },
-        {
-          text: 'No',
-          role: 'cancel',
-        },
-      ],
-    });
-    await alert.present();
+    this.loadingController
+      .create({
+        message: 'Procesando solicitud...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+
+        let result = new Promise((resolve, reject) => {
+          this.bajas.forEach((baja, index, array) => {
+            this.file.resolveLocalFilesystemUrl(baja.imgData.filePath)
+              .then(entry => {
+                (<FileEntry>entry).file(file => this.readFile(file, baja));
+              });
+            if (index === array.length -1) resolve();
+          });
+        });
+
+        result.then(() => {
+          console.log('All done!');
+          this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
+            this.tareasService.removerTarea(this.idAsignacion);
+            loadingEl.dismiss();
+            this._location.back();
+          });
+        });
+
+      });
   }
-
-
 
   readFile(file: any, baja: Baja) {
     const reader = new FileReader();
@@ -136,7 +136,8 @@ export class GestionarBajasPage implements OnInit {
         baja.motivoBaja,
         imgData,
       ).subscribe((_) => {
-        console.log('dljfkadfjl');
+        this.deleteImage(baja.imgData);
+        this.servicioTareas.removerBaja(baja.codigoBien);
       },
         (err) => {
           console.error("Error " + err)
@@ -163,6 +164,13 @@ export class GestionarBajasPage implements OnInit {
       duration: 3000
     });
     toast.present();
+  }
+
+  deleteImage(imgEntry) {
+      var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
+      this.file.removeFile(correctPath, imgEntry.name).then(res => {
+        this.presentToast('Achivo eliminado.');
+      });
   }
 
   ngOnDestroy() {

@@ -201,8 +201,6 @@ export class ModalBajasPage {
     });
   }
 
-  
-
   closeModal(idDeleted) {
     this.modalCtrl.dismiss({
       idDeleted,
