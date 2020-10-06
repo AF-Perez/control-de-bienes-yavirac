@@ -188,6 +188,7 @@ export class TareasService {
     formData.append('id_asignacion_tarea', idTarea);
     formData.append('motivo', motivo);
     formData.append('imagen', imagen.blob, imagen.name);
+    console.log(':(', formData);
 
     if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {
       return from(this.offlineService.storeRequest(url, 'POST', formData));
@@ -195,6 +196,7 @@ export class TareasService {
       return this.authService.getHeaders().pipe(
         take(1),
         switchMap(headers => {
+          console.log(':(', formData);
           return this.clienteHttp.post(url, formData, { headers });
         }),
       );

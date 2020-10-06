@@ -89,7 +89,7 @@ export class GestionarBajasPage implements OnInit {
     return await modal.present();
   }
 
-  async ingresarTarea(idTarea) {
+  ingresarTarea(idTarea) {
     this.loadingController
       .create({
         message: 'Procesando solicitud...'
@@ -124,12 +124,6 @@ export class GestionarBajasPage implements OnInit {
     reader.onload = () => {
       const imgBlob = new Blob([reader.result], { type: file.type });
       const imgData = { blob: imgBlob, name: file.name };
-      console.log(
-        baja.codigoBien,
-        this.idAsignacion,
-        baja.motivoBaja,
-        imgData,
-      );
       this.servicioTareas.submitBaja(
         baja.codigoBien,
         this.idAsignacion,
