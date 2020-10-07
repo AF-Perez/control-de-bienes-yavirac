@@ -161,19 +161,21 @@ export class TareasService {
   }
 
   ingresarConteos(conteos, idTarea) {
-    return this.authService.getHeaders().pipe(
-      take(1),
-      switchMap(headers => {
-        let data = {
-          conteos: conteos,
-          id_asignacion_tarea: idTarea,
-        };
-
-        console.log(data);
-        // let data = JSON.stringify(conteos);
-        return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, { headers });
-      })
-    );
+    const url = `${this.NOMBRE_SERVIDOR}/api/evaluarConteo`;
+    const data = {
+      conteos: conteos,
+      id_asignacion_tarea: idTarea,
+    };
+    if (this.networkService.getCurrentNetworkStatus() == ConnectionStatus.Offline) {
+      return from(this.offlineService.storeRequest(url, 'POST', data));
+    } else {
+      return this.authService.getHeaders().pipe(
+        take(1),
+        switchMap(headers => {
+          return this.clienteHttp.post(url, data, {headers});
+        })
+      );
+    }
   }
 
   solicitarBajaBien(idBien, observaciones) {
@@ -208,7 +210,6 @@ export class TareasService {
         }),
       );
     }
-
   }
 
   agregarBaja(baja: Baja) {

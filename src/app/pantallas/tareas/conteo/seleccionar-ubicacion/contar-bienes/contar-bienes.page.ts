@@ -92,11 +92,8 @@ export class ContarBienesPage implements OnInit {
   }
 
   agregarItem() {
-
     if (this.bien == null || this.contadorBien <= 0) return;
-
     let nuevoItem = { bien: this.bien, cantidad: this.contadorBien }
-
     this.conteos = [...this.conteos, nuevoItem];
 
     // eliminar bien seleccionado
@@ -111,6 +108,24 @@ export class ContarBienesPage implements OnInit {
   }
 
   ingresarConteo() {
+    this.loadingCtrl
+      .create({
+        message: 'Procesando solicitud...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+
+        this.servicioTareas.ingresarConteos(this.conteos, this.idAsignacion)
+          .subscribe(response => {
+              this.tareasService.removerTarea(this.idAsignacion);
+              this.tareasService.vaciarConteos();
+              loadingEl.dismiss();
+              this.location.back();
+          });
+      })
+  }
+
+  ingresarConteobkp() {
     this.loadingCtrl
       .create({
         message: 'Procesando solicitud...'
@@ -138,10 +153,6 @@ export class ContarBienesPage implements OnInit {
       })
   }
 
-  // cancelarConteo() {
-  //   this.location.back();
-  // }
-
   async cancelarConteo() {
     const alert = await this.alertController.create({
       header: 'Se perderán sus cambios. ¿Esta seguro?',
@@ -149,6 +160,7 @@ export class ContarBienesPage implements OnInit {
         {
           text: 'Sí',
           handler: () => {
+            this.tareasService.vaciarConteos();
             this.location.back();
           }
         },
@@ -174,31 +186,6 @@ export class ContarBienesPage implements OnInit {
     });
   }
 
-  async presentToastWithOptions() {
-    const toast = await this.toastController.create({
-      header: 'Toast header',
-      message: 'Click to Close',
-      position: 'top',
-      buttons: [
-        {
-          side: 'start',
-          icon: 'star',
-          text: 'Favorite',
-          handler: () => {
-            console.log('Favorite clicked');
-          }
-        }, {
-          text: 'Done',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        }
-      ]
-    });
-    toast.present();
-  }
-
   async mostrarModal() {
     const modal = await this.modalController.create({
       component: ModalConteoPage,
@@ -209,14 +196,13 @@ export class ContarBienesPage implements OnInit {
 
     modal.onDidDismiss()
       .then((data) => {
-        
+
       });
 
     return await modal.present();
   }
 
-  quitarConteo(codigoBien)
-  {
+  quitarConteo(codigoBien) {
     this.servicioTareas.removerConteo(codigoBien);
   }
 
