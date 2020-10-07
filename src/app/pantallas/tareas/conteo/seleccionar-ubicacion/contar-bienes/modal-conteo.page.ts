@@ -8,6 +8,7 @@ import { TareasService } from 'src/app/services/tareas.service';
 import { Storage } from '@ionic/storage';
 import { BarcodeScannerOptions, BarcodeScanner } from "@ionic-native/barcode-scanner/ngx";
 import { Baja } from 'src/app/models/baja.model';
+import { Conteo } from 'src/app/models/conteo.model';
 
 
 const STORAGE_KEY = 'my_images';
@@ -56,8 +57,10 @@ export class ModalConteoPage {
 
     this.form = this.formBuilder.group({
       codigoBien: new FormControl('', Validators.required),
-      motivoBaja: new FormControl(''),
-      // imagen: new FormControl('', Validators.required),
+      cantidad: new FormControl(1, [
+        Validators.min(0),
+        Validators.max(100)
+      ]),
     });
 
     this.plt.ready().then(() => {
@@ -161,18 +164,11 @@ export class ModalConteoPage {
       })
       .then(loadingEl => {
         loadingEl.present();
-        const baja = new Baja(formValues.codigoBien, formValues.motivoBaja, this.imageBaja);
-        console.log(baja);
-        this.servicioTareas.agregarBaja(baja);
+        const conteo = new Conteo(formValues.codigoBien, formValues.cantidad);
+        this.servicioTareas.agregarConteo(conteo);
         loadingEl.dismiss();
         this.form.reset();
-        this.imageBaja = null;
-        this.closeModal(this.navParams.get('idBien'));
-
-        // this.file.resolveLocalFilesystemUrl(this.imageBaja.filePath)
-        //   .then(entry => {
-        //     // (<FileEntry>entry).file(file => this.readFile(file, formValues));
-        //   });
+        this.modalCtrl.dismiss();
       })
   }
 
@@ -201,10 +197,8 @@ export class ModalConteoPage {
     });
   }
 
-  closeModal(idDeleted) {
-    this.modalCtrl.dismiss({
-      idDeleted,
-    });
+  closeModal() {
+    this.modalCtrl.dismiss();
   }
 
   abrirScaner() {
@@ -216,12 +210,13 @@ export class ModalConteoPage {
   }
 
   validation_messages = {
-    'codigoBien': [
+    codigoBien: [
       { type: 'required', message: 'Campo obligatorio.' },
-      // { type: 'minlength', message: 'Username must be at least 5 characters long.' },
-      // { type: 'maxlength', message: 'Username cannot be more than 25 characters long.' },
-      // { type: 'pattern', message: 'Your username must contain only numbers and letters.' },
-      // { type: 'validUsername', message: 'Your username has already been taken.' }
+    ],
+    cantidad: [
+      {type: 'required', message: 'Campo obligatorio'},
+      {type: 'min', message: 'Ingrese una cantidad válida.'},
+      {type: 'max', message: 'Ingrese una cantidad válida.'},
     ],
   };
 

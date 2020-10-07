@@ -9,6 +9,7 @@ import { OfflineService } from './offline.service';
 import { DatabaseService } from './database.service';
 import { Baja } from '../models/baja.model';
 import { ConnectionStatus, NetworkService } from './network.service';
+import { Conteo } from '../models/conteo.model';
 
 
 @Injectable({
@@ -31,6 +32,7 @@ export class TareasService {
   private _tareas = new BehaviorSubject([]);
   private _tareasIncompletas = new BehaviorSubject([]);
   private _bajasTarea = new BehaviorSubject<Baja[]>([]);
+  private _conteosTarea = new BehaviorSubject<Conteo[]>([]);
 
   get tareas() {
     return this._tareas.asObservable();
@@ -42,6 +44,10 @@ export class TareasService {
 
   get bajasTarea() {
     return this._bajasTarea.asObservable();
+  }
+
+  get conteosTarea() {
+    return this._conteosTarea.asObservable();
   }
 
   obtenerTareas() {
@@ -154,15 +160,16 @@ export class TareasService {
     );
   }
 
-  ingresarConteos(numeroBienes, idUbicacion, idTarea) {
+  ingresarConteos(conteos, idTarea) {
     return this.authService.getHeaders().pipe(
       take(1),
       switchMap(headers => {
         let data = {
-          numero_de_bienes: numeroBienes,
-          id_ubicacion: idUbicacion,
+          conteos: conteos,
           id_asignacion_tarea: idTarea,
         };
+
+        console.log(data);
         // let data = JSON.stringify(conteos);
         return this.clienteHttp.post(`${this.NOMBRE_SERVIDOR}/api/evaluarConteo`, data, { headers });
       })
@@ -212,6 +219,20 @@ export class TareasService {
   removerBaja(codigoBien) {
     let bajas = this._bajasTarea.getValue().filter(t => t.codigoBien !== codigoBien);
     this._bajasTarea.next(bajas);
+  }
+
+  agregarConteo(conteo: Conteo) {
+    let conteos = [...this._conteosTarea.getValue(), conteo]
+    this._conteosTarea.next(conteos);
+  }
+
+  removerConteo(codigoBien) {
+    let conteos = this._conteosTarea.getValue().filter(t => t.codigoBien !== codigoBien);
+    this._conteosTarea.next(conteos);
+  }
+
+  vaciarConteos() {
+    this._conteosTarea.next([]);
   }
 
   completarTarea(idTarea) {

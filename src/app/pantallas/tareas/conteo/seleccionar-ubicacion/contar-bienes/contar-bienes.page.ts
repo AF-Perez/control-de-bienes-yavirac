@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
 import { LoadingController, Platform, ToastController } from '@ionic/angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ModalConteoPage } from './modal-conteo.page';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class ContarBienesPage implements OnInit {
   contadorBien: number;
   idAsignacion: any;
   idUbicacion: any;
+  private conteosSub: Subscription;
 
   @ViewChild('bienSelector') bienSelector: IonicSelectableComponent;
 
@@ -58,8 +60,10 @@ export class ContarBienesPage implements OnInit {
   // cuando se genere la pagina
   ngOnInit() {
     this.obtenerFechaActual();
-    this.obtenerBienes();
     this.contadorBien = 0;
+    this.tareasService.conteosTarea.subscribe(conteos => {
+      this.conteos = conteos;
+    });
   }
 
   obtenerBienes() {
@@ -114,15 +118,11 @@ export class ContarBienesPage implements OnInit {
       .then(loadingEl => {
         loadingEl.present();
 
-        let total = 0;
-        this.conteos.forEach(bien => {
-          total = total + bien.cantidad;
-        });
-
-        this.servicioTareas.ingresarConteos(total, this.idUbicacion, this.idAsignacion)
+        this.servicioTareas.ingresarConteos(this.conteos, this.idAsignacion)
           .subscribe(response => {
             if (response['resultado'] === 0) {
               this.tareasService.removerTarea(this.idAsignacion);
+              this.tareasService.vaciarConteos();
               loadingEl.dismiss();
               this.location.back();
             } else {
@@ -209,14 +209,15 @@ export class ContarBienesPage implements OnInit {
 
     modal.onDidDismiss()
       .then((data) => {
-        if (data['data'].idDeleted !== -1) {
-          this.bienes = this.bienes.filter(bien => {
-            return bien.id !== data['data'].idDeleted;
-          });
-        }
+        
       });
 
     return await modal.present();
+  }
+
+  quitarConteo(codigoBien)
+  {
+    this.servicioTareas.removerConteo(codigoBien);
   }
 
 }

@@ -15,7 +15,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-row>
+  <ion-row *ngIf="0">
     <ion-col size="8">
       <ion-item>
         <ionic-selectable #bienSelector [(ngModel)]="bien" [items]="bienes" itemValueField="id" itemTextField="nombre"
@@ -43,14 +43,26 @@
       </ion-button>
     </ion-col>
   </ion-row>
+
   <ion-list>
-    <ion-item *ngFor="let conteo of conteos">
-      <ion-label>
-        <h2>{{conteo.bien.nombre}} <span>X {{conteo.cantidad}}</span></h2>
-        <p>{{conteo.bien.codigo_barras}}</p>
-      </ion-label>
-    </ion-item>
+    <ion-item-sliding *ngFor="let conteo of conteos">
+
+      <ion-item>
+        <ion-label>
+          <h2>{{conteo.codigoBien}}</h2>
+        </ion-label>
+        <p slot="end">{{conteo.cantidad}}</p>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option (click)="quitarConteo(conteo.codigoBien)" color="danger">
+          Eliminar
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+    
   </ion-list>
+
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="mostrarModal()">
       <ion-icon name="add"></ion-icon>
