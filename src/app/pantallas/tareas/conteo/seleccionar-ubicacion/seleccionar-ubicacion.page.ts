@@ -11,7 +11,6 @@ import { Subscription } from 'rxjs';
 })
 export class SeleccionarUbicacionPage implements OnInit {
   
-  // todas estas variables estan accesibles en el html
   ubicaciones: any = [];
   tipoTarea = 'CONTEO';
   tareas: any = [];

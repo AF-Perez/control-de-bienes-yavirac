@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { IonicSelectableComponent } from 'ionic-selectable';
 import { BienesService } from '../../../../../servicios/bienes.service';
 import { TareasService } from '../../../../../services/tareas.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Location } from '@angular/common';
 import { LoadingController, Platform, ToastController } from '@ionic/angular';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { ModalConteoPage } from './modal-conteo.page';
 
 
 @Component({
@@ -40,6 +41,7 @@ export class ContarBienesPage implements OnInit {
     private barcodeScanner: BarcodeScanner,
     private tareasService: TareasService,
     private platform: Platform,
+    private modalController: ModalController,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -147,7 +149,7 @@ export class ContarBienesPage implements OnInit {
         {
           text: 'Sí',
           handler: () => {
-              this.location.back();
+            this.location.back();
           }
         },
         {
@@ -195,6 +197,26 @@ export class ContarBienesPage implements OnInit {
       ]
     });
     toast.present();
+  }
+
+  async mostrarModal() {
+    const modal = await this.modalController.create({
+      component: ModalConteoPage,
+      componentProps: {
+        idAsignacion: this.idAsignacion,
+      },
+    });
+
+    modal.onDidDismiss()
+      .then((data) => {
+        if (data['data'].idDeleted !== -1) {
+          this.bienes = this.bienes.filter(bien => {
+            return bien.id !== data['data'].idDeleted;
+          });
+        }
+      });
+
+    return await modal.present();
   }
 
 }

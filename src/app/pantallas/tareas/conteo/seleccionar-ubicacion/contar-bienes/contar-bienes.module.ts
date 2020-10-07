@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { IonicSelectableModule } from 'ionic-selectable';
 
 import { ContarBienesPage } from './contar-bienes.page';
+import { ModalConteoPage } from './modal-conteo.page';
 
 const routes: Routes = [
   {
@@ -22,6 +23,9 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     IonicSelectableModule,
   ],
-  declarations: [ContarBienesPage]
+  declarations: [
+    ContarBienesPage,
+    ModalConteoPage,
+  ]
 })
 export class ContarBienesPageModule {}
