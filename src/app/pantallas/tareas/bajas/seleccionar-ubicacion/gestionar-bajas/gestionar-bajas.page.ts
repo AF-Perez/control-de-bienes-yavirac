@@ -96,25 +96,21 @@ export class GestionarBajasPage implements OnInit {
       })
       .then(loadingEl => {
         loadingEl.present();
-
-        let result = new Promise((resolve, reject) => {
-          this.bajas.forEach((baja, index, array) => {
+          this.bajas.forEach((baja) => {
             this.file.resolveLocalFilesystemUrl(baja.imgData.filePath)
               .then(entry => {
                 (<FileEntry>entry).file(file => this.readFile(file, baja));
               });
-            if (index === array.length -1) resolve();
           });
-        });
 
-        result.then(() => {
+        setTimeout(() => {
           console.log('All done!');
           this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
             this.tareasService.removerTarea(this.idAsignacion);
             loadingEl.dismiss();
             this._location.back();
           });
-        });
+        }, 3000);
 
       });
   }
@@ -122,6 +118,7 @@ export class GestionarBajasPage implements OnInit {
   readFile(file: any, baja: Baja) {
     const reader = new FileReader();
     reader.onload = () => {
+      console.log('file loaded');
       const imgBlob = new Blob([reader.result], { type: file.type });
       const imgData = { blob: imgBlob, name: file.name };
       this.servicioTareas.submitBaja(
@@ -132,6 +129,7 @@ export class GestionarBajasPage implements OnInit {
       ).subscribe((_) => {
         this.deleteImage(baja.imgData);
         this.servicioTareas.removerBaja(baja.codigoBien);
+
       },
         (err) => {
           console.error("Error " + err)
