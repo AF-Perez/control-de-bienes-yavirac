@@ -61,7 +61,7 @@ export class BienesService {
         formData.append('id_ubicacion', bien.idUbicacion);
         formData.append('codigo', bien.codigo);
         formData.append('id_padre', bien.codigoPadre);
-        formData.append('imagen_bien', bien.imagenBien.blob, bien.imagenBien.name);
+        // formData.append('imagen_bien', bien.imagenBien.blob, bien.imagenBien.name);
 
         // let postDataBien = {
         //   'nombre': datosBien.nombre,

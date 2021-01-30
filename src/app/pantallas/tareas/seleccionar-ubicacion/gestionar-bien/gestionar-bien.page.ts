@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { LoadingController } from '@ionic/angular';
 import {Location} from '@angular/common';
 import { FilesService } from 'src/app/services/files.service';
+import { TareasService } from 'src/app/services/tareas.service';
 
 @Component({
   selector: 'app-gestionar-bien',
@@ -14,7 +15,8 @@ import { FilesService } from 'src/app/services/files.service';
 export class GestionarBienPage implements OnInit, OnDestroy {
 
   // variables
-  ubicacion: any;
+  idUbicacion: any;
+  idAsignacion: any;
   fecha: any;
   bienes: any = [];
   private bienesSubscripcion: Subscription;
@@ -31,11 +33,12 @@ export class GestionarBienPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private _location: Location,
     private filesService: FilesService,
+    private tareasService: TareasService,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        // llenar la variable
-        this.ubicacion = this.router.getCurrentNavigation().extras.state.ubicacion;
+        this.idUbicacion = this.router.getCurrentNavigation().extras.state.idUbicacion;
+        this.idAsignacion = this.router.getCurrentNavigation().extras.state.idAsignacion;
       }
     });
   }
@@ -45,7 +48,6 @@ export class GestionarBienPage implements OnInit, OnDestroy {
     this.resetearHoraFecha();
     this.iniciarTimer();
     this.bienesSubscripcion = this.servicioRegistro.bienes$.subscribe(bienes => {
-      console.log(bienes);
       this.bienes = bienes;
     });
   }
@@ -86,11 +88,16 @@ export class GestionarBienPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.guardarBienesSub = this.servicioRegistro.guardarBienes(this.bienes)
+        this.guardarBienesSub = this.servicioRegistro.guardarBienes2(this.bienes, this.idAsignacion)
           .subscribe(() => {
-            // acciones luego de guardar
+            this.bienes = [];
+            this.servicioRegistro.vaciarBienes();
+            this.tareasService.removerTarea(this.idAsignacion);
             loadingEl.dismiss();
             this._location.back();
+          },
+          (err) => {
+            loadingEl.dismiss();
           });
       })
   }
@@ -100,8 +107,11 @@ export class GestionarBienPage implements OnInit, OnDestroy {
   }
 
   transformarUrlImagen(stupidUrl) {
-    console.log(stupidUrl);
     this.filesService.validPathForDisplayImage(stupidUrl);
+  }
+
+  irARegistro() {
+    this.router.navigate(['/crear-bienes', this.idUbicacion], {state: {idAsignacion: this.idAsignacion}});
   }
 
 }

@@ -4,42 +4,37 @@
       <ion-back-button defaultHref="seleccionar-ubicacion"></ion-back-button>
     </ion-buttons>
     <ion-title>{{ubicacion.nombre}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="ingresarTarea(idAsignacion)">
+        <ion-icon name="checkmark" slot="icon-only">Completar</ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  {{fecha.toTimeString()}}
-
-   <!-- fab placed to the (vertical) center and end -->
-  
+  {{fecha|date:'mediumDate'}}
 
   <ion-list>
     <ion-list-header>
-      <ion-label>BIENES ACTUALES</ion-label>
+      <ion-label>Bienes a dar de baja:</ion-label>
     </ion-list-header>
-    
-    <ion-item *ngFor="let bien of bienes">
 
-      {{bien.nombre}}
-      {{bien.descripcion}}
-      {{bien.clase}}
-
-      <div *ngIf="bien.enviado == true; else elseBlock">Pendiente</div>
-      <ion-button color="danger" style="font-size:1.2em" (click)="mostrarModal(bien.id)" [disabled]="bien.enviado == true ? true : false">
-        <ng-template #elseBlock>
-          
-        </ng-template>
-        <ion-icon name="trash"></ion-icon>
-          
-      </ion-button>
-        
+    <ion-item *ngFor="let baja of bajas">
+      <ion-label>
+        <h2>{{baja.codigoBien}}</h2>
+        <p>{{baja.motivoBaja}}</p>
+      </ion-label>
+      <ion-thumbnail>
+        <ion-img [src]="baja.imgData.path"></ion-img>
+      </ion-thumbnail>
     </ion-item>
   </ion-list>
 
-   
-
-
-  
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 
 </ion-content>
-

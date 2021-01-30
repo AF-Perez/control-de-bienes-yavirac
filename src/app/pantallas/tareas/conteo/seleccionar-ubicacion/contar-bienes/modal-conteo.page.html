@@ -1,0 +1,61 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="closeModal()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onSubmit(form.value)" [disabled]="!form.valid">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="form-content ion-padding">
+  <form [formGroup]="form">
+    <ion-grid>
+
+      <!-- codigoBien -->
+      <ion-row>
+        <ion-col size="10">
+          <ion-item>
+            <ion-label position="floating" color="primary">Código del Bien</ion-label>
+            <ion-input type="text" formControlName="codigoBien"></ion-input>
+          </ion-item>
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.codigoBien">
+              <div class="error-message"
+                *ngIf="form.get('codigoBien').hasError(validation.type) && (form.get('codigoBien').dirty || form.get('codigoBien').touched)">
+                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+        </ion-col>
+        <ion-col size="2" class="ion-align-self-center">
+          <ion-button (click)="abrirScaner()">
+            <ion-icon name="barcode" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+
+      <!-- cantidad -->
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label position="floating" color="primary">Cantidad</ion-label>
+            <ion-input type="number" formControlName="cantidad"></ion-input>
+          </ion-item>
+          <div class="validation-errors">
+            <ng-container *ngFor="let validation of validation_messages.cantidad">
+              <div class="error-message"
+                *ngIf="form.get('cantidad').hasError(validation.type) && (form.get('cantidad').dirty || form.get('cantidad').touched)">
+                <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+              </div>
+            </ng-container>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
+</ion-content>

@@ -3,20 +3,21 @@
       <ion-buttons slot="start">
         <ion-back-button defaultHref="caratula"></ion-back-button>
       </ion-buttons>
-      <ion-title>Ubicaciones asignadas</ion-title>
+      <ion-title>Registros asignados</ion-title>
     </ion-toolbar>
   </ion-header>
    
 
 <ion-content >
   <ion-list>
-    <ion-item *ngFor="let ubicacion of ubicaciones" (click)="irAGestionarBienes(ubicacion)">
- 
-      {{ubicacion.nombre}}
-
+    <ion-item *ngFor="let tarea of tareas" (click)="irAGestionarBienes(tarea)" detail>
+      <ion-label>
+        <h2>{{tarea.ubicacionNombre}}</h2>
+        <p> {{tarea.fecha_asignacion|date:'mediumDate'}}</p>
+      </ion-label>
     </ion-item>
 
-    <div class="not-tasks-msg" *ngIf="!ubicaciones.length" style="padding: 20px;">
+    <div class="not-tasks-msg" *ngIf="!tareas.length" style="padding: 20px;">
       <p>Actualmente no tiene actividades asignadas para dicha tarea. Siga intentando.</p>
     </div>
     

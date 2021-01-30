@@ -2,8 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationExtras } from '@angular/router';
 import { TareasService } from './../../../services/tareas.service';
-import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { forkJoin, Subscription } from 'rxjs';
+import { switchMap, take, tap } from 'rxjs/operators';
+import { UbicacionesService } from 'src/app/servicios/ubicaciones.service';
 
 @Component({
   selector: 'app-seleccionar-ubicacion',
@@ -15,40 +16,47 @@ export class SeleccionarUbicacionPage implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private servicioTareas: TareasService,
-  ){
+    private servicioUbicaciones: UbicacionesService,
+  ) {
   }
 
-  // todas estas variables estan accesibles en el html
-  ubicaciones: any = [];
+  ubicacion: any;
   tipoTarea = 'REGISTRO';
-  private ubicacionesSub: Subscription;
+  private ubicacionSub: Subscription;
+  tareas: any = [];
+  private tareasIcompSubs: Subscription;
 
-  // este metode se va a llamar una vez que se termine de cargar la pantalla
   ngOnInit() {
-    this.obtenerUbicaciones();
+    this.obtenerTareas();
+
+    this.tareasIcompSubs = this.servicioTareas.tareasIncompletas.subscribe(ti => {
+      this.obtenerTareas();
+    });
   }
 
-  irAGestionarBienes(ubicacion){
+  irAGestionarBienes(tarea) {
     let navigationExtras: NavigationExtras = {
       state: {
-        // aqui todo lo que se va a pasar a las sig pantalla
         user: 1,
-        ubicacion: ubicacion,
+        idUbicacion: tarea.id_ubicacion,
+        idAsignacion: tarea.id,
       }
     };
     this.router.navigate(['gestionar-bien'], navigationExtras);
   }
 
-  obtenerUbicaciones() {
-    return this.servicioTareas.obtenerUbicacionesPorTarea(this.tipoTarea).pipe(take(1)).subscribe(ubicaciones => {
-      this.ubicaciones = ubicaciones;
+  obtenerTareas() {
+    return this.servicioTareas.obtenerTareasUsuario(this.tipoTarea).subscribe(tareas => {
+      this.tareas = tareas;
     });
   }
 
   ngOnDestroy() {
-    console.log('seleccionar-ubicacion destroyed');
-    if (this.ubicacionesSub) {
-      this.ubicacionesSub.unsubscribe();
+    if (this.ubicacionSub) {
+      this.ubicacionSub.unsubscribe();
+    }
+    if (this.tareasIcompSubs) {
+      this.tareasIcompSubs.unsubscribe();
     }
   }
 }

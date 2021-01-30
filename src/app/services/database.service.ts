@@ -134,6 +134,7 @@ export class DatabaseService {
   }
 
   cargarTareas() {
+    console.log('hola' + this.database);
     return this.database.executeSql('SELECT * FROM tareas', []).then(data => {
       let tareas = [];
       if (data.rows.length > 0) {

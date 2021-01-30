@@ -11,9 +11,10 @@
 <ion-content>
   <ion-list>
 
-    <ion-item *ngFor="let ubicacion of ubicaciones" (click)="irAConteoDeBienes(ubicacion)"  detail >
+    <ion-item *ngFor="let tarea of tareas"  (click)="irAConteoDeBienes(tarea)"  detail >
       <ion-label>
-        {{ubicacion.nombre}}
+        <h2>{{tarea.ubicacionNombre}}</h2>
+        <p> {{tarea.fecha_asignacion|date:'mediumDate'}}</p>
       </ion-label>
     </ion-item>
     

@@ -21,8 +21,6 @@ export class UbicacionesService {
   ) { }
 
   NOMBRE_SERVIDOR = this.variablesGlobales.NOMBRE_SERVIDOR;
-  token: any;
-  authSubject = new BehaviorSubject(false);
   private _ubicaciones = new BehaviorSubject([]);
   
   get ubicaciones() {
@@ -55,6 +53,19 @@ export class UbicacionesService {
       take(1),
       switchMap(headers => {
         return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers});
+      }),
+    );
+  }
+
+  cargarUbicacionesAPI() {
+    return this.authService.getHeaders().pipe(
+      take(1),
+      switchMap(headers => {
+        return this.clienteHttp.get<[]>(`${this.NOMBRE_SERVIDOR}/api/ubicaciones`, {headers}).pipe(
+          tap(resp => {
+            this._ubicaciones.next(resp);
+          }),
+        );
       }),
     );
   }

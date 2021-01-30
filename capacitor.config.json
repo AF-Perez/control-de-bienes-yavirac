@@ -1,1 +1,6 @@
-{}
+{
+  "appId": "org.example.tareasinven",
+  "appName": "tareasInven",
+  "webDir": "www",
+  "npmClient": "npm"
+}
