@@ -59,7 +59,7 @@ export class ModalConteoPage {
       codigoBien: new FormControl('', Validators.required),
       cantidad: new FormControl(1, [
         Validators.min(0),
-        Validators.max(100)
+        Validators.max(1000)
       ]),
     });
 
