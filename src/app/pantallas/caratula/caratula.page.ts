@@ -106,6 +106,9 @@ export class CaratulaPage implements OnInit, OnDestroy {
       if (event) {
         event.target.complete();
       }
+    },
+    err => {
+      console.log(err);
     });
   }
 
