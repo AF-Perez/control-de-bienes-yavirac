@@ -3,5 +3,14 @@
   "appName": "tareasInven",
   "webDir": "www",
   "npmClient": "npm",
+<<<<<<< HEAD
   "linuxAndroidStudioPath": "/opt/android-studio/bin/studio.sh"
+=======
+  "server": {
+    "url": "http://192.168.0.4:8100",
+    "cleartext": true,
+    "originalUrl": "http://192.168.0.4:8100",
+    "originalCleartext": true
+  }
+>>>>>>> 2189d110040e43e14c0982b2d14c2ad5d5f29e96
 }

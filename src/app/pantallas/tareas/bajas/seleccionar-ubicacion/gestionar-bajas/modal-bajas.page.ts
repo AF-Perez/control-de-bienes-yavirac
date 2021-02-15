@@ -209,7 +209,7 @@ export class ModalBajasPage {
 
   abrirScaner() {
     this.barcodeScanner.scan(this.barcodeScannerOptions).then(barcodeData => {
-      this.form.patchValue({ codigo: barcodeData.text });
+      this.form.patchValue({ codigoBien: barcodeData.text });
     }).catch(err => {
       console.error('Error', err);
     });

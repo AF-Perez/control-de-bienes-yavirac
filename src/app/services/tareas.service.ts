@@ -161,6 +161,7 @@ export class TareasService {
   }
 
   ingresarConteos(conteos, idTarea) {
+    console.log(conteos);
     const url = `${this.NOMBRE_SERVIDOR}/api/evaluarConteo`;
     const data = {
       conteos: conteos,

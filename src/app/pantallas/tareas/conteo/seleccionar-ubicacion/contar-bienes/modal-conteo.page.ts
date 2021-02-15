@@ -59,7 +59,7 @@ export class ModalConteoPage {
       codigoBien: new FormControl('', Validators.required),
       cantidad: new FormControl(1, [
         Validators.min(0),
-        Validators.max(100)
+        Validators.max(1000)
       ]),
     });
 
@@ -203,7 +203,7 @@ export class ModalConteoPage {
 
   abrirScaner() {
     this.barcodeScanner.scan(this.barcodeScannerOptions).then(barcodeData => {
-      this.form.patchValue({ codigo: barcodeData.text });
+      this.form.patchValue({ codigoBien: barcodeData.text });
     }).catch(err => {
       console.error('Error', err);
     });
