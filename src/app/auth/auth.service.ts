@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 // imports agregados por mi
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { tap, map, share } from 'rxjs/operators';
+import { tap, map, share, timeout } from 'rxjs/operators';
 import { Observable, BehaviorSubject, from } from 'rxjs';
 import { Usuario } from './user';
 import { AuthRespuesta } from './auth-respuesta';
@@ -83,6 +83,7 @@ export class AuthService implements OnDestroy {
     const datos = { email, password };
     return this.clienteHttp.post<RespuestaLogin>(`${this.NOMBRE_SERVIDOR}/api/login`, datos)
       .pipe(
+        // timeout(10000),
         tap( resp => {
           // _user no esta siendo utilizado, linea dejada por si se necesite en un futuro
           this._user.next(new User('1', 'hola', resp.access_token, new Date(resp.expires_at)));
