@@ -6,7 +6,7 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { ModalBajasPage } from './modal-bajas.page';
 import { Location } from '@angular/common';
 import { Baja } from 'src/app/models/baja.model';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { File, FileEntry } from '@ionic-native/file/ngx';
 import { LoadingController } from '@ionic/angular';
 
@@ -95,25 +95,55 @@ export class GestionarBajasPage implements OnInit {
         message: 'Procesando solicitud...'
       })
       .then(loadingEl => {
-        loadingEl.present();
-          this.bajas.forEach((baja) => {
-            this.file.resolveLocalFilesystemUrl(baja.imgData.filePath)
-              .then(entry => {
-                (<FileEntry>entry).file(file => this.readFile(file, baja));
-              });
-          });
 
-        setTimeout(() => {
-          console.log('All done!');
-          this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
-            this.tareasService.removerTarea(this.idAsignacion);
-            loadingEl.dismiss();
-            this._location.back();
-          });
-        }, 3000);
+        loadingEl.present();
+
+        let promises = [];
+
+        console.log(this.bajas);
+
+        this.bajas.forEach((baja) => {
+          let tempPromise = this.file.resolveLocalFilesystemUrl(baja.imgData.filePath);
+          promises.push(tempPromise);
+        });
+
+        // .then(entry => {
+        //   (<FileEntry>entry).file(file => this.readFile(file, baja));
+        // });
+
+        forkJoin(promises).subscribe(val => {
+         console.log(val);
+        });
 
       });
   }
+
+  // ingresarTarea(idTarea) {
+  //   this.loadingController
+  //     .create({
+  //       message: 'Procesando solicitud...'
+  //     })
+  //     .then(loadingEl => {
+
+  //       loadingEl.present();
+
+  //       this.bajas.forEach((baja) => {
+  //         this.file.resolveLocalFilesystemUrl(baja.imgData.filePath)
+  //           .then(entry => {
+  //             (<FileEntry>entry).file(file => this.readFile(file, baja));
+  //           });
+  //       });
+
+  //       setTimeout(() => {
+  //         console.log('All done!');
+  //         this.servicioTareas.completarTarea(idTarea).subscribe(respuesta => {
+  //           this.tareasService.removerTarea(this.idAsignacion);
+  //           loadingEl.dismiss();
+  //           this._location.back();
+  //         });
+  //       }, 3000);
+  //     });
+  // }
 
   readFile(file: any, baja: Baja) {
     const reader = new FileReader();
@@ -127,9 +157,9 @@ export class GestionarBajasPage implements OnInit {
         baja.motivoBaja,
         imgData,
       ).subscribe((_) => {
+        console.log('in readfile')
         this.deleteImage(baja.imgData);
         this.servicioTareas.removerBaja(baja.codigoBien);
-
       },
         (err) => {
           console.error("Error " + err)
@@ -159,10 +189,10 @@ export class GestionarBajasPage implements OnInit {
   }
 
   deleteImage(imgEntry) {
-      var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
-      this.file.removeFile(correctPath, imgEntry.name).then(res => {
-        this.presentToast('Achivo eliminado.');
-      });
+    var correctPath = imgEntry.filePath.substr(0, imgEntry.filePath.lastIndexOf('/') + 1);
+    this.file.removeFile(correctPath, imgEntry.name).then(res => {
+      this.presentToast('Achivo eliminado.');
+    });
   }
 
   ngOnDestroy() {
