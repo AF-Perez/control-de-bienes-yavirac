@@ -107,14 +107,14 @@ export class ContarBienesPage implements OnInit {
     this.contadorBien = 0;
   }
 
-  ingresarConteo() {
+  ingresarConteobkp() {
     this.loadingCtrl
       .create({
         message: 'Procesando solicitud...'
       })
       .then(loadingEl => {
         loadingEl.present();
-
+        console.log('this.conteos :>> ', this.conteos);
         this.servicioTareas.ingresarConteos(this.conteos, this.idAsignacion)
           .subscribe(response => {
               this.tareasService.removerTarea(this.idAsignacion);
@@ -125,7 +125,7 @@ export class ContarBienesPage implements OnInit {
       })
   }
 
-  ingresarConteobkp() {
+  ingresarConteo() {
     this.loadingCtrl
       .create({
         message: 'Procesando solicitud...'
@@ -135,7 +135,8 @@ export class ContarBienesPage implements OnInit {
 
         this.servicioTareas.ingresarConteos(this.conteos, this.idAsignacion)
           .subscribe(response => {
-            if (response['resultado'] === 0) {
+            // console.log('response :>> ', response);
+            if (response['resultado'] == 1) {
               this.tareasService.removerTarea(this.idAsignacion);
               this.tareasService.vaciarConteos();
               loadingEl.dismiss();
@@ -144,7 +145,7 @@ export class ContarBienesPage implements OnInit {
               loadingEl.dismiss();
               this.toastController.create({
                 message: 'Los datos ingresados no concuerdan con los de nuestra base.',
-                duration: 3000
+                duration: 3000,
               }).then(toastEl => {
                 toastEl.present();
               });

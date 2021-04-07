@@ -41,6 +41,7 @@ export class SeleccionarUbicacionPage implements OnInit {
 
   obtenerTareas() {
     return this.servicioTareas.obtenerTareasUsuario(this.tipoTarea).subscribe(tareas => {
+      // console.log('tareas :>> ', tareas);
       this.tareas = tareas;
     });
   }
