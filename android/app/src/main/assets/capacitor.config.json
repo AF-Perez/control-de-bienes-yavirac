@@ -2,5 +2,6 @@
   "appId": "org.example.tareasinven",
   "appName": "tareasInven",
   "webDir": "www",
-  "npmClient": "npm"
+  "npmClient": "npm",
+  "linuxAndroidStudioPath": "/opt/android-studio/bin/studio.sh"
 }
