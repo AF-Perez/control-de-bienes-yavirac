@@ -6,11 +6,11 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { ModalBajasPage } from './modal-bajas.page';
 import { Location } from '@angular/common';
 import { Baja } from 'src/app/models/baja.model';
-import { Subscription, forkJoin, Observable, from, Observer, merge, throwError } from 'rxjs';
+import { Subscription, forkJoin, Observable, from, Observer, merge, throwError, timer } from 'rxjs';
 import { File, FileEntry } from '@ionic-native/file/ngx';
 import { LoadingController } from '@ionic/angular';
 import { FileReaderObservable } from './filereader';
-import { flatMap, map, takeUntil } from 'rxjs/operators';
+import { flatMap, map, mergeMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-gestionar-bajas',
@@ -145,8 +145,9 @@ export class GestionarBajasPage implements OnInit {
             });
             console.log('getFileObs :>> ', getFileObs);
             forkJoin(getFileObs)
-              .subscribe((files) => {
+              .subscribe((files: File[]) => {
                 console.log('files :>> ', files);
+
                 // let readFileObs = files.map(file => {
                 //   // return this.readFile(file);
                 //   return from(this.readFile(file));
@@ -154,8 +155,11 @@ export class GestionarBajasPage implements OnInit {
 
                 // console.log('readFileObs :>> ', readFileObs);
 
-                this.readFiles(files);
-               
+                for (let i = 0; i < files.length; i++) { 
+                  this.readFile(files[i], this.bajas[i]);
+                }
+                
+                // this.readFiles(files);
 
                 // forkJoin(readFileObs).subscribe((imgData) => {
                 //   console.log('imgData :>> ', imgData);
@@ -176,52 +180,68 @@ export class GestionarBajasPage implements OnInit {
       });
   }
 
-  readFiles( files: any[] ) {
-    from( files ).pipe( this.readAsText() ).subscribe( 
-      ( res ) => console.log( res ),
-      ( err )=> console.log( err ) ,
-      ()=>console.log( 'end' )
+  readFiles(files: File[]) {
+    from(files).pipe(this.readAsArrayBuffer()).subscribe(
+      (res) => console.log(res),
+      (err) => console.error(err),
+      () => console.log('end')
     );
   }
 
-  readAsText = () => ( src: Observable<any> ) => {
+
+  readAsArrayBuffer = () => (src: Observable<File>) => {
     return src.pipe(
-      flatMap( file => {
-        const obs = new FileReaderObservable();
-        // 中断かエラーが生じたら例外を投げるObservable
-        const failed = merge( obs.onAbort, obs.onError ).pipe( flatMap( evt => throwError( `Cannot read file. ${file.name}.` ) ) );
-   
-        // ファイルの読出しが成功したら結果を文字列として返すObservable
-        // Typescript 3.5.*での問題
-        // https://github.com/microsoft/TypeScript/issues/25510
-        // eventtarget.resultが消えてしまっているためany化している
-        const data = obs.onLoad.pipe( map( evt => ( evt as any ).target.result as string ) );
-         
-        // 読出し開始
-        obs.reader.readAsText( file );
-   
-        // mergeで、読出しと例外の発生を監視するObservableを統合し、
-        // takeUntilで成否を問わず読出しが完了したら購読を終了するようにする。
-        return merge( data, failed ).pipe( takeUntil( obs.onLoadEnd ) );
-      } )
+      flatMap((file: any) => {
+        let obs = new FileReaderObservable();
+        console.log('obs :>> ', obs);
+
+        let failed = merge(obs.onAbort, obs.onError).pipe(mergeMap(evt => throwError(`Cannot read file. ${file.name}.`)));
+        let data = obs.onLoad.pipe(
+          switchMap(evt => {
+            // console.log('evt :>> ', evt);
+            return from([1, 3, 4])
+          }),
+        );
+        // let end = obs.onLoadEnd.pipe(map(evt => (evt as any).target.result));
+        obs.reader.readAsArrayBuffer(file);
+        console.log('data :>> ', data);
+
+        const timer$ = timer(5000);
+        return merge(data, failed).pipe(takeUntil(timer$));
+      })
     );
   }
 
-
-  readFile(file) {
-    return new Promise((resolve, reject) => {
-      let reader = new FileReader();
-  
-      reader.onload = () => {
-        resolve(reader.result);
-      };
-  
-      reader.onerror = reject;
-  
-      reader.readAsArrayBuffer(file);
+  readFileInfo(file: any): Observable<{ file: File }> {
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(file);
+    return Observable.create((observer: Observer<{ file }>) => {
+      reader.onload = (e: Event) => {
+        observer.next(file)
+        observer.complete()
+      }
+      return () => {
+        if (!reader.result) {
+          console.warn('read file aborted')
+          reader.abort()
+        }
+      }
     })
   }
-  
+
+  // readFile(file) {
+  //   return (
+  //     new Observable<string | ArrayBuffer>(subscriber => {
+  //       const reader = new FileReader();
+  //       reader.readAsArrayBuffer(file);
+  //       reader.onload = () => { subscriber.next(reader.result); subscriber.complete(); };
+  //       reader.onerror = () => subscriber.error(reader.error);
+  //       return () => reader.abort(); // cancel function in case you unsubscribe from the obs
+  //     })
+  //   )
+  // }
+
+
 
   // readFile(file): Observable<any> {
 
@@ -259,29 +279,31 @@ export class GestionarBajasPage implements OnInit {
   //   reader.readAsArrayBuffer(file);
   // }
 
-  // readFile(file: any, baja: Baja) {
-  //   const reader = new FileReader();
-  //   reader.onload = () => {
-  //     console.log('file loaded');
-  //     const imgBlob = new Blob([reader.result], { type: file.type });
-  //     const imgData = { blob: imgBlob, name: file.name };
-  //     this.servicioTareas.submitBaja(
-  //       baja.codigoBien,
-  //       this.idAsignacion,
-  //       baja.motivoBaja,
-  //       imgData,
-  //     ).subscribe((_) => {
-  //       console.log('in readfile')
-  //       this.deleteImage(baja.imgData);
-  //       this.servicioTareas.removerBaja(baja.codigoBien);
-  //     },
-  //       (err) => {
-  //         console.error("Error " + err)
-  //       }
-  //     )
-  //   };
-  //   reader.readAsArrayBuffer(file);
-  // }
+  readFile(file: any, baja: Baja) {
+    console.log('file :>> ', file);
+    console.log('baja :>> ', baja);
+    const reader = new FileReader();
+    reader.onload = () => {
+      console.log('file loaded');
+      const imgBlob = new Blob([reader.result], { type: file.type });
+      const imgData = { blob: imgBlob, name: file.name };
+      this.servicioTareas.submitBaja(
+        baja.codigoBien,
+        this.idAsignacion,
+        baja.motivoBaja,
+        imgData,
+      ).subscribe((_) => {
+        console.log('in readfile')
+        this.deleteImage(baja.imgData);
+        this.servicioTareas.removerBaja(baja.codigoBien);
+      },
+        (err) => {
+          console.error("Error " + err)
+        }
+      )
+    };
+    reader.readAsArrayBuffer(file);
+  }
 
   // startUpload(imgEntry) {
   //   this.file.resolveLocalFilesystemUrl(imgEntry.filePath)
